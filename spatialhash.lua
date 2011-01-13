@@ -1,0 +1,128 @@
+--[[
+Copyright (c) 2011 Matthias Richter
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+Except as contained in this notice, the name(s) of the above copyright holders
+shall not be used in advertising or otherwise to promote the sale, use or
+other dealings in this Software without prior written authorization.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+]]--
+
+local _PATH = (...):gsub("spatialhash$", "")
+local Class = require(_PATH .. 'class')
+local vector = require(_PATH .. 'vector')
+Class = Class.new
+vector = vector.new
+
+-- special cell accesor metamethods, so vectors are converted
+-- to a string before using as keys
+local cell_meta = {}
+function cell_meta.__newindex(tbl, key, val)
+	return rawset(tbl, tostring(key), val)
+end
+function cell_meta.__index(tbl, key)
+	local key = tostring(key)
+	local ret = rawget(tbl, key)
+	if not ret then
+		ret = setmetatable({}, {__mode = "kv"})
+		rawset(tbl, key, ret)
+	end
+	return ret
+end
+
+Spatialhash = Class{name = 'Spatialhash', function(self, cell_size)
+	self.cell_size = cell_size or 100
+	self.cells = setmetatable({}, cell_meta)
+end}
+
+function Spatialhash:cellCoords(v)
+	local v = v / self.cell_size
+	v.x, v.y = math.floor(v.x), math.floor(v.y)
+	return v
+end
+
+function Spatialhash:cell(v)
+	return self.cells[ self:cellCoords(v) ]
+end
+
+function Spatialhash:insert(obj, ul, lr)
+	local ul = self:cellCoords(ul)
+	local lr = self:cellCoords(lr)
+	for i = ul.x,lr.x do
+		for k = ul.y,lr.y do
+			self.cells[vector(i,k)][obj] = obj
+		end
+	end
+end
+
+function Spatialhash:remove(obj, ul, lr)
+	-- no bbox given. => must check all cells
+	if not ul or not lr then
+		for _,cell in pairs(self.cells) do
+			cell[obj] = nil
+		end
+		return
+	end
+
+	local ul = self:cellCoords(ul)
+	local lr = self:cellCoords(lr)
+	-- els: remove only from bbox
+	for i = ul.x,lr.x do
+		for k = ul.y,lr.y do
+			self.cells[vector(i,k)][obj] = nil
+		end
+	end
+end
+
+-- update an objects position
+function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
+	-- cells where the object has to be updated
+	local xmin, xmax = math.min(ul_old.x, ul_new.x), math.max(lr_old.x, lr_new.x)
+	local ymin, ymax = math.min(ul_old.y, ul_new.y), math.max(lr_old.y, lr_new.y)
+
+	-- check for regions that are only occupied by either the old or the new bbox
+	-- remove or add accordingly
+	for i = xmin,xmax do
+		for k = ymin,ymax do
+			local region_old = i >= ul_old.x and i <= ul_old.x and k >= ul_old.y and k <= ul_old.y
+			local region_new = i >= ul_new.x and i <= ul_new.x and k >= ul_new.y and k <= ul_new.y
+			if region_new and not region_old then
+				self.cells[vector(i,k)][obj] = obj
+			elseif not region_new and region_old then
+				self.cells[vector(i,k)][obj] = nil
+			end
+		end
+	end
+end
+
+function Spatialhash:getNeighbors(obj, ul, lr)
+	local ul = self:cellCoords(ul)
+	local lr = self:cellCoords(lr)
+	local set,items = {}, {}
+	for i = ul.x,lr.x do
+		for k = ul.y,lr.y do
+			local cell = self.cells[ vector(i,k) ] or {}
+			for other,_ in pairs(cell) do
+				if other ~= obj then set[other] = other end
+			end
+		end
+	end
+	for other,_ in pairs(set) do items[#items+1] = other end
+	return items
+end
