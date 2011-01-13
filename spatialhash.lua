@@ -92,6 +92,9 @@ end
 
 -- update an objects position
 function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
+	local ul_old, lr_old = self:cellCoords(ul_old), self:cellCoords(lr_old)
+	local ul_new, lr_new = self:cellCoords(ul_new), self:cellCoords(lr_new)
+
 	-- cells where the object has to be updated
 	local xmin, xmax = math.min(ul_old.x, ul_new.x), math.max(lr_old.x, lr_new.x)
 	local ymin, ymax = math.min(ul_old.y, ul_new.y), math.max(lr_old.y, lr_new.y)
@@ -100,8 +103,8 @@ function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
 	-- remove or add accordingly
 	for i = xmin,xmax do
 		for k = ymin,ymax do
-			local region_old = i >= ul_old.x and i <= ul_old.x and k >= ul_old.y and k <= ul_old.y
-			local region_new = i >= ul_new.x and i <= ul_new.x and k >= ul_new.y and k <= ul_new.y
+			local region_old = i >= ul_old.x and i <= lr_old.x and k >= ul_old.y and k <= lr_old.y
+			local region_new = i >= ul_new.x and i <= lr_new.x and k >= ul_new.y and k <= lr_new.y
 			if region_new and not region_old then
 				self.cells[vector(i,k)][obj] = obj
 			elseif not region_new and region_old then

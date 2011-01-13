@@ -24,17 +24,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _PATH = (...):gsub("(%.init$)?", "").."."
-local vector = require(_PATH .. 'vector')
-
 module(..., package.seeall)
-require(_PATH .. 'shape')
-require(_PATH .. 'polygon')
-require(_PATH .. 'spatialhash')
-vector = vector.new
+require(_PACKAGE .. 'shape')
+require(_PACKAGE .. 'polygon')
+require(_PACKAGE .. 'spatialhash')
+require(_PACKAGE .. 'vector')
+local vector = vector.new
 
 local is_initialized = false
-local hash = nil
+hash = nil
 
 local shapes = {}
 local shape_ids = {}
@@ -133,7 +131,7 @@ function update(dt)
 			neighbors = hash:getNeighbors(s, c-r, c+r)
 		else
 			local x1,y1, x2,y2 = s._polygon:getBBox()
-			neighbors = hash:getNeighbors(s, vector(x1,y2), vector(x2,y2))
+			neighbors = hash:getNeighbors(s, vector(x1,y1), vector(x2,y2))
 		end
 
 		for _,t in ipairs(neighbors) do
