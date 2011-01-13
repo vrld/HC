@@ -24,11 +24,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
+local _PATH = (...):gsub("(%.?)init$", "%1")
 module(..., package.seeall)
-require(_PACKAGE .. 'shape')
-require(_PACKAGE .. 'polygon')
-require(_PACKAGE .. 'spatialhash')
-require(_PACKAGE .. 'vector')
+require(_PATH .. '.shape')
+require(_PATH .. '.polygon')
+require(_PATH .. '.spatialhash')
+require(_PATH .. '.vector')
 local vector = vector.new
 
 local is_initialized = false
