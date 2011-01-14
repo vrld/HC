@@ -287,7 +287,7 @@ end
 
 -- split polygon into convex polygons.
 -- note that this won't be the optimal split in most cases, as
--- finding the optimal split is a NP hard problem.
+-- finding the optimal split is a really hard problem.
 -- the method is to first triangulate and then greedily merge
 -- the triangles.
 function Polygon:splitConvex()

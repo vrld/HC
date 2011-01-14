@@ -30,34 +30,26 @@ local vector = require(_PATH .. 'vector')
 Class = Class.new
 vector = vector.new
 
-local function combine_axes(a, b)
-	local in_a = {}
-	for i = 1,#a do in_a[ tostring(a[i]) ] = true end
-	for i = 1,#b do
-		if not in_a[ tostring(b[i]) ] then
-			a[#a+1] = b[i]
-		end
-	end
-	return a
-end
-
-local function SAT(axis_table, shape_one, shape_two)
-	local sep,min_overlap = vector(0,0),math.huge
-	for _,axis in ipairs(axis_table) do
+local function test_axes(axes, shape_one, shape_two, sep, min_overlap)
+	for _,axis in ipairs(axes) do
 		local l1,r1 = shape_one:projectOn(axis)
 		local l2,r2 = shape_two:projectOn(axis)
+		local overlap = math.min(r1,r2) - math.max(l1,l2)
+		if overlap <= 0 then return false end
 
-		local a,b = math.max(l1,l2), math.min(r1,r2)
-		if b < a then
-			return false
-		end
-
-		local overlap = b-a
 		if overlap < min_overlap then
-			sep, min_overlap = axis * -overlap, overlap
+			sep, min_overlap = -overlap * axis, overlap
 		end
 	end
-	return true, sep
+	return true, sep, min_overlap
+end
+
+local function SAT(shape_one, axes_one, shape_two, axes_two)
+	local collide, sep, overlap = false, vector(0,0), math.huge
+	collide, sep, overlap = test_axes(axes_one, shape_one, shape_two, sep, overlap)
+	if not collide then return false end
+	collide, sep = test_axes(axes_two, shape_two, shape_one, sep, overlap)
+	return collide, sep
 end
 
 ---------------
@@ -94,17 +86,11 @@ end
 
 function PolygonShape:projectOn(axis)
 	local vertices = self._polygon.vertices
-	local left, right = math.huge, -math.huge
+	local projection = {}
 	for i = 1,#vertices do
-		local projection = vertices[i] * axis -- same as vertices[i]:projectOn(axis) * axis
-		if projection < left then
-			left = projection
-		end
-		if projection > right then
-			right = projection
-		end
+		projection[i] = vertices[i] * axis -- same as vertices[i]:projectOn(axis) * axis
 	end
-	return left, right
+	return math.min(unpack(projection)), math.max(unpack(projection))
 end
 
 function PolygonShape:collidesWith(other)
@@ -113,7 +99,7 @@ function PolygonShape:collidesWith(other)
 	end
 
 	-- else: type is POLYGON, use the SAT
-	return SAT(combine_axes(self:getAxes(), other:getAxes()), self, other)
+	return SAT(self, self:getAxes(), other, other:getAxes())
 end
 
 function PolygonShape:draw(mode)
@@ -131,8 +117,9 @@ function PolygonShape:move(x,y)
 	self._polygon:move(x)
 end
 
-function PolygonShape:rotate(angle, center)
-	self._polygon:rotate(angle, center)
+function PolygonShape:rotate(angle, cx,cy)
+	if cx and cy then cx = vector(cx,cy) end
+	self._polygon:rotate(angle, cx)
 end
 
 
@@ -150,15 +137,15 @@ end}
 CompoundShape:inherit(Shape)
 
 function CompoundShape:collidesWith(other)
-	local sep, collide = vector(0,0), false
+	local sep, collide, collisions = vector(0,0), false, 0
 	for _,s in ipairs(self._shapes) do
 		local status, separating_vector = s:collidesWith(other)
 		collide = collide or status
 		if status then
-			sep = sep + separating_vector
+			sep, collisions = sep + separating_vector, collisions + 1
 		end
 	end
-	return collide, sep
+	return collide, sep / collisions
 end
 
 function CompoundShape:draw(mode)
@@ -185,10 +172,11 @@ function CompoundShape:move(x,y)
 	end
 end
 
-function CompoundShape:rotate(angle)
-	self._polygon:rotate(angle)
+function CompoundShape:rotate(angle,cx,cy)
+	if cx and cy then cx = vector(cx,cy) end
+	self._polygon:rotate(angle,cx)
 	for _,p in ipairs(self._shapes) do
-		p:rotate(angle, self._polygon.centroid)
+		p:rotate(angle, cx or self._polygon.centroid)
 	end
 end
 
@@ -204,25 +192,25 @@ CircleShape:inherit(Shape)
 
 function CircleShape:collidesWith(other)
 	if other._type == Shape.CIRCLE then
-		return SAT({(other._center - self._center):normalize_inplace()}, self, other)
+		local d = self._center:dist(other._center)
+		if d < self._radius + other._radius then
+			return true, d * (self._center - other.center)
+		end
+		return false
 	elseif other._type == Shape.COMPOUND then
 		return other:collidesWith(self)
 	end
 	-- else: other._type == POLYGON
 	-- retrieve closest edge to center
-	local function getClosest(center, points, distOld, k, i, inc)
-		local distNew = (points[i] - center):len2()
-		if distOld < distNew then return points[k],distOld end
-		k, i = i, i + inc
-		if i > #points then i = 1 end
-		if i < 1 then i = #points end
-		return getClosest(center, points, distNew, k, i, inc)
+	local points = other._polygon.vertices
+	local closest, dist = points[1], (self._center - points[1]):len2()
+	for i = 2,#points do
+		local d = (self._center - points[i]):len2()
+		if d < dist then
+			closest, dist = points[i], d
+		end
 	end
-
-	local closestLeft,dl = getClosest(self._center, other._polygon.vertices, math.huge, 1,2, 1)
-	local closestRight,dr = getClosest(self._center, other._polygon.vertices, math.huge, 2,1, -1)
-	local closest = dl < dr and closestLeft or closestRight
-	return SAT(combine_axes(other:getAxes(), {(closest - self._center):normalize_inplace()}), self, other)
+	return SAT(self, {(closest-self._center):normalize_inplace()}, other, other:getAxes())
 end
 
 function CircleShape:draw(mode, segments)
@@ -240,8 +228,10 @@ function CircleShape:move(x,y)
 	self._center = self._center + x
 end
 
-function CircleShape:rotate(angle)
-	-- yeah, right
+function CircleShape:rotate(angle, cx,cy)
+	if not cx then return end
+	if cx and cy then cx = vector(cx,cy) end
+	self._center = (self._center - cx):rotate_inplace(angle) + cx
 end
 
 function CircleShape:projectOn(axis)
