@@ -37,6 +37,7 @@ hash = nil
 
 local shapes = {}
 local shape_ids = {}
+local groups = {}
 
 local function __NOT_INIT() error("Not yet initialized") end
 local function __NULL() end
@@ -60,7 +61,7 @@ function setCallbacks(start,persist,stop)
 	if tbl.stop    then cb_stop    = tbl.stop    end
 end
 
-local function newShape(shape, ul,lr)
+local function new_shape(shape, ul,lr)
 	shapes[#shapes+1] = shape
 	shape_ids[shape] = #shapes
 	hash:insert(shape, ul,lr)
@@ -68,7 +69,7 @@ local function newShape(shape, ul,lr)
 end
 
 -- create polygon shape and add it to internal structures
-function newPolygonShape(...)
+function addPolygon(...)
 	assert(is_initialized, "Not properly initialized!")
 	local poly = Polygon(...)
 	local shape
@@ -92,24 +93,31 @@ function newPolygonShape(...)
 	shape.rotate = hash_aware_member(shape.rotate)
 
 	local x1,y1, x2,y2 = poly:getBBox()
-	return newShape(shape, vector(x1,y1), vector(x2,y2))
+	return new_shape(shape, vector(x1,y1), vector(x2,y2))
+end
+
+function addRectangle(x,y,w,h)
+	return polygon(x,y, x+w,y, x+w,y+h, x,y+h)
 end
 
 -- create new polygon approximation of a circle
-function newCircleShape(cx, cy, radius)
+function addCircle(cx, cy, radius)
 	assert(is_initialized, "Not properly initialized!")
 	local shape = CircleShape(cx,cy, radius)
-	local oldmove = shape.move
-	function shape:move(x,y)
-		local r = vector(self._radius, self._radius)
-		local c1 = self._center
-		oldmove(self,x,y)
-		local c2 = self._center
-		hash:update(self, c1-r, c1+r, c2-r, c2+r)
+	local function hash_aware_member(oldfunc)
+		return function(self, ...)
+			local r = vector(self._radius, self._radius)
+			local c1 = self._center
+			oldfunc(self, ...)
+			local c2 = self._center
+			hash:update(self, c1-r, c1+r, c2-r, c2+r)
+		end
 	end
+	shape.move = hash_aware_member(shape.move)
+	shape.rotate = hash_aware_member(shape.rotate)
 
 	local c,r = shape._center, vector(radius,radius)
-	return newShape(shape, c-r, c+r)
+	return new_shape(shape, c-r, c+r)
 end
 
 -- get unique indentifier for an unordered pair of shapes, i.e.:
@@ -120,9 +128,24 @@ local function collision_id(s,t)
 	return string.format("%d,%d", i,k)
 end
 
+-- update with a minimum time step
+local function update_min_step(dt, min_step)
+	-- step fixed to framerate of ~33
+	local min_step = min_step or 0.03
+	while dt > min_step do
+		update(min_step)
+		dt = dt - min_step
+	end
+	update(dt)
+end
+
 -- check for collisions
 local colliding_last_frame = {}
-function update(dt)
+function update(dt, min_step)
+	if min_step then
+		update_min_step(dt, min_step)
+		return
+	end
 	-- collect colliding shapes
 	local tested, colliding = {}, {}
 	for _,s in pairs(shapes) do
@@ -168,7 +191,7 @@ function update(dt)
 end
 
 -- remove shape from internal tables and the hash
-function removeShape(shape)
+function remove(shape)
 	local id = shape_ids[shape]
 	shapes[id] = nil
 	shape_ids[shape] = nil
