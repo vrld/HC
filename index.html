@@ -1,80 +1,1115 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>HardonCollider - A collision detection library</title>
+<style type="text/css">
+body {
+	font-family: "Helvetica,Arial,FreeSans";
+	color: #334;
+	background: #f7fcfc url('pattern.png');
+}
+ul#nav { margin-top: 0; float:right;display:inline; margin-left: 0; padding-left: 0; }
+ul#nav li { display:inline; margin-right: 1em; }
+a { color: #080303; }
 
-	<title>vrld/HardonCollider @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #d6dbf0;
-		  font-family: "Helvetica,Arial,FreeSans";
-  		color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #29240f; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #29240f; }
-    h3 { text-align: center; color: #29240f; }
-    a { color: #29240f; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
+a.top {
+	font-size: 8pt;
+	margin-left: 1em;
+	margin-right: 1em;
+	float: right;
+}
+
+h1 {
+	font-size: 3em;
+	color: #080303;
+	margin-top: 0;
+	margin-bottom: 10px;
+	border-bottom: 2px solid #080303;
+}
+h1 .small { font-size: 0.4em; }
+
+h2 {
+	font-size: 2em;
+	color: #080303;
+	margin: 0;
+}
+
+#header {
+	width: 800px;
+	margin: 1em auto;
+	padding: .5em;
+	border: 1px solid #a0a0a0;
+	background: #efefef url('smooth.jpg');
+	border-radius: 10px; -moz-border-radius: 10px;
+}
+
+.module {
+	width: 800px;
+	margin: 1em auto;
+	padding: 0 0 0 1em;
+}
+
+.definition, .constructor {
+	font-family: sans-serif;
+	font-weight: bold;
+	color: #444;
+}
+
+.definition .name, .constructor .name {
+	color: #000;
+}
+
+.arglist {
+	color: #102040;
+}
+
+pre {
+	border: 1px solid #aaa;
+	border-radius: 5px; -moz-border-radius: 5px;
+	background: #d0d0da;
+	padding: .2em;
+	margin: 1em 2em;
+	font-weight: normal;
+}
+pre code { border: 0; }
+
+.arguments, .returns, .example {
+	font-weight: bold;
+}
+
+.preamble, .function, .class, .module > .name {
+	border: 1px solid #aaa;
+	border-radius: 5px; -moz-border-radius: 5px;
+	padding: .2em .5em;
+	background: #fff;
+	margin: 1em .2em;
+}
+
+.module > .name {
+	color: #050A10;
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-left: -.5em;
+}
+
+.preamble {
+	margin-top: -1em;
+	margin-bottom: 2em;
+}
+
+dl {
+	margin-left: 2em;
+	margin-top: .5em;
+}
+dt {
+	font-family: sans-serif;
+	color: #444;
+}
+dt code {
+	font-size: 12pt;
+	color: #102040;
+}
+dd {
+	font-weight: normal;
+}
+</style>
 </head>
 
-<body>
-  <a href="http://github.com/vrld/HardonCollider"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+<body><a name="top"></a>
 
-  <div id="container">
+<div id="header">
+	<h1>Hardon Collider <span class="small">Collision detection for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
+	<ul id="nav">
+		<li><a href="#init">Main Module</a></li>
+		<li><a href="#shape">Shapes</a></li>
+		<li><a href="#polygon">Polygon</a></li>
+		<li><a href="#spatialhash">Spatial Hash</a></li>
+	</ul>
+	<h2>Reference pages</h2>
+</div>
 
-    <div class="download">
-      <a href="http://github.com/vrld/HardonCollider/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/vrld/HardonCollider/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
+<a name="init"></a>
+<div id="init" class="module">
+	<div class="name">hardoncollider<a class="top" href="#top">^ top</a></div>
+	<div class="preamble">
+		<p>The main module.</p>
+		<p>HardonCollider will automatically handle - but not resolve - collisions.
+		It uses search data structure - a spatial hash - to quickly find colliding shapes.</p>
+		<p>A spatial hash is simply a grid that is laid over the whole scene in which a shape can occupy
+		several cells. To find shapes that may be colliding, you simply need to look which shapes occupy
+		the same cell. You can specify the cell size in the <code>init</code> function.</p>
+		<p>To get a less boring explanation on how to use this, see the tutorial (once it's there)</p>
+	</div>
 
-    <h1><a href="http://github.com/vrld/HardonCollider">HardonCollider</a>
-      <span class="small">by <a href="http://github.com/vrld">vrld</a></span></h1>
+	<a name="init-init"></a>
+	<div id="init" class="function">
+		<div class="definition">function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#init">^ top</a></div>
+		<p>Initializes the library. Call this in love.load(). All the parameters can be omitted.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>number <code>cell_size</code> (100)</dt>
+				<dd>Cell size for internal search structure.</dd>
+				<dt>function <code>callback_start</code> (empty function)</dt>
+				<dd>Called when two shapes start colliding.</dd>
+				<dt>function <code>callback_persist</code> (empty function)</dt>
+				<dd>Called when two continue to collide, i.e. if the collision lasts more than one frame.</dd>
+				<dt>function <code>callback_stop</code> (empty function)</dt>
+				<dd>Called when two shapes stop colliding.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">function love.load()
+    hardoncollider.init(150)
+end</code></pre>
+		</div>
+	</div>
 
-    <div class="description">
-      General purpose collision detection library for the use with LÖVÉ.
-    </div>
+	<a name="init-setCallbacks"></a>
+	<div id="setCallbacks" class="function">
+		<div class="definition">function <span class="name">setCallbacks</span><span class="arglist">(start,persist,stop)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">setCallbacks</span><span class="arglist">{start = start,persist = persist,stop = stop}</span></div>
+		<p>Sets the different callbacks. The second calling style let's you specify the callbacks by name, see the example.</p>
+		<p>If <code>nil</code> is passed as any callback, the callback will not be changed.</p>
+		<p>Each callback has the prototype <code class="lua">function callback(dt, shape_one, shape_two, mtv_x, mtv_y)</code>.
+		The two <code>shape</code> parameters are the colliding shapes. The last two parameters, <code>mtv_x</code> and <code>mtv_y</code>
+		define the <em>minimum translation vector</em>, i.e. the direction and magnitude shape_one has to be moved so that
+		the collision will be resolved.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>function <code>start</code></dt>
+				<dd>Called when two shapes start colliding.</dd>
+				<dt>function <code>persist</code></dt>
+				<dd>Called when two continue to collide, i.e. if the collision lasts more than one frame.</dd>
+				<dt>function <code>stop</code></dt>
+				<dd>Called when two shapes stop colliding.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">function start(dt, shape_one, shape_two, mtv_x, mtv_y)
+    print('started colliding:', shape_one, shape_two)
+	print('mtv:', mtv_x, mtv_y)
+end
 
-    <h2>Authors</h2>
-<p>Matthias Richter (matthias@dsboard.de)<br/><br/>      </p>
-<h2>Contact</h2>
-<p> (matthias@dsboard.de)<br/>      </p>
+function persist_one(dt, shape_one, shape_two, mtv_x, mtv_y)
+    print('still colliding:', shape_one, shape_two)
+    -- move both shape_one and shape_two to resolve the collision
+    shape_one:move(mtv_x/2, mtv_y/2)
+    shape_two:move(-mtv_x/2, -mtv_y/2)
+end
+
+function persist_two(dt, shape_one, shape_two, mtv_x, mtv_y)
+    print('still colliding:', shape_one, shape_two)
+    -- move only shape_one to resolve the collision
+    shape_one:move(mtv_x, mtv_y)
+end
+
+function stop(dt, shape_one, shape_two) -- ignore the translation vector
+    print('collision resolved')
+end
+
+function love.load()
+    hardoncollider.init(100)
+    -- set initial callbacks
+    hardoncollider.setCallbacks(start, persist_one, stop)
+    -- change persist callback
+    hardoncollider.setCallbacks{persist = persist_two}
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="init-addPolygon"></a>
+	<div id="addPolygon" class="function">
+		<div class="definition">function <span class="name">addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#init">^ top</a></div>
+		<p>Add a polygon to the collision detection system. Any non-intersection polygon will work, even convex polygons.</p>
+		<p>Note that if three consecutive points lie on a line, the middle point will be discarded. This means 
+		you cannot construct polygon shapes out of lines.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
+				<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Shape</dt>
+				<dd>The polygon shape added to the scene.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">shape = hardoncollider.addPolygon(10,10, 40,50, 70,10, 40,30)</code></pre>
+		</div>
+	</div>
+
+	<a name="init-addRectangle"></a>
+	<div id="addRectangle" class="function">
+		<div class="definition">function <span class="name">addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#init">^ top</a></div>
+		<p>Add a rectangle shape to the collision detection system.<p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>The upper left corner of the rectangle.</dd>
+				<dt>numbers <code>w, h</code></dt>
+				<dd>The width and height of the rectangle.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Shape</dt>
+				<dd>The rectangle added to the scene.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">rect = hardoncollider.addRectangle(100,120, 200,40)</code></pre>
+		</div>
+	</div>
+
+	<a name="init-addCircle"></a>
+	<div id="addCircle" class="function">
+		<div class="definition">function <span class="name">addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#init">^ top</a></div>
+		<p>Add a circle shape to the collision detection system.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>cx, cy</code></dt>
+				<dd>The circle center.</dd>
+				<dt>number <code>radius</code></dt>
+				<dd>The circle radius.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Shape</dt>
+				<dd>The circle added to the scene.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">circle = hardoncollider.addCircle(400,300, 100)</code></pre>
+		</div>
+	</div>
+
+	<a name="init-update"></a>
+	<div id="update" class="function">
+		<div class="definition">function <span class="name">update</span><span class="arglist">(dt, max_delta)</span><a class="top" href="#init">^ top</a></div>
+		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
+		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
+		not bigger than this maximum and the scene is updated for each time slice.</p>
+		<p>Note that the delta time has no effect on the collision detection itself, but
+		will be passed to the callback functions.</code>
+		
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>number <code>dt</code></dt>
+				<dd>The time since the last update.</dd>
+				<dt>number <code>max_delta</code></dt>
+				<dd>Maximum time delta (see description).</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">function love.update(dt)
+    hardoncollider.update(dt, .02)
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="init-remove"></a>
+	<div id="remove" class="function">
+		<div class="definition">function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#init">^ top</a></div>
+		<p>Remove a shape from the collision detection system. Note that if you remove a shape in
+		the <code>start</code> or <code>persist</code> callback, other shapes might still have
+		collided with it, so the shape will be argument to the other calls of <code>start</code>
+		or <code>persist</code>. In any case, the <code>stop</code> callback will be called
+		in the next call to <code>update</code> for each shape which the removed shape collided with.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>Shape <code>shape</code></dt>
+				<dd>The shape to be removed.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">hardoncollider.remove(circle)</code></pre>
+		</div>
+	</div>
+
+</div>
 
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/vrld/HardonCollider/zipball/master">zip</a> or
-      <a href="http://github.com/vrld/HardonCollider/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/vrld/HardonCollider</pre>
-    </p>
+<a name="shape"></a>
+<div id="shape" class="module">
+	<div class="name">hardoncollider.shape<a class="top" href="#top">^ top</a></div>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/vrld/HardonCollider">vrld/HardonCollider</a>
-    </div>
+	<div class="preamble">
+		<p>Shape classes with collision detection methods.<p>
+		<p>This defines methods to move, rotate and draw shapes created with <code>hardoncollider.add*</code>.</p>
+		<p>If you don't want to use the full blown module, you can still use these
+		classes to test for colliding shapes.</p>
+		<p>They might also be useful for doing GUI stuff, e.g. when testing if the
+		mouse hovers a button.</p>
+		<p>Some functions (<code>getAxes</code>, <code>projectOn</code>, ...) are left
+		undocumented, as they have little value outside the scope of collision detection.</p>
+	</div>
 
-  </div>
+	<div id="name" class="class">
+		<div class="constructor"><span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shape">^ top</a></div>
+		<div class="constructor"><span class="name">PolygonShape</span><span class="arglist">(polygon)</span></div>
+		<p>Construct a shape using a non-intersecting ploygon</p>
+		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the Polygon class.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
+				<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd>
+				<dt>Polygon <code>polygon</code></dt>
+				<dd>Construct the shape from this convex polygon.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Shape</dt>
+				<dd>The constructed shape.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">shape = PolygonShape( Polygon(100,100, 200,200, 300,100) )</code></pre>
+		</div>
+	</div>
 
-  
+	<div id="name" class="class">
+		<div class="constructor">class <span class="name">CompoundShape</span><span class="arglist">(polygon)</span><a class="top" href="#shape">^ top</a></div>
+		<p>Construct a shape using a non intersecting polygon. If the polygon is convex, using <code>PolygonShape</code> might be faster.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>Polygon <code>polygon</code></dt>
+				<dd>Construct the shape from this polygon.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Shape</dt>
+				<dd>The constructed shape.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">shape = CompoundShape( Polygon(10,10, 40,50, 70,10, 40,30) )</code></pre>
+		</div>
+	</div>
+
+	<div id="name" class="class">
+		<div class="constructor">class <span class="name">CircleShape</span><span class="arglist">(cx,cy, radius)</arglist><a class="top" href="#shape">^ top</a></div>
+		<p>Construct a circular shape.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>cx, cy</code></dt>
+				<dd>The circle center.</dd>
+				<dt>number <code>radius</code></dt>
+				<dd>The circle radius.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Shape</dt>
+				<dd>The constructed circle shape.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">shape = CircleShape(400,300, 100)</code></pre>
+		</div>
+	</div>
+
+	<a name="shape-shape:move"></a>
+	<div id="shape:move" class="function">
+		<div class="definition">function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#shape">^ top</a></div>
+		<p>Move the shape.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>The direction to move the shape in.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">circle:move(10,15) -- move the circle 10 pixels down and 15 pixels right</code></pre>
+		</div>
+	</div>
+
+	<a name="shape-shape:rotate"></a>
+	<div id="shape:rotate" class="function">
+		<div class="definition">function <span class="name">shape:rotate</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shape">^ top</a></div>
+		<p>Rotate the shape. A rotation center can be specified. If no center is given, the
+		shape's center is used.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>number <code>angle</code></dt>
+				<dd>Amount to rotate the shape (in radians).</dd>
+				<dt>numbers <code>cx, cy</code></dt>
+				<dd>Rotation center. Defaults to the shape's center if omitted.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">rectangle:rotate(math.pi/4)</code></pre>
+		</div>
+	</div>
+
+	<a name="shape-shape:center"></a>
+	<div id="shape:center" class="function">
+		<div class="definition">function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#shape">^ top</a></div>
+		<p>Get the center of the shape.</p>
+		<p>If the shape is a CircleShape, this is the circle center, else it's the polygon's centroid.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>None</dt>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>The center of the shape.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">print("Circle at:", circle:center())</code></pre>
+		</div>
+	</div>
+
+	<a name="shape-shape:draw"></a>
+	<div id="shape:draw" class="function">
+		<div class="definition">function <span class="name">shape:draw</span><span class="arglist">(mode)</span><a class="top" href="#shape">^ top</a></div>
+		<p>Draw the shape either filled or as outline.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>DrawMode <code>mode</code></dt>
+				<dd>How to draw the shape. Either 'line' or 'fill'.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">circle:draw('fill')</code></pre>
+		</div>
+	</div>
+
+	<a name="shape-shape:collidesWith"></a>
+	<div id="shape:collidesWith" class="function">
+		<div class="definition">function <span class="name">shape:collidesWith</span><span class="arglist">(other)</span><a class="top" href="#shape">^ top</a></div>
+		<p>Test if two shapes collide.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>Shape <code>other</code></dt>
+				<dd>Test for collision with this shape.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>boolean <code>collide</code></dt>
+				<dd><code>true</code> if the two shapes collide, <code>false</code> otherwise.</dd>
+				<dt>vector <code>mtv</code></dt>
+				<dd>The minimum translation vector, or <code>nil</code> if the two shapes don't collide.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if circle:collidesWith(rectangle) then
+    print("collision detected!")
+end</code></pre>
+		</div>
+	</div>
+
+</div>
+
+
+<a name="polygon"></a>
+<div id="polygon" class="module">
+	<div class="name">hardoncollider.polygon<a class="top" href="#top">^ top</a></div>
+	<div class="preamble">
+		<p>To be documented later</p>
+	</div>
+
+<!--TODO:
+
+	<div id="name" class="class">
+		<div class="constructor"><span class="name">Polygon</span><span class="arglist">(...)</arglist><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+	</div>
+
+	<a name="polygon-Polygon:unpack"></a>
+	<div id="Polygon:unpack" class="function">
+		<div class="definition">function <span class="name">Polygon:unpack</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:clone"></a>
+	<div id="Polygon:clone" class="function">
+		<div class="definition">function <span class="name">Polygon:clone</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:getBBox"></a>
+	<div id="Polygon:getBBox" class="function">
+		<div class="definition">function <span class="name">Polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:isConvex"></a>
+	<div id="Polygon:isConvex" class="function">
+		<div class="definition">function <span class="name">Polygon:isConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:move"></a>
+	<div id="Polygon:move" class="function">
+		<div class="definition">function <span class="name">Polygon:move</span><span class="arglist">(direction)</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>direction</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:rotate"></a>
+	<div id="Polygon:rotate" class="function">
+		<div class="definition">function <span class="name">Polygon:rotate</span><span class="arglist">(angle, center)</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>angle</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>center</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:triangulate"></a>
+	<div id="Polygon:triangulate" class="function">
+		<div class="definition">function <span class="name">Polygon:triangulate</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:mergedWith"></a>
+	<div id="Polygon:mergedWith" class="function">
+		<div class="definition">function <span class="name">Polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>other</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-Polygon:splitConvex"></a>
+	<div id="Polygon:splitConvex" class="function">
+		<div class="definition">function <span class="name">Polygon:splitConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+!-->
+</div>
+
+
+
+<a name="spatialhash"></a>
+<div id="spatialhash" class="module">
+	<div class="name">hardoncollider.spatialhash<a class="top" href="#top">^ top</a></div>
+
+	<div class="preamble">
+		<p>To be documented later</p>
+	</div>
+<!--TODO:
+
+	<div id="name" class="class">
+		<div class="constructor"><span class="name">Spatialhash</span><span class="arglist">(cell_size)</arglist><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+	</div>
+
+	<a name="spatialhash-cell_meta.__newindex"></a>
+	<div id="cell_meta.__newindex" class="function">
+		<div class="definition">function <span class="name">cell_meta.__newindex</span><span class="arglist">(tbl, key, val)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>tbl</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>key</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>val</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-cell_meta.__index"></a>
+	<div id="cell_meta.__index" class="function">
+		<div class="definition">function <span class="name">cell_meta.__index</span><span class="arglist">(tbl, key)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>tbl</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>key</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:cellCoords"></a>
+	<div id="Spatialhash:cellCoords" class="function">
+		<div class="definition">function <span class="name">Spatialhash:cellCoords</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>v</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:cell"></a>
+	<div id="Spatialhash:cell" class="function">
+		<div class="definition">function <span class="name">Spatialhash:cell</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>v</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:insert"></a>
+	<div id="Spatialhash:insert" class="function">
+		<div class="definition">function <span class="name">Spatialhash:insert</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>obj</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>ul</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>lr</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:remove"></a>
+	<div id="Spatialhash:remove" class="function">
+		<div class="definition">function <span class="name">Spatialhash:remove</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>obj</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>ul</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>lr</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:update"></a>
+	<div id="Spatialhash:update" class="function">
+		<div class="definition">function <span class="name">Spatialhash:update</span><span class="arglist">(obj, ul_old, lr_old, ul_new, lr_new)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>obj</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>ul_old</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>lr_old</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>ul_new</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>lr_new</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:getNeighbors"></a>
+	<div id="Spatialhash:getNeighbors" class="function">
+		<div class="definition">function <span class="name">Spatialhash:getNeighbors</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>
+		<h5 style="color:red;">Description here</h5>
+		</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>[type] <code>obj</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>ul</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+				<dt>[type] <code>lr</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
+	</div>
+!-->
+
+</div>
+
 </body>
-</html>
