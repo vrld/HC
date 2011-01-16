@@ -55,7 +55,7 @@ end
 ---------------
 -- Base class
 --
-Shape = Class{name = 'Shape', function(self, t)
+local Shape = Class{name = 'Shape', function(self, t)
 	self._type = t
 end}
 
@@ -65,16 +65,39 @@ Shape.COMPOUND = setmetatable({}, {__tostring = function() return 'COMPOUND' end
 Shape.CIRCLE   = setmetatable({}, {__tostring = function() return 'CIRCLE' end})
 
 -------------------
--- Convex polygon
+-- Polygon Shapes
 --
-PolygonShape = Class{name = 'PolygonShape', function(self, polygon)
+local ConvexPolygonShape = Class{name = 'ConvexPolygonShape', function(self, polygon)
 	Shape.construct(self, Shape.POLYGON)
 	assert(polygon:isConvex(), "Polygon is not convex.")
 	self._polygon = polygon
 end}
-PolygonShape:inherit(Shape)
+ConvexPolygonShape:inherit(Shape)
 
-function PolygonShape:getAxes()
+local ConcavePolygonShape = Class{name = 'ConcavePolygonShape', function(self, poly)
+	Shape.construct(self, Shape.COMPOUND)
+	self._polygon = poly
+	self._shapes = poly:splitConvex()
+	for i,s in ipairs(self._shapes) do
+		self._shapes[i] = ConvexPolygonShape(s)
+	end
+end}
+ConcavePolygonShape:inherit(Shape)
+
+-- decides wether to use a convex or concave polygon
+function PolygonShape(polygon, ...)
+	-- create from coordinates if needed
+	if type(polygon) == "number" then
+		polygon = Polygon(polygon, ...)
+	end
+
+	if polygon:isConvex() then
+		return ConvexPolygonShape(polygon)
+	end
+	return ConcavePolygonShape(polygon)
+end
+
+function ConvexPolygonShape:getAxes()
 	local axes = {}
 	local vert = self._polygon.vertices
 	for i = 1,#vert-1 do
@@ -84,7 +107,7 @@ function PolygonShape:getAxes()
 	return axes
 end
 
-function PolygonShape:projectOn(axis)
+function ConvexPolygonShape:projectOn(axis)
 	local vertices = self._polygon.vertices
 	local projection = {}
 	for i = 1,#vertices do
@@ -93,7 +116,7 @@ function PolygonShape:projectOn(axis)
 	return math.min(unpack(projection)), math.max(unpack(projection))
 end
 
-function PolygonShape:collidesWith(other)
+function ConvexPolygonShape:collidesWith(other)
 	if other._type ~= Shape.POLYGON then
 		return other:collidesWith(self)
 	end
@@ -102,41 +125,27 @@ function PolygonShape:collidesWith(other)
 	return SAT(self, self:getAxes(), other, other:getAxes())
 end
 
-function PolygonShape:draw(mode)
+function ConvexPolygonShape:draw(mode)
 	local mode = mode or 'line'
 	love.graphics.polygon(mode, self._polygon:unpack())
 end
 
-function PolygonShape:centroid()
+function ConvexPolygonShape:center()
 	return self._polygon.centroid:unpack()
 end
 
-function PolygonShape:move(x,y)
+function ConvexPolygonShape:move(x,y)
 	-- y not given => x is a vector
 	if y then x = vector(x,y) end
 	self._polygon:move(x)
 end
 
-function PolygonShape:rotate(angle, cx,cy)
+function ConvexPolygonShape:rotate(angle, cx,cy)
 	if cx and cy then cx = vector(cx,cy) end
 	self._polygon:rotate(angle, cx)
 end
 
-
----------------------------------
--- Concave (but simple) polygon
---
-CompoundShape = Class{name = 'CompoundShape', function(self, poly)
-	Shape.construct(self, Shape.COMPOUND)
-	self._polygon = poly
-	self._shapes = poly:splitConvex()
-	for i,s in ipairs(self._shapes) do
-		self._shapes[i] = PolygonShape(s)
-	end
-end}
-CompoundShape:inherit(Shape)
-
-function CompoundShape:collidesWith(other)
+function ConcavePolygonShape:collidesWith(other)
 	local sep, collide, collisions = vector(0,0), false, 0
 	for _,s in ipairs(self._shapes) do
 		local status, separating_vector = s:collidesWith(other)
@@ -148,7 +157,7 @@ function CompoundShape:collidesWith(other)
 	return collide, sep / collisions
 end
 
-function CompoundShape:draw(mode)
+function ConcavePolygonShape:draw(mode)
 	local mode = mode or 'line'
 	if mode == 'line' then
 		love.graphics.polygon('line', self._polygon:unpack())
@@ -159,11 +168,11 @@ function CompoundShape:draw(mode)
 	end
 end
 
-function CompoundShape:centroid()
+function ConcavePolygonShape:center()
 	return self._polygon.centroid:unpack()
 end
 
-function CompoundShape:move(x,y)
+function ConcavePolygonShape:move(x,y)
 	-- y not give => x is a vector
 	if y then x = vector(x,y) end
 	self._polygon:move(x)
@@ -172,7 +181,7 @@ function CompoundShape:move(x,y)
 	end
 end
 
-function CompoundShape:rotate(angle,cx,cy)
+function ConcavePolygonShape:rotate(angle,cx,cy)
 	if cx and cy then cx = vector(cx,cy) end
 	self._polygon:rotate(angle,cx)
 	for _,p in ipairs(self._shapes) do
@@ -218,7 +227,7 @@ function CircleShape:draw(mode, segments)
 	love.graphics.circle(mode, self._center.x, self._center.y, self._radius, segments)
 end
 
-function CircleShape:centroid()
+function CircleShape:center()
 	return self._center:unpack()
 end
 
@@ -235,13 +244,13 @@ function CircleShape:rotate(angle, cx,cy)
 end
 
 function CircleShape:projectOn(axis)
-	-- v:projectOn(a) * a = v * a (see PolygonShape)
+	-- v:projectOn(a) * a = v * a (see ConvexPolygonShape)
 	-- therefore: (c +- a*r) * a = c*a +- |a|^2 * r
 	local center = self._center * axis
 	local shift = self._radius * axis:len2()
 	return center - shift, center + shift
 end
 
-function CircleShape:centroid()
+function CircleShape:center()
 	return self._center:unpack()
 end
