@@ -13,7 +13,8 @@ body {
 }
 ul#nav { margin-top: 0; float:right;display:inline; margin-left: 0; padding-left: 0; }
 ul#nav li { display:inline; margin-right: 1em; }
-a { color: #080303; }
+a { color: #203050; text-decoration: none; font-weight: bold;}
+a:hover { color: #506080; text-decoration: none; font-weight: bold;}
 
 a.top {
 	font-size: 8pt;
@@ -70,7 +71,7 @@ h2 {
 	font-weight: bold;
 }
 
-.preamble, .function, .class, .module > .name {
+.overview, .preamble, .function, .class, .module > .name {
 	border: 1px solid #aaa;
 	border-radius: 5px; -moz-border-radius: 5px;
 	padding: .2em .5em;
@@ -87,7 +88,14 @@ h2 {
 
 .preamble {
 	margin-top: -1em;
+}
+
+.overview {
 	margin-bottom: 2em;
+}
+.overview h3 {
+	margin: 0;
+	color: #405070;
 }
 
 dl {
@@ -96,7 +104,7 @@ dl {
 }
 dt {
 	font-family: sans-serif;
-	color: #444;
+	color: #666;
 }
 dt code {
 	font-size: 12pt;
@@ -104,6 +112,19 @@ dt code {
 }
 dd {
 	font-weight: normal;
+}
+
+.overview dt {
+	display: inline-block;
+	float: left;
+	width: 30%;
+	font-family: sans-serif;
+	font-weight: bold;
+	color: #666;
+}
+.overview dd {
+	display: block;
+	margin: .2em 0;
 }
 
 pre {
@@ -162,8 +183,28 @@ pre code .function {
 		<p>To get a less boring explanation on how to use this, see the tutorial (once it's there).</p>
 	</div>
 
+	<div class="overview">
+		<h3>Module overview</h3>
+		<dl>
+			<dt><a href="#init-init">init()</a></dt>
+			<dd>Initialize module.</dd>
+			<dt><a href="#init-setCallbacks">setCallbacks()</a></dt>
+			<dd>Set callback functions.</dd>
+			<dt><a href="#init-update">update()</a></dt>
+			<dd>Update collision detection.</dd>
+			<dt><a href="#init-addPolygon">addPolygon()</a></dt>
+			<dd>Add polygon to the scene.</dd>
+			<dt><a href="#init-addRectangle">addRectangle()</a></dt>
+			<dd>Add rectangle to the scene.</dd>
+			<dt><a href="#init-addCircle">addCircle()</a></dt>
+			<dd>Add circle to the scene.</dd>
+			<dt><a href="#remove">remove()</a></dt>
+			<dd>Remove shape from scene.</dd>
+		</dl>
+	</div>
+
 	<a name="init-init"></a>
-	<div id="init" class="function">
+	<div id="init-init" class="function">
 		<div class="definition">function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#init">^ top</a></div>
 		<p>Initializes the library. Call this in love.load(). All the parameters can be omitted.</p>
 		<div class="arguments">Parameters:
@@ -249,11 +290,40 @@ end</code></pre>
 		</div>
 	</div>
 
+	<a name="init-update"></a>
+	<div id="update" class="function">
+		<div class="definition">function <span class="name">update</span><span class="arglist">(dt, max_delta)</span><a class="top" href="#init">^ top</a></div>
+		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
+		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
+		not bigger than this maximum and the scene is updated for each time slice.</p>
+		<p>Note that the delta time has no effect on the collision detection itself, but
+		will be passed to the callback functions.</p>
+		
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>number <code>dt</code></dt>
+				<dd>The time since the last update.</dd>
+				<dt>number <code>max_delta</code></dt>
+				<dd>Maximum time delta (see description).</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">function love.update(dt)
+    hardoncollider.update(dt, .02)
+end</code></pre>
+		</div>
+	</div>
+
 	<a name="init-addPolygon"></a>
 	<div id="addPolygon" class="function">
 		<div class="definition">function <span class="name">addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#init">^ top</a></div>
 		<p>Add a polygon to the collision detection system. Any non-intersection polygon will work, even convex polygons.</p>
-		<p>Note that if three consecutive points lie on a line, the middle point will be discarded. This means 
+		<p>Note that if three consecutive points lie on a line, the middle point will be discarded. This means
 		you cannot construct polygon shapes out of lines.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -318,35 +388,6 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-update"></a>
-	<div id="update" class="function">
-		<div class="definition">function <span class="name">update</span><span class="arglist">(dt, max_delta)</span><a class="top" href="#init">^ top</a></div>
-		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
-		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
-		not bigger than this maximum and the scene is updated for each time slice.</p>
-		<p>Note that the delta time has no effect on the collision detection itself, but
-		will be passed to the callback functions.</p>
-		
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>dt</code></dt>
-				<dd>The time since the last update.</dd>
-				<dt>number <code>max_delta</code></dt>
-				<dd>Maximum time delta (see description).</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">function love.update(dt)
-    hardoncollider.update(dt, .02)
-end</code></pre>
-		</div>
-	</div>
-
 	<a name="init-remove"></a>
 	<div id="remove" class="function">
 		<div class="definition">function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#init">^ top</a></div>
@@ -385,10 +426,31 @@ end</code></pre>
 		classes to test for colliding shapes.</p>
 		<p>They might also be useful for doing GUI stuff, e.g. when testing if the
 		mouse hovers a button.</p>
-		<p>Some functions (<code>getAxes</code>, <code>projectOn</code>, ...) are left
+		<p>Some functions (<code>getAxes</code>, <code>projectOn</code>) are left
 		undocumented, as they have little value outside the scope of collision detection.</p>
 	</div>
 
+	<div class="overview">
+	<h3>Module overview</h3>
+		<dl>
+			<dt><a href="#shape-PolygonShape">PolygonShape</a></dt>
+			<dd>A polygon shape.</dd>
+			<dt><a href="#shape-CircleShape">CircleShape</a></dt>
+			<dd>A circle shape.</dd>
+			<dt><a href="#shape-shape:move">shape:move()</a></dt>
+			<dd>Move the shape.</dd>
+			<dt><a href="#shape-shape:rotate">shape:rotate()</a></dt>
+			<dd>Rotate the shape.</dd>
+			<dt><a href="#shape-shape:center">shape:center()</a></dt>
+			<dd>Get the shape's center.</dd>
+			<dt><a href="#shape-shape:draw">shape:draw()</a></dt>
+			<dd>Draw the shape.</dd>
+			<dt><a href="#shape-shape:collidesWith">shape:collidesWith()</a></dt>
+			<dd>Test for collision.</dd>
+		</dl>
+	</div>
+
+	<a name="shape-PolygonShape"></a>
 	<div id="PolygonShape" class="class">
 		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shape">^ top</a></div>
 		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(polygon)</span></div>
@@ -399,7 +461,7 @@ end</code></pre>
 				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
 				<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd>
 				<dt>Polygon <code>polygon</code></dt>
-				<dd>Construct the shape from this convex polygon.</dd>
+				<dd>Construct the shape from this polygon.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -409,10 +471,11 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">shape = PolygonShape( Polygon(100,100, 200,200, 300,100) )</code></pre>
+			<pre><code class="lua">shape = PolygonShape(100,100, 200,200, 300,100)</code></pre>
 		</div>
 	</div>
 
+	<a name="shape-CircleShape"></a>
 	<div id="CircleShape" class="class">
 		<div class="constructor">class <span class="name">CircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shape">^ top</a></div>
 		<p>Construct a circular shape.</p>
@@ -555,6 +618,33 @@ end</code></pre>
 		<p>On it's own, this class does not offer any collision detection. If you want that, use a PolygonShape instead.</p>
 	</div>
 
+	<div class="overview">
+	<h3>Module overview</h3>
+		<dl>
+			<dt><a href="#polygon-Polygon">Polygon</a></dt>
+			<dd>The polygon class.</dd>
+			<dt><a href="#polygon-polygon:unpack">polygon:unpack()</a></dt>
+			<dd>Get coordinates.</dd>
+			<dt><a href="#polygon-polygon:clone">polygon:clone()</a></dt>
+			<dd>Copy polygon.</dd>
+			<dt><a href="#polygon-polygon:getBBox">polygon:getBBox()</a></dt>
+			<dd>Get bounding box.</dd>
+			<dt><a href="#polygon-polygon:isConvex">polygon:isConvex()</a></dt>
+			<dd>Test if polygon is convex.</dd>
+			<dt><a href="#polygon-polygon:move">polygon:move()</a></dt>
+			<dd>Move polygon.</dd>
+			<dt><a href="#polygon-polygon:rotate">polygon:rotate()</a></dt>
+			<dd>Rotate polygon.</dd>
+			<dt><a href="#polygon-polygon:triangulate">polygon:triangulate()</a></dt>
+			<dd>Split polygon in triangles.</dd>
+			<dt><a href="#polygon-polygon:splitConvex">polygon:splitConvex()</a></dt>
+			<dd>Split polygon into convex polygons.</dd>
+			<dt><a href="#polygon-polygon:mergedWith">polygon:mergedWith()</a></dt>
+			<dd>Merge polygon with other polygon.</dd>
+		</dl>
+	</div>
+
+	<a name="polygon-Polygon"></a>
 	<div id="name" class="class">
 		<div class="constructor">class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#polygon">^ top</a></div>
 		<p>Construct a polygon.</p>
@@ -577,9 +667,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:unpack"></a>
-	<div id="Polygon:unpack" class="function">
-		<div class="definition">function <span class="name">Polygon:unpack</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<a name="polygon-polygon:unpack"></a>
+	<div id="polygon:unpack" class="function">
+		<div class="definition">function <span class="name">polygon:unpack</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
 		<p>Get the polygon's vertices. Useful for drawing with <code>love.graphics.polygon()</code>.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -597,9 +687,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:clone"></a>
-	<div id="Polygon:clone" class="function">
-		<div class="definition">function <span class="name">Polygon:clone</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<a name="polygon-polygon:clone"></a>
+	<div id="polygon:clone" class="function">
+		<div class="definition">function <span class="name">polygon:clone</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
 		<p>Get a copy of the polygon.</p>
 		<p>Since Lua uses references when simply assigning an existing polygon to a variable, unexpected things can happen when
 		operating on the variable. Consider this code:</p>
@@ -625,9 +715,9 @@ copy:move(10,20)</code></pre>
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:getBBox"></a>
-	<div id="Polygon:getBBox" class="function">
-		<div class="definition">function <span class="name">Polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<a name="polygon-polygon:getBBox"></a>
+	<div id="polygon:getBBox" class="function">
+		<div class="definition">function <span class="name">polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
 		<p>Get axis aligned bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -649,9 +739,9 @@ love.graphics.rectangle('line', x1,y2, x2-x1, y2-y1)</code></pre>
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:isConvex"></a>
-	<div id="Polygon:isConvex" class="function">
-		<div class="definition">function <span class="name">Polygon:isConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<a name="polygon-polygon:isConvex"></a>
+	<div id="polygon:isConvex" class="function">
+		<div class="definition">function <span class="name">polygon:isConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
 		<p>Test if a polygon is convex, i.e. a line line between any two points inside the polygon will lie in the interior of the polygon.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -674,10 +764,10 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:move"></a>
-	<div id="Polygon:move" class="function">
-		<div class="definition">function <span class="name">Polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#polygon">^ top</a></div>
-		<div class="definition">function <span class="name">Polygon:move</span><span class="arglist">(direction)</span></div>
+	<a name="polygon-polygon:move"></a>
+	<div id="polygon:move" class="function">
+		<div class="definition">function <span class="name">polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#polygon">^ top</a></div>
+		<div class="definition">function <span class="name">polygon:move</span><span class="arglist">(direction)</span></div>
 		<p>Move a polygon in a direction. You can either use coordinates (<code>x, y</code>) or a <a href="http://vrld.github.com/hump/#vector.lua">hump vector</a>.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -697,11 +787,11 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:rotate"></a>
-	<div id="Polygon:rotate" class="function">
-		<div class="definition">function <span class="name">Polygon:rotate</span><span class="arglist">(angle)</span><a class="top" href="#polygon">^ top</a></div>
-		<div class="definition">function <span class="name">Polygon:rotate</span><span class="arglist">(angle, cx, cy)</span></div>
-		<div class="definition">function <span class="name">Polygon:rotate</span><span class="arglist">(angle, center)</span></div>
+	<a name="polygon-polygon:rotate"></a>
+	<div id="polygon:rotate" class="function">
+		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle)</span><a class="top" href="#polygon">^ top</a></div>
+		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle, cx, cy)</span></div>
+		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle, center)</span></div>
 		<p>Rotate the polygon. You can define a rotation center. If it is omitted, the polygon will be rotated around it's centroid.</p>
 		<p>For defining a rotation center, you can either use coordinate form (<code>cx, cy</code>) or a <a href="http://vrld.github.com/hump/#vector.lua">hump vector</a>.</p>
 		<div class="arguments">Parameters:
@@ -725,9 +815,9 @@ p2:rotate(math.pi/4, 100,100) -- rotate p2 by 45&deg; around the point 100,100</
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:triangulate"></a>
-	<div id="Polygon:triangulate" class="function">
-		<div class="definition">function <span class="name">Polygon:triangulate</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<a name="polygon-polygon:triangulate"></a>
+	<div id="polygon:triangulate" class="function">
+		<div class="definition">function <span class="name">polygon:triangulate</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
 		<p>Split the polygon into triangles.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -748,31 +838,9 @@ end	</code></pre>
 		</div>
 	</div>
 
-	<a name="polygon-Polygon:mergedWith"></a>
-	<div id="Polygon:mergedWith" class="function">
-		<div class="definition">function <span class="name">Polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#polygon">^ top</a></div>
-		<p>Create a merged polygon of two polygons if, and only if the two polygons share one edge. If the polygons share more than one edge, the result may be erroneous.</p>
-		<p>This function does not change either polygon, but rather create a new one.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>Polygon <code>other</code></dt>
-				<dd>The polygon to merge with.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Polygon <code>merged</code></dt>
-				<dd>The merged polygon, or <code>nil</code> if the two polygons don't share an edge.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">merged = p1:mergedWith(p2)</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-Polygon:splitConvex"></a>
-	<div id="Polygon:splitConvex" class="function">
-		<div class="definition">function <span class="name">Polygon:splitConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<a name="polygon-polygon:splitConvex"></a>
+	<div id="polygon:splitConvex" class="function">
+		<div class="definition">function <span class="name">polygon:splitConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
 		<p>Split the polygon into convex sub polygons.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -794,8 +862,30 @@ function love.draw()
 end</code></pre>
 		</div>
 	</div>
-</div>
 
+	<a name="polygon-polygon:mergedWith"></a>
+	<div id="polygon:mergedWith" class="function">
+		<div class="definition">function <span class="name">polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#polygon">^ top</a></div>
+		<p>Create a merged polygon of two polygons if, and only if the two polygons share one edge. If the polygons share more than one edge, the result may be erroneous.</p>
+		<p>This function does not change either polygon, but rather create a new one.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>Polygon <code>other</code></dt>
+				<dd>The polygon to merge with.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Polygon <code>merged</code></dt>
+				<dd>The merged polygon, or <code>nil</code> if the two polygons don't share an edge.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">merged = p1:mergedWith(p2)</code></pre>
+		</div>
+	</div>
+
+</div>
 
 
 <a name="spatialhash"></a>
@@ -807,63 +897,39 @@ end</code></pre>
 	</div>
 <!--TODO:
 
-	<div id="name" class="class">
+	<div class="overview">
+	<h3>Module overview</h3>
+		<dl>
+			<dt><a href="#spatialhash-Spatialhash">Spatialhash()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-cell_meta.__newindex">cell_meta.__newindex()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-cell_meta.__index">cell_meta.__index()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-Spatialhash:cellCoords">Spatialhash:cellCoords()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-Spatialhash:cell">Spatialhash:cell()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-Spatialhash:insert">Spatialhash:insert()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-Spatialhash:remove">Spatialhash:remove()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-Spatialhash:update">Spatialhash:update()</a></dt>
+			<dd>Short description</dd>
+			<dt><a href="#spatialhash-Spatialhash:getNeighbors">Spatialhash:getNeighbors()</a></dt>
+			<dd>Short description</dd>
+		</dl>
+	</div>
+
+	<a name="spatialhash-Spatialhash"></a>
+	<div id="Spatialhash" class="class">
 		<div class="constructor"><span class="name">Spatialhash</span><span class="arglist">(cell_size)</span><a class="top" href="#spatialhash">^ top</a></div>
 		<p>
 		<h5 style="color:red;">Description here</h5>
 		</p>
-	</div>
-
-	<a name="spatialhash-cell_meta.__newindex"></a>
-	<div id="cell_meta.__newindex" class="function">
-		<div class="definition">function <span class="name">cell_meta.__newindex</span><span class="arglist">(tbl, key, val)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>tbl</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>key</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>val</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
-		</div>
-	</div>
-
-	<a name="spatialhash-cell_meta.__index"></a>
-	<div id="cell_meta.__index" class="function">
-		<div class="definition">function <span class="name">cell_meta.__index</span><span class="arglist">(tbl, key)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>[type] <code>tbl</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>key</code></dt>
+				<dt>[type] <code>cell_size</code></dt>
 				<dd>
 				<h5 style="color:red;">Description here</h5>
 				</dd>

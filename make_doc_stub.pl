@@ -56,7 +56,13 @@ for (@ARGV) {
 <a name="$module"></a>
 <div id="$module" class="module">
 	<div class="name">hardoncollider.$module<a class="top" href="#top">^ top</a></div>
+	<div class="preamble">
+		<h5 style="color: ref;">Description here</h5>
+	</div>
 
+	<div class="overview">
+	<h3>Module overview</h3>
+		<dl>
 EOCHUNK
 	push @html, $html_chunk;
 
@@ -65,12 +71,75 @@ EOCHUNK
 		if (m/(\S+).+function\(self,\s+([^\)]*)\)/) {
 			($name, $arglist) = ($1,$2);
 		}
+		my @arguments = split /,\s*/, $arglist;
+
 		$html_chunk = <<EOCHUNK;
-	<div id="name" class="class">
-		<div class="constructor"><span class="name">$name</span><span class="arglist">($arglist)</arglist><a class="top" href="#$module">^ top</a></div>
+			<dt>class<a href="#$module-$name">$name()</a></dt>
+			<dd>Short description</dd>
+EOCHUNK
+		push @html, $html_chunk;
+	}
+
+	for (@{$info{functions}}) {
+		my ($name, $arglist);
+		if (m/^function\s+(\S+)\(([^\)]*)\)$/) {
+			($name, $arglist) = ($1, $2);
+		}
+		$html_chunk = <<EOCHUNK;
+			<dt>function <a href="#$module-$name">$name()</a></dt>
+			<dd>Short description</dd>
+EOCHUNK
+		push @html, $html_chunk;
+	}
+	$html_chunk = <<EOCHUNK;
+		</dl>
+	</div>
+EOCHUNK
+	push @html, $html_chunk;
+
+	for (@{$info{classes}}) {
+		my ($name, $arglist);
+		if (m/(\S+).+function\(self,\s+([^\)]*)\)/) {
+			($name, $arglist) = ($1,$2);
+		}
+		my @arguments = split /,\s*/, $arglist;
+
+		$html_chunk = <<EOCHUNK;
+	<a name="$module-$name"></a>
+	<div id="$name" class="class">
+		<div class="constructor"><span class="name">$name</span><span class="arglist">($arglist)</span><a class="top" href="#$module">^ top</a></div>
 		<p>
 		<h5 style="color:red;">Description here</h5>
 		</p>
+		<div class="arguments">Parameters:
+			<dl>
+EOCHUNK
+		push @html, $html_chunk;
+		for my $arg (@arguments) {
+			$html_chunk = <<EOCHUNK;
+				<dt>[type] <code>$arg</code></dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+EOCHUNK
+			push @html, $html_chunk;
+		}
+		$html_chunk = <<EOCHUNK;
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>[type] </dt>
+				<dd>
+				<h5 style="color:red;">Description here</h5>
+				</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+				Example code
+			</code></pre>
+		</div>
 	</div>
 
 EOCHUNK
