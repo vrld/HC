@@ -89,6 +89,8 @@ function PolygonShape(polygon, ...)
 	-- create from coordinates if needed
 	if type(polygon) == "number" then
 		polygon = Polygon(polygon, ...)
+	else
+		polygon = polygon:clone()
 	end
 
 	if polygon:isConvex() then
