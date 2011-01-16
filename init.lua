@@ -71,15 +71,9 @@ end
 -- create polygon shape and add it to internal structures
 function addPolygon(...)
 	assert(is_initialized, "Not properly initialized!")
-	local poly = Polygon(...)
-	local shape
-	if not poly:isConvex() then
-		shape = CompoundShape( poly, poly:splitConvex() )
-	else
-		shape = PolygonShape( poly )
-	end
+	local shape = PolygonShape(...)
 
-	-- replace shape member function with a function that also updates
+	-- replace shape member function with a function that updates
 	-- the hash
 	local function hash_aware_member(oldfunc)
 		return function(self, ...)
@@ -92,12 +86,21 @@ function addPolygon(...)
 	shape.move = hash_aware_member(shape.move)
 	shape.rotate = hash_aware_member(shape.rotate)
 
-	local x1,y1, x2,y2 = poly:getBBox()
+	function shape:getNeighbors()
+		local x1,y1, x2,y2 = self._polygon:getBBox()
+		return hash:getNeighbors(self, vector(x1,y1), vector(x2,y2))
+	end
+	function shape:remove()
+		local x1,y1, x2,y2 = self._polygon:getBBox()
+		hash:remove(shape, vector(x1,y1), vector(x2,y2))
+	end
+
+	local x1,y1, x2,y2 = shape._polygon:getBBox()
 	return new_shape(shape, vector(x1,y1), vector(x2,y2))
 end
 
 function addRectangle(x,y,w,h)
-	return polygon(x,y, x+w,y, x+w,y+h, x,y+h)
+	return addPolygon(x,y, x+w,y, x+w,y+h, x,y+h)
 end
 
 -- create new polygon approximation of a circle
@@ -115,6 +118,14 @@ function addCircle(cx, cy, radius)
 	end
 	shape.move = hash_aware_member(shape.move)
 	shape.rotate = hash_aware_member(shape.rotate)
+	function shape:getNeighbors()
+		local c,r = self._center, vector(self._radius, self._radius)
+		return hash:getNeighbors(self, c-r, c+r)
+	end
+	function shape:remove()
+		local c,r = self._center, vector(self._radius, self._radius)
+		hash:remove(self, c-r, c+r)
+	end
 
 	local c,r = shape._center, vector(radius,radius)
 	return new_shape(shape, c-r, c+r)
@@ -148,23 +159,15 @@ function update(dt, min_step)
 	end
 	-- collect colliding shapes
 	local tested, colliding = {}, {}
-	for _,s in pairs(shapes) do
-		local neighbors
-		if s._type == Shape.CIRCLE then
-			local c,r = s._center, vector(s._radius, s._radius)
-			neighbors = hash:getNeighbors(s, c-r, c+r)
-		else
-			local x1,y1, x2,y2 = s._polygon:getBBox()
-			neighbors = hash:getNeighbors(s, vector(x1,y1), vector(x2,y2))
-		end
-
-		for _,t in ipairs(neighbors) do
+	for _,shape in pairs(shapes) do
+		local neighbors = shape:getNeighbors()
+		for _,other in ipairs(neighbors) do
 			-- check if shapes have already been tested for collision
-			local id = collision_id(s,t)
+			local id = collision_id(shape,other)
 			if not tested[id] then
-				local collide, sep = s:collidesWith(t)
+				local collide, sep = shape:collidesWith(other)
 				if collide then
-					colliding[id] = {s, t, sep.x, sep.y}
+					colliding[id] = {shape, other, sep.x, sep.y}
 				end
 				tested[id] = true
 			end
@@ -195,17 +198,5 @@ function remove(shape)
 	local id = shape_ids[shape]
 	shapes[id] = nil
 	shape_ids[shape] = nil
-	if shape.type == Shape.CIRCLE then
-		local c,r = shape._center, vector(shape._radius, shape._radius)
-		hash:remove(shape, c-r, c+r)
-	else
-		local x1,y1, x2,y2 = poly:getBBox()
-		hash:remove(shape, vector(x1,y1), vector(x2,y2))
-	end
-
-	for id,info in pairs(colliding_last_frame) do
-		if info[1] == shape or info[2] == shape then
-			colliding_last_frame[id] = nil
-		end
-	end
+	shape:remove()
 end
