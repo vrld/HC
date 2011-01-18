@@ -35,7 +35,7 @@ local vector = vector.new
 local is_initialized = false
 hash = nil
 
-local shapes = {}
+local shapes, ghosts = {}, {}
 local shape_ids = {}
 local groups = {}
 
@@ -65,6 +65,7 @@ local function new_shape(shape, ul,lr)
 	shapes[#shapes+1] = shape
 	shape_ids[shape] = #shapes
 	hash:insert(shape, ul,lr)
+	shape._groups = {}
 	return shape
 end
 
@@ -86,11 +87,11 @@ function addPolygon(...)
 	shape.move = hash_aware_member(shape.move)
 	shape.rotate = hash_aware_member(shape.rotate)
 
-	function shape:getNeighbors()
+	function shape:_getNeighbors()
 		local x1,y1, x2,y2 = self._polygon:getBBox()
 		return hash:getNeighbors(self, vector(x1,y1), vector(x2,y2))
 	end
-	function shape:remove()
+	function shape:_removeFromHash()
 		local x1,y1, x2,y2 = self._polygon:getBBox()
 		hash:remove(shape, vector(x1,y1), vector(x2,y2))
 	end
@@ -118,11 +119,11 @@ function addCircle(cx, cy, radius)
 	end
 	shape.move = hash_aware_member(shape.move)
 	shape.rotate = hash_aware_member(shape.rotate)
-	function shape:getNeighbors()
+	function shape:_getNeighbors()
 		local c,r = self._center, vector(self._radius, self._radius)
 		return hash:getNeighbors(self, c-r, c+r)
 	end
-	function shape:remove()
+	function shape:_removeFromHash()
 		local c,r = self._center, vector(self._radius, self._radius)
 		hash:remove(self, c-r, c+r)
 	end
@@ -137,6 +138,13 @@ local function collision_id(s,t)
 	local i,k = shape_ids[s], shape_ids[t]
 	if i < k then i,k = k,i end
 	return string.format("%d,%d", i,k)
+end
+
+local function share_group(shape, other)
+	for name,group in pairs(shape._groups) do
+		if group[other] then return true end
+	end
+	return false
 end
 
 -- update with a minimum time step
@@ -160,16 +168,17 @@ function update(dt, min_step)
 	-- collect colliding shapes
 	local tested, colliding = {}, {}
 	for _,shape in pairs(shapes) do
-		local neighbors = shape:getNeighbors()
+		local neighbors = shape:_getNeighbors()
 		for _,other in ipairs(neighbors) do
-			-- check if shapes have already been tested for collision
 			local id = collision_id(shape,other)
 			if not tested[id] then
-				local collide, sep = shape:collidesWith(other)
-				if collide then
-					colliding[id] = {shape, other, sep.x, sep.y}
+				if not (other._ghost or share_group(shape, other)) then
+					local collide, sep = shape:collidesWith(other)
+					if collide then
+						colliding[id] = {shape, other, sep.x, sep.y}
+					end
+					tested[id] = true
 				end
-				tested[id] = true
 			end
 		end
 	end
@@ -197,6 +206,41 @@ end
 function remove(shape)
 	local id = shape_ids[shape]
 	shapes[id] = nil
+	ghosts[id] = nil
 	shape_ids[shape] = nil
-	shape:remove()
+	shape:_removeFromHash()
+end
+
+-- group support
+function addToGroup(group, shape, ...)
+	if not shape then return end
+	if not groups[group] then groups[group] = {} end
+	groups[group][shape] = true
+	shape._groups[group] = groups[group]
+	return addToGroup(group, ...)
+end
+
+function removeFromGroup(group, shape, ...)
+	if not shape or not groups[group] then return end
+	groups[group][shape] = nil
+	shape._groups[group] = nil
+	return removeFromGroup(group, ...)
+end
+
+function setGhost(shape, ...)
+	if not shape then return end
+	local id = shape_ids[shape]
+	shapes[id] = nil
+	ghosts[id] = shape
+	shape._ghost = true
+	return setGhost(...)
+end
+
+function setSolid(shape, ...)
+	if not shape then return end
+	local id = shape_ids[shape]
+	ghosts[id] = nil
+	shapes[id] = shape
+	shape._ghost = nil
+	return setSolid(...)
 end
