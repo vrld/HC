@@ -24,11 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _PATH = (...):gsub("polygon$", "")
-local Class = require(_PATH .. 'class')
-local vector = require(_PATH .. 'vector')
-Class = Class.new
-vector = vector.new
+module(..., package.seeall)
+local Class = require(_PACKAGE .. 'class')
+local vector = require(_PACKAGE .. 'vector')
 
 ----------------------------
 -- Private helper functions
@@ -315,4 +313,10 @@ function Polygon:splitConvex()
 	until i >= #convex
 	
 	return convex
+end
+
+-- module() as shortcut to module.Polygon()
+do
+	local m = getmetatable(_M)
+	m.__call = function(_, ...) return Polygon(...) end
 end

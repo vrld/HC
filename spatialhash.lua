@@ -24,11 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _PATH = (...):gsub("spatialhash$", "")
-local Class = require(_PATH .. 'class')
-local vector = require(_PATH .. 'vector')
-Class = Class.new
-vector = vector.new
+module(..., package.seeall)
+local Class = require(_PACKAGE .. 'class')
+local vector = require(_PACKAGE .. 'vector')
 
 -- special cell accesor metamethods, so vectors are converted
 -- to a string before using as keys
@@ -128,4 +126,10 @@ function Spatialhash:getNeighbors(obj, ul, lr)
 	end
 	for other,_ in pairs(set) do items[#items+1] = other end
 	return items
+end
+
+-- module() as shortcut to module.Spatialhash()
+do
+	local m = getmetatable(_M)
+	m.__call = function(_, ...) return Spatialhash(...) end
 end

@@ -24,13 +24,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _PATH = (...):gsub("(%.?)init$", "%1")
 module(..., package.seeall)
-require(_PATH .. '.shape')
-require(_PATH .. '.polygon')
-require(_PATH .. '.spatialhash')
-require(_PATH .. '.vector')
-local vector = vector.new
+require(_NAME .. '.shape')
+require(_NAME .. '.polygon')
+require(_NAME .. '.spatialhash')
+require(_NAME .. '.vector')
+
+local PolygonShape = shape.PolygonShape
+local CircleShape  = shape.CircleShape
 
 local is_initialized = false
 hash = nil
@@ -47,7 +48,7 @@ function init(cell_size, callback_start, callback_persist, callback_stop)
 	cb_start   = callback_start   or __NULL
 	cb_persist = callback_persist or __NULL
 	cb_stop    = callback_stop    or __NULL
-	hash = Spatialhash(cell_size)
+	hash = spatialhash(cell_size)
 	is_initialized = true
 end
 
