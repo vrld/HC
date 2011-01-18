@@ -25,41 +25,42 @@
 <div id="header">
 	<h1>Hardon Collider <span class="small">Collision detection for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
 	<ul id="nav">
-		<li><a href="#init">Main Module</a></li>
-		<li><a href="#shape">Shapes</a></li>
+		<li><a href="#hardoncollider">Main Module</a></li>
+		<li><a href="#shapes">Shapes</a></li>
 		<li><a href="#polygon">Polygon</a></li>
 		<li><a href="#spatialhash">Spatial Hash</a></li>
 	</ul>
 	<h2>Reference pages</h2>
 </div>
 
-<a name="init"></a>
+<a name="hardoncollider"></a>
 <div id="hardoncollider" class="module">
 	<div class="name">hardoncollider<a class="top" href="#top">^ top</a></div>
 	<div class="preamble">
+		<pre><code class="lua">require "hardoncollider"</code></pre>
 		<p>The main module.</p>
 		<p>HardonCollider will automatically handle - but not resolve - collisions.
 		It uses search data structure - a spatial hash - to quickly find colliding shapes.</p>
 		<p>A spatial hash is simply a grid that is laid over the whole scene in which a shape can occupy
 		several cells. To find shapes that may be colliding, you simply need to look which shapes occupy
-		the same cell. You can specify the cell size in the <code>init</code> function.</p>
+		the same cell. You can specify the cell size in the <a href="#hardoncollider-init"><code>init()</code></a> function.</p>
 		<p>To get a less boring explanation on how to use this, see the tutorial (once it's there).</p>
 	</div>
 
 	<div class="overview">
 		<h3>Module overview</h3>
 		<dl>
-			<dt><a href="#init-init">init()</a></dt>
+			<dt><a href="#hardoncollider-init">init()</a></dt>
 			<dd>Initialize module.</dd>
-			<dt><a href="#init-setCallbacks">setCallbacks()</a></dt>
+			<dt><a href="#hardoncollider-setCallbacks">setCallbacks()</a></dt>
 			<dd>Set callback functions.</dd>
-			<dt><a href="#init-update">update()</a></dt>
+			<dt><a href="#hardoncollider-update">update()</a></dt>
 			<dd>Update collision detection.</dd>
-			<dt><a href="#init-addPolygon">addPolygon()</a></dt>
+			<dt><a href="#hardoncollider-addPolygon">addPolygon()</a></dt>
 			<dd>Add polygon to the scene.</dd>
-			<dt><a href="#init-addRectangle">addRectangle()</a></dt>
+			<dt><a href="#hardoncollider-addRectangle">addRectangle()</a></dt>
 			<dd>Add rectangle to the scene.</dd>
-			<dt><a href="#init-addCircle">addCircle()</a></dt>
+			<dt><a href="#hardoncollider-addCircle">addCircle()</a></dt>
 			<dd>Add circle to the scene.</dd>
 			<dt><a href="#remove">remove()</a></dt>
 			<dd>Remove shape from scene.</dd>
@@ -74,10 +75,10 @@
 		</dl>
 	</div>
 
-	<a name="init-init"></a>
-	<div id="init-init" class="function">
-		<div class="definition">function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#init">^ top</a></div>
-		<p>Initializes the library. Call this in love.load(). All the parameters can be omitted.</p>
+	<a name="hardoncollider-init"></a>
+	<div id="hardoncollider-init" class="function">
+		<div class="definition">function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></div>
+		<p>Initializes the library. Call this in <code>love.load()</code>. All the parameters can be omitted.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>number <code>cell_size</code> (100)</dt>
@@ -102,9 +103,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-setCallbacks"></a>
+	<a name="hardoncollider-setCallbacks"></a>
 	<div id="setCallbacks" class="function">
-		<div class="definition">function <span class="name">setCallbacks</span><span class="arglist">(start,persist,stop)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">setCallbacks</span><span class="arglist">(start,persist,stop)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<div class="definition">function <span class="name">setCallbacks</span><span class="arglist">{start = start,persist = persist,stop = stop}</span></div>
 		<p>Sets the different callbacks. The second calling style let's you specify the callbacks by name, see the example.</p>
 		<p>If <code>nil</code> is passed as any callback, the callback will not be changed.</p>
@@ -147,7 +148,8 @@ function persist_two(dt, shape_one, shape_two, mtv_x, mtv_y)
     shape_one:move(mtv_x, mtv_y)
 end
 
-function stop(dt, shape_one, shape_two) -- ignore the translation vector
+-- ignore the translation vector
+function stop(dt, shape_one, shape_two)
     print('collision resolved')
 end
 
@@ -161,9 +163,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-update"></a>
+	<a name="hardoncollider-update"></a>
 	<div id="update" class="function">
-		<div class="definition">function <span class="name">update</span><span class="arglist">(dt, max_delta)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">update</span><span class="arglist">(dt, max_delta)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
 		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
 		not bigger than this maximum and the scene is updated for each time slice.</p>
@@ -190,9 +192,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-addPolygon"></a>
+	<a name="hardoncollider-addPolygon"></a>
 	<div id="addPolygon" class="function">
-		<div class="definition">function <span class="name">addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Add a polygon to the collision detection system. Any non-intersection polygon will work, even convex polygons.</p>
 		<p>Note that if three consecutive points lie on a line, the middle point will be discarded. This means
 		you cannot construct polygon shapes out of lines.</p>
@@ -204,7 +206,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt><a href="#shape">Shape</a></dt>
+				<dt><a href="#shapes">Shape</a></dt>
 				<dd>The polygon shape added to the scene.</dd>
 			</dl>
 		</div>
@@ -213,9 +215,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-addRectangle"></a>
+	<a name="hardoncollider-addRectangle"></a>
 	<div id="addRectangle" class="function">
-		<div class="definition">function <span class="name">addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Add a rectangle shape to the collision detection system.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -227,7 +229,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt><a href="#shape">Shape</a></dt>
+				<dt><a href="#shapes">Shape</a></dt>
 				<dd>The rectangle added to the scene.</dd>
 			</dl>
 		</div>
@@ -236,9 +238,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-addCircle"></a>
+	<a name="hardoncollider-addCircle"></a>
 	<div id="addCircle" class="function">
-		<div class="definition">function <span class="name">addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Add a circle shape to the collision detection system.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -250,7 +252,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt><a href="#shape">Shape</a></dt>
+				<dt><a href="#shapes">Shape</a></dt>
 				<dd>The circle added to the scene.</dd>
 			</dl>
 		</div>
@@ -259,9 +261,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-remove"></a>
+	<a name="hardoncollider-remove"></a>
 	<div id="remove" class="function">
-		<div class="definition">function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Remove a shape from the collision detection system. Note that if you remove a shape in
 		the <code>start</code> or <code>persist</code> callback, other shapes might still have
 		collided with it, so the shape will be argument to the other calls of <code>start</code>
@@ -269,7 +271,7 @@ end</code></pre>
 		in the next call to <code>update</code> for each shape which the removed shape collided with.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt><a href="#shape">Shape</a> <code>shape</code></dt>
+				<dt><a href="#shapes">Shape</a> <code>shape</code></dt>
 				<dd>The shape to be removed.</dd>
 			</dl>
 		</div>
@@ -283,17 +285,17 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-addToGroup"></a>
+	<a name="hardoncollider-addToGroup"></a>
 	<div id="addToGroup" class="function">
-		<div class="definition">function <span class="name">addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#init">^ top</a></div>
-		<p>Add shapes to a group. <a href="#shape">Shapes</a> in the same group will not collide with each other.</p>
+		<div class="definition">function <span class="name">addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
+		<p>Add shapes to a group. <a href="#shapes">Shapes</a> in the same group will not collide with each other.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>string <code>group</code></dt>
 				<dd>The name of the group where shapes should be added.</dd>
 			</dl>
 			<dl>
-				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
 				<dd>The shapes to be added to the group.</dd>
 			</dl>
 		</div>
@@ -307,9 +309,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-removeFromGroup"></a>
+	<a name="hardoncollider-removeFromGroup"></a>
 	<div id="removeFromGroup" class="function">
-		<div class="definition">function <span class="name">removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Remove shapes from a group.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -317,7 +319,7 @@ end</code></pre>
 				<dd>The name of the group where shapes should be added.</dd>
 			</dl>
 			<dl>
-				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
 				<dd>The shapes to be removed from the group.</dd>
 			</dl>
 		</div>
@@ -331,13 +333,13 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-setGhost"></a>
+	<a name="hardoncollider-setGhost"></a>
 	<div id="setGhost" class="function">
-		<div class="definition">function <span class="name">setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#init">^ top</a></div>
+		<div class="definition">function <span class="name">setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Makes a shape permeable. Ghost shapes will not collide with any other shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
 				<dd>The shapes to become permeable.</dd>
 			</dl>
 		</div>
@@ -353,13 +355,13 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="init-setSolid"></a>
+	<a name="hardoncollider-setSolid"></a>
 	<div id="setSolid" class="function">
-		<div class="definition">function <span class="name">setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#init">^ top</a></div>
-		<p>Makes a shape opaque. <a href="#shape">Shapes</a> that were ghosts before will be subject to collision again.</p>
+		<div class="definition">function <span class="name">setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
+		<p>Makes a shape opaque. <a href="#shapes">Shapes</a> that were ghosts before will be subject to collision again.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
 				<dd>The shapes to become opaque again.</dd>
 			</dl>
 		</div>
@@ -378,47 +380,52 @@ end</code></pre>
 </div>
 
 
-<a name="shape"></a>
-<div id="shape" class="module">
-	<div class="name">hardoncollider.shape<a class="top" href="#top">^ top</a></div>
+<a name="shapes"></a>
+<div id="shapes" class="module">
+	<div class="name">hardoncollider.shapes<a class="top" href="#top">^ top</a></div>
 
 	<div class="preamble">
+		<pre><code class="lua">shapes = require "hardoncollider.shapes"</code></pre>
 		<p>Shape classes with collision detection methods.</p>
 		<p>This defines methods to move, rotate and draw shapes created with <code>hardoncollider.add*</code>.</p>
+		<p>As each shape is at it's core a Lua table, you can attach values and add functions
+		to it. Be careful though not to use keys that name a function or start with an underscore,
+		e.g. <code>move</code> or <code>_groups</code>, since these are used internally. Everything
+		else is fine.</p>
 		<p>If you don't want to use the full blown module, you can still use these
-		classes to test for colliding shapes.</p>
-		<p>They might also be useful for doing GUI stuff, e.g. when testing if the
+		classes to test for colliding shapes.
+		They might also be useful for doing GUI stuff, e.g. when testing if the
 		mouse hovers a button.</p>
-		<p>Some functions (<code>getAxes</code>, <code>projectOn</code>) are left
+		<p>Some functions (<code>getAxes</code> and <code>projectOn</code>) are left
 		undocumented, as they have little value outside the scope of collision detection.</p>
 	</div>
 
 	<div class="overview">
 	<h3>Module overview</h3>
 		<dl>
-			<dt><a href="#shape-PolygonShape">PolygonShape</a></dt>
+			<dt><a href="#shapes-PolygonShape">shapes.PolygonShape</a></dt>
 			<dd>A polygon shape.</dd>
-			<dt><a href="#shape-CircleShape">CircleShape</a></dt>
+			<dt><a href="#shapes-CircleShape">shapes.CircleShape</a></dt>
 			<dd>A circle shape.</dd>
-			<dt><a href="#shape-shape:move">shape:move()</a></dt>
+			<dt><a href="#shapes-shape:move">shape:move()</a></dt>
 			<dd>Move the shape.</dd>
-			<dt><a href="#shape-shape:rotate">shape:rotate()</a></dt>
+			<dt><a href="#shapes-shape:rotate">shape:rotate()</a></dt>
 			<dd>Rotate the shape.</dd>
-			<dt><a href="#shape-shape:center">shape:center()</a></dt>
+			<dt><a href="#shapes-shape:center">shape:center()</a></dt>
 			<dd>Get the shape's center.</dd>
-			<dt><a href="#shape-shape:draw">shape:draw()</a></dt>
+			<dt><a href="#shapes-shape:draw">shape:draw()</a></dt>
 			<dd>Draw the shape.</dd>
-			<dt><a href="#shape-shape:collidesWith">shape:collidesWith()</a></dt>
+			<dt><a href="#shapes-shape:collidesWith">shape:collidesWith()</a></dt>
 			<dd>Test for collision.</dd>
 		</dl>
 	</div>
 
-	<a name="shape-PolygonShape"></a>
+	<a name="shapes-PolygonShape"></a>
 	<div id="PolygonShape" class="class">
-		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shape">^ top</a></div>
+		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shapes">^ top</a></div>
 		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(polygon)</span></div>
 		<p>Construct a shape using a non-intersecting ploygon.</p>
-		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the <a href="#polygon">Polygon</a> class.</p>
+		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the <a href="#polygon"><code>Polygon</code></a> class.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
@@ -429,18 +436,18 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt><a href="#shape">Shape</a></dt>
+				<dt><a href="#shapes">Shape</a></dt>
 				<dd>The constructed shape.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">shape = PolygonShape(100,100, 200,200, 300,100)</code></pre>
+			<pre><code class="lua">shape = shapes.PolygonShape(100,100, 200,200, 300,100)</code></pre>
 		</div>
 	</div>
 
-	<a name="shape-CircleShape"></a>
+	<a name="shapes-CircleShape"></a>
 	<div id="CircleShape" class="class">
-		<div class="constructor">class <span class="name">CircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shape">^ top</a></div>
+		<div class="constructor">class <span class="name">CircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shapes">^ top</a></div>
 		<p>Construct a circular shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -452,18 +459,18 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt><a href="#shape">Shape</a></dt>
+				<dt><a href="#shapes">Shape</a></dt>
 				<dd>The constructed circle shape.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">shape = CircleShape(400,300, 100)</code></pre>
+			<pre><code class="lua">shape = shapes.CircleShape(400,300, 100)</code></pre>
 		</div>
 	</div>
 
-	<a name="shape-shape:move"></a>
+	<a name="shapes-shape:move"></a>
 	<div id="shape:move" class="function">
-		<div class="definition">function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#shape">^ top</a></div>
+		<div class="definition">function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
 		<p>Move the shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -481,9 +488,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="shape-shape:rotate"></a>
+	<a name="shapes-shape:rotate"></a>
 	<div id="shape:rotate" class="function">
-		<div class="definition">function <span class="name">shape:rotate</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shape">^ top</a></div>
+		<div class="definition">function <span class="name">shape:rotate</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shapes">^ top</a></div>
 		<p>Rotate the shape. A rotation center can be specified. If no center is given, the
 		shape's center is used.</p>
 		<div class="arguments">Parameters:
@@ -504,9 +511,9 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="shape-shape:center"></a>
+	<a name="shapes-shape:center"></a>
 	<div id="shape:center" class="function">
-		<div class="definition">function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#shape">^ top</a></div>
+		<div class="definition">function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></div>
 		<p>Get the center of the shape.</p>
 		<p>If the shape is a CircleShape, this is the circle center, else it's the polygon's centroid.</p>
 		<div class="arguments">Parameters:
@@ -525,14 +532,14 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="shape-shape:draw"></a>
+	<a name="shapes-shape:draw"></a>
 	<div id="shape:draw" class="function">
-		<div class="definition">function <span class="name">shape:draw</span><span class="arglist">(mode)</span><a class="top" href="#shape">^ top</a></div>
+		<div class="definition">function <span class="name">shape:draw</span><span class="arglist">(mode)</span><a class="top" href="#shapes">^ top</a></div>
 		<p>Draw the shape either filled or as outline.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>DrawMode <code>mode</code></dt>
-				<dd>How to draw the shape. Either 'line' or 'fill'.</dd>
+				<dd>How to draw the shape. Either <code>'line'</code> or <code>'fill'</code>.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -545,13 +552,13 @@ end</code></pre>
 		</div>
 	</div>
 
-	<a name="shape-shape:collidesWith"></a>
+	<a name="shapes-shape:collidesWith"></a>
 	<div id="shape:collidesWith" class="function">
-		<div class="definition">function <span class="name">shape:collidesWith</span><span class="arglist">(other)</span><a class="top" href="#shape">^ top</a></div>
+		<div class="definition">function <span class="name">shape:collidesWith</span><span class="arglist">(other)</span><a class="top" href="#shapes">^ top</a></div>
 		<p>Test if two shapes collide.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt><a href="#shape">Shape</a> <code>other</code></dt>
+				<dt><a href="#shapes">Shape</a> <code>other</code></dt>
 				<dd>Test for collision with this shape.</dd>
 			</dl>
 		</div>
@@ -577,6 +584,7 @@ end</code></pre>
 <div id="polygon" class="module">
 	<div class="name">hardoncollider.polygon<a class="top" href="#top">^ top</a></div>
 	<div class="preamble">
+		<pre><code class="lua">polygon = require "hardoncollider.polygon"</code></pre>
 		<p>Definition of a Polygon class and implementation of some handy algorithms.</p>
 		<p>On it's own, this class does not offer any collision detection. If you want that, use a PolygonShape instead.</p>
 	</div>
@@ -626,7 +634,10 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">poly = Polygon(10,10, 40,50, 70,10, 40,30)</code></pre>
+			<pre><code class="lua">poly = polygon.Polygon(10,10, 40,50, 70,10, 40,30)</code></pre>
+			<p><code>polygon.Polygon</code> looks rather verbose - that is why you can actually
+			call the module like a function to create an instance of the <code>Polygon</code> class:</p>
+			<pre><code class="lua">poly = polygon(10,10, 40,50, 70,10, 40,30)</code></pre>
 		</div>
 	</div>
 
@@ -731,7 +742,7 @@ end</code></pre>
 	<div id="polygon:move" class="function">
 		<div class="definition">function <span class="name">polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#polygon">^ top</a></div>
 		<div class="definition">function <span class="name">polygon:move</span><span class="arglist">(direction)</span></div>
-		<p>Move a polygon in a direction. You can either use coordinates (<code>x, y</code>) or a <a href="http://vrld.github.com/hump/#vector.lua">hump vector</a>.</p>
+		<p>Move a polygon in a direction. You can either use coordinates <code>x,y</code> or a <a href="http://vrld.github.com/hump/#vector.lua">hump vector</a>.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>numbers <code>x, y</code></dt>
@@ -756,7 +767,7 @@ end</code></pre>
 		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle, cx, cy)</span></div>
 		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle, center)</span></div>
 		<p>Rotate the polygon. You can define a rotation center. If it is omitted, the polygon will be rotated around it's centroid.</p>
-		<p>For defining a rotation center, you can either use coordinate form (<code>cx, cy</code>) or a <a href="http://vrld.github.com/hump/#vector.lua">hump vector</a>.</p>
+		<p>For defining a rotation center, you can either use coordinate form <code>cx,cy</code> or a <a href="http://vrld.github.com/hump/#vector.lua">hump vector</a>.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>number <code>angle</code></dt>
@@ -773,7 +784,7 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">p1:rotate(math.pi/2) -- rotate p1 by 90&deg; around it's center
+			<pre><code class="lua">p1:rotate(math.pi/2)          -- rotate p1 by 90&deg; around it's center
 p2:rotate(math.pi/4, 100,100) -- rotate p2 by 45&deg; around the point 100,100</code></pre>
 		</div>
 	</div>
@@ -856,277 +867,219 @@ end</code></pre>
 	<div class="name">hardoncollider.spatialhash<a class="top" href="#top">^ top</a></div>
 
 	<div class="preamble">
-		<p>To be documented later.</p>
+		<pre><code class="lua">spatialhash = require "hardoncollider.spatialhash"</code></pre>
+		<p>A spatial hash implementation that supports scenes of arbitrary size.
+		The hash is sparse, which means that cells will only be created when needed.</p>
 	</div>
-<!--TODO:
 
 	<div class="overview">
 	<h3>Module overview</h3>
 		<dl>
-			<dt><a href="#spatialhash-Spatialhash">Spatialhash()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-cell_meta.__newindex">cell_meta.__newindex()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-cell_meta.__index">cell_meta.__index()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-Spatialhash:cellCoords">Spatialhash:cellCoords()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-Spatialhash:cell">Spatialhash:cell()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-Spatialhash:insert">Spatialhash:insert()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-Spatialhash:remove">Spatialhash:remove()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-Spatialhash:update">Spatialhash:update()</a></dt>
-			<dd>Short description</dd>
-			<dt><a href="#spatialhash-Spatialhash:getNeighbors">Spatialhash:getNeighbors()</a></dt>
-			<dd>Short description</dd>
+			<dt><a href="#spatialhash-Spatialhash">Spatialhash</a></dt>
+			<dd>Spatial hash class.</dd>
+			<dt><a href="#spatialhash-Spatialhash:cellCoords">hash:cellCoords()</a></dt>
+			<dd>Get cell coordinates of a given vector.</dd>
+			<dt><a href="#spatialhash-Spatialhash:cell">hash:cell()</a></dt>
+			<dd>Get cell for a given vector.</dd>
+			<dt><a href="#spatialhash-Spatialhash:insert">hash:insert()</a></dt>
+			<dd>Insert object.</dd>
+			<dt><a href="#spatialhash-Spatialhash:remove">hash:remove()</a></dt>
+			<dd>Remove object.</dd>
+			<dt><a href="#spatialhash-Spatialhash:update">hash:update()</a></dt>
+			<dd>Update object's position.</dd>
+			<dt><a href="#spatialhash-Spatialhash:getNeighbors">hash:getNeighbors()</a></dt>
+			<dd>Query neighbors of an object.</dd>
 		</dl>
 	</div>
 
 	<a name="spatialhash-Spatialhash"></a>
 	<div id="Spatialhash" class="class">
 		<div class="constructor"><span class="name">Spatialhash</span><span class="arglist">(cell_size)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
+		<p>Create a new spatial hash given a cell size.</p>
+		<p>Choosing a good cell size depends on your application. To get a decent speedup,
+		the average cell should not contain too many objects, nor should a single object
+		occupy too many cells. A good rule of thumb is to choose the cell size so that
+		the average object will occupy one cell only.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>cell_size</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>number <code>cell_size</code> (100)</dt>
+				<dd>Width and height of a cell.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>Spatialhash</dt>
+				<dd>A fresh object instance.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
+			<pre><code class="lua">hash = spatialhash.Spatialhash(150)</code></pre>
+			<p>As with <code><a href="#polygon-Polygon">Polygon()</a></code>, you can call the module as
+			a shortcut to the above:</p>
+			<pre><code class="lua">hash = spatialhash(150)</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:cellCoords"></a>
 	<div id="Spatialhash:cellCoords" class="function">
-		<div class="definition">function <span class="name">Spatialhash:cellCoords</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
+		<div class="definition">function <span class="name">hash:cellCoords</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>Get coordinates of a given value, i.e. the cell index in which a given
+		<a href="http://vrld.github.com/hump/#vector.lua">vector</a> would be placed.</p>
 		</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>v</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>v</code></dt>
+				<dd>The position to query.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a></dt>
+				<dd>Coordinates of the cell which would contain <code>v</code>.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
+			<pre><code class="lua">coords = hash:cellCoords(vector(love.mouse.getPosition()))</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:cell"></a>
 	<div id="Spatialhash:cell" class="function">
-		<div class="definition">function <span class="name">Spatialhash:cell</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
+		<div class="definition">function <span class="name">hash:cell</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>Get the cell a given <a href="http://vrld.github.com/hump/#vector.lua">vector</a> would be
+		placed in. This is an actual cell, not the index.</p>
+		<p>A cell is a table which's keys and value are the objects stored in the cell, i.e.:
+		<pre><code class="lua">cell = {
+    [obj1] = obj1,
+    [obj2] = obj2,
+    ...
+}</code></pre>
+		You can iterate over the objects in a cell using <code>pairs()</code>:
+		<pre><code class="lua">for object,_ in pairs(cell) do stuff(object) end</code></pre></p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>v</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>v</code></dt>
+				<dd>The position to query</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>table</dt>
+				<dd>Set of objects contained in the cell.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
+			<pre><code class="lua">cell = hash:cell(vector(love.mouse.getPosition()))</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:insert"></a>
 	<div id="Spatialhash:insert" class="function">
-		<div class="definition">function <span class="name">Spatialhash:insert</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
+		<div class="definition">function <span class="name">hash:insert</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>Insert an object into the hash using a given bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>obj</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>ul</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>lr</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>mixed <code>obj</code></dt>
+				<dd>Object to place in the hash. It can be of any type except <code>nil</code>.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>ul</code></dt>
+				<dd>Upper left corner of the bounding box.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>lr</code></dt>
+				<dd>Lower right corner of the bounding box.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>Nothing</dt>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
+			<pre><code class="lua">hash:insert(shape, vector(-100,-100), vector(0,-30))</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:remove"></a>
 	<div id="Spatialhash:remove" class="function">
-		<div class="definition">function <span class="name">Spatialhash:remove</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
+		<div class="definition">function <span class="name">hash:remove</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<div class="definition">function <span class="name">hash:remove</span><span class="arglist">(obj)</span></div>
+		<p>Remove an object from the hash using a bounding box.</p>
+		<p>If no bounding box is given, search the whole hash to delete the object.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>obj</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>ul</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>lr</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>mixed <code>obj</code></dt>
+				<dd>The object to delete</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>ul</code></dt>
+				<dd>Upper left corner of the bounding box.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>lr</code></dt>
+				<dd>Lower right corner of the bounding box.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>Nothing</dt>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
+			<pre><code class="lua">hash:remove(shape, vector(-100,-100), vector(0,-30))</code></pre>
+			<pre><code class="lua">hash:remove(object_with_unknown_position)</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:update"></a>
 	<div id="Spatialhash:update" class="function">
-		<div class="definition">function <span class="name">Spatialhash:update</span><span class="arglist">(obj, ul_old, lr_old, ul_new, lr_new)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
+		<div class="definition">function <span class="name">hash:update</span><span class="arglist">(obj, ul_old, lr_old, ul_new, lr_new)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>Update an objects position given the old bounding box and the new bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>obj</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>ul_old</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>lr_old</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>ul_new</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>lr_new</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>mixed <code>obj</code></dt>
+				<dd>The object to be updated.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>ul_old</code></dt>
+				<dd>Upper left corner of the bounding box before the object was moved.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>lr_old</code></dt>
+				<dd>Lower right corner of the bounding box before the object was moved.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>ul_new</code></dt>
+				<dd>Upper left corner of the bounding box after the object was moved.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>lr_new</code></dt>
+				<dd>Lower right corner of the bounding box after the object was moved.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>Nothing</dt>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
+			<pre><code class="lua">hash:update(shape, vector(-100,-100), vector(0,-30),
+                   vector(-100,-70), vector(0,0))</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:getNeighbors"></a>
 	<div id="Spatialhash:getNeighbors" class="function">
-		<div class="definition">function <span class="name">Spatialhash:getNeighbors</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<p>
-		<h5 style="color:red;">Description here</h5>
-		</p>
+		<div class="definition">function <span class="name">hash:getNeighbors</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+		<p>Query for neighbors of an object given it's bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>[type] <code>obj</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>ul</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
-				<dt>[type] <code>lr</code></dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>mixed <code>obj</code></dt>
+				<dd>The object to query neighbors.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>ul</code></dt>
+				<dd>Upper left corner of the object's bounding box.</dd>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>lr</code></dt>
+				<dd>Lower right corner of the object's bounding box.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>[type] </dt>
-				<dd>
-				<h5 style="color:red;">Description here</h5>
-				</dd>
+				<dt>Array</dt>
+				<dd>An array of neighboring objects.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">
-				Example code
-			</code></pre>
+			<pre><code class="lua">local others = hash:getNeighbors(obj, vector(-100,-70), vector(0,0))
+for _,other in ipairs(others) do
+    obj:pushAway(other)
+end</code></pre>
 		</div>
 	</div>
-!-->
 
 </div>
 
