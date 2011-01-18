@@ -5,144 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>HardonCollider - A collision detection library</title>
-<style type="text/css">
-body {
-	font-family: "Helvetica,Arial,FreeSans";
-	color: #334;
-	background: #f7fcfc url('pattern.png');
-}
-ul#nav { margin-top: 0; float:right;display:inline; margin-left: 0; padding-left: 0; }
-ul#nav li { display:inline; margin-right: 1em; }
-a { color: #203050; text-decoration: none; font-weight: bold;}
-a:hover { color: #506080; text-decoration: none; font-weight: bold;}
-
-a.top {
-	font-size: 8pt;
-	margin-left: 1em;
-	margin-right: 1em;
-	float: right;
-}
-
-h1 {
-	font-size: 3em;
-	color: #080303;
-	margin-top: 0;
-	margin-bottom: 10px;
-	border-bottom: 2px solid #080303;
-}
-h1 .small { font-size: 0.4em; }
-
-h2 {
-	font-size: 2em;
-	color: #080303;
-	margin: 0;
-}
-
-#header {
-	width: 800px;
-	margin: 1em auto;
-	padding: .5em;
-	border: 1px solid #a0a0a0;
-	background: #efefef url('smooth.jpg');
-	border-radius: 10px; -moz-border-radius: 10px;
-}
-
-.module {
-	width: 800px;
-	margin: 1em auto;
-	padding: 0 0 0 1em;
-}
-
-.definition, .constructor {
-	font-family: sans-serif;
-	font-weight: bold;
-	color: #444;
-}
-
-.definition .name, .constructor .name {
-	color: #000;
-}
-
-.arglist {
-	color: #102040;
-}
-
-.arguments, .returns, .example {
-	font-weight: bold;
-}
-
-.overview, .preamble, .function, .class, .module > .name {
-	border: 1px solid #aaa;
-	border-radius: 5px; -moz-border-radius: 5px;
-	padding: .2em .5em;
-	background: #fff;
-	margin: 1em .2em;
-}
-
-.module > .name {
-	color: #050A10;
-	font-size: 1.5em;
-	font-weight: bold;
-	margin-left: -.5em;
-}
-
-.preamble {
-	margin-top: -1em;
-}
-
-.overview {
-	margin-bottom: 2em;
-}
-.overview h3 {
-	margin: 0;
-	color: #405070;
-}
-
-dl {
-	margin-left: 2em;
-	margin-top: .5em;
-}
-dt {
-	font-family: sans-serif;
-	color: #666;
-}
-dt code {
-	font-size: 12pt;
-	color: #102040;
-}
-dd {
-	font-weight: normal;
-}
-
-.overview dt {
-	display: inline-block;
-	float: left;
-	width: 30%;
-	font-family: sans-serif;
-	font-weight: bold;
-	color: #666;
-}
-.overview dd {
-	display: block;
-	margin: .2em 0;
-}
-
-pre {
-	border: 1px solid #aaa;
-	border-radius: 5px; -moz-border-radius: 5px;
-	background: #f8f8ff;
-	padding: .2em;
-	margin: 1em 2em;
-	font-weight: normal;
-}
-pre code { border: 0; }
-pre code .function {
-	background: #f8f8ff;
-	border: 0;
-	padding: 0;
-	margin: 0;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="style.css" />
 <link rel="stylesheet" type="text/css" href="highlight.css" />
 <script type="text/javascript" src="highlight.pack.js"></script>
 <script type="text/javascript">
@@ -200,6 +63,14 @@ pre code .function {
 			<dd>Add circle to the scene.</dd>
 			<dt><a href="#remove">remove()</a></dt>
 			<dd>Remove shape from scene.</dd>
+			<dt><a href="#addToGroup">addToGroup()</a></dt>
+			<dd>Group shapes that should not collide.</dd>
+			<dt><a href="#removeFromGroup">removeFromGroup()</a></dt>
+			<dd>Remove shape from a group.</dd>
+			<dt><a href="#setGhost">setGhost()</a></dt>
+			<dd>Stops shape from colliding.</dd>
+			<dt><a href="#setSolid">setSolid()</a></dt>
+			<dd>Make shape subject to collision again.</dd>
 		</dl>
 	</div>
 
@@ -333,7 +204,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Shape</dt>
+				<dt><a href="#shape">Shape</a></dt>
 				<dd>The polygon shape added to the scene.</dd>
 			</dl>
 		</div>
@@ -356,7 +227,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Shape</dt>
+				<dt><a href="#shape">Shape</a></dt>
 				<dd>The rectangle added to the scene.</dd>
 			</dl>
 		</div>
@@ -379,7 +250,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Shape</dt>
+				<dt><a href="#shape">Shape</a></dt>
 				<dd>The circle added to the scene.</dd>
 			</dl>
 		</div>
@@ -398,7 +269,7 @@ end</code></pre>
 		in the next call to <code>update</code> for each shape which the removed shape collided with.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>Shape <code>shape</code></dt>
+				<dt><a href="#shape">Shape</a> <code>shape</code></dt>
 				<dd>The shape to be removed.</dd>
 			</dl>
 		</div>
@@ -409,6 +280,98 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">hardoncollider.remove(circle)</code></pre>
+		</div>
+	</div>
+
+	<a name="init-addToGroup"></a>
+	<div id="addToGroup" class="function">
+		<div class="definition">function <span class="name">addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#init">^ top</a></div>
+		<p>Add shapes to a group. <a href="#shape">Shapes</a> in the same group will not collide with each other.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>string <code>group</code></dt>
+				<dd>The name of the group where shapes should be added.</dd>
+			</dl>
+			<dl>
+				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to be added to the group.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">hardoncollider.addToGroup("platforms", platform1, platform2, platform3)</code></pre>
+		</div>
+	</div>
+
+	<a name="init-removeFromGroup"></a>
+	<div id="removeFromGroup" class="function">
+		<div class="definition">function <span class="name">removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#init">^ top</a></div>
+		<p>Remove shapes from a group.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>string <code>group</code></dt>
+				<dd>The name of the group where shapes should be added.</dd>
+			</dl>
+			<dl>
+				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to be removed from the group.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">hardoncollider.removeFromGroup("platforms", not_a_platform)</code></pre>
+		</div>
+	</div>
+
+	<a name="init-setGhost"></a>
+	<div id="setGhost" class="function">
+		<div class="definition">function <span class="name">setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#init">^ top</a></div>
+		<p>Makes a shape permeable. Ghost shapes will not collide with any other shape.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to become permeable.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if cheat.set_ghost then
+    hardoncollider.setGhost(player)
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="init-setSolid"></a>
+	<div id="setSolid" class="function">
+		<div class="definition">function <span class="name">setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#init">^ top</a></div>
+		<p>Makes a shape opaque. <a href="#shape">Shapes</a> that were ghosts before will be subject to collision again.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt><a href="#shape">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to become opaque again.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if cheat.set_no_ghost then
+    hardoncollider.setSolid(player_recording)
+end</code></pre>
 		</div>
 	</div>
 
@@ -455,18 +418,18 @@ end</code></pre>
 		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shape">^ top</a></div>
 		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(polygon)</span></div>
 		<p>Construct a shape using a non-intersecting ploygon.</p>
-		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the Polygon class.</p>
+		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the <a href="#polygon">Polygon</a> class.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
 				<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd>
-				<dt>Polygon <code>polygon</code></dt>
+				<dt><a href="#polygon">Polygon</a> <code>polygon</code></dt>
 				<dd>Construct the shape from this polygon.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Shape</dt>
+				<dt><a href="#shape">Shape</a></dt>
 				<dd>The constructed shape.</dd>
 			</dl>
 		</div>
@@ -489,7 +452,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Shape</dt>
+				<dt><a href="#shape">Shape</a></dt>
 				<dd>The constructed circle shape.</dd>
 			</dl>
 		</div>
@@ -588,7 +551,7 @@ end</code></pre>
 		<p>Test if two shapes collide.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>Shape <code>other</code></dt>
+				<dt><a href="#shape">Shape</a> <code>other</code></dt>
 				<dd>Test for collision with this shape.</dd>
 			</dl>
 		</div>
@@ -596,7 +559,7 @@ end</code></pre>
 			<dl>
 				<dt>boolean <code>collide</code></dt>
 				<dd><code>true</code> if the two shapes collide, <code>false</code> otherwise.</dd>
-				<dt>vector <code>mtv</code></dt>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>mtv</code></dt>
 				<dd>The minimum translation vector, or <code>nil</code> if the two shapes don't collide.</dd>
 			</dl>
 		</div>
@@ -658,7 +621,7 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Polygon</dt>
+				<dt><a href="#polygon">Polygon</a></dt>
 				<dd>The polygon object.</dd>
 			</dl>
 		</div>
@@ -705,7 +668,7 @@ p3:rotate(-math.pi) -- only p3 will be rotated</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Polygon <code>polygon</code></dt>
+				<dt><a href="#polygon">Polygon</a> <code>polygon</code></dt>
 				<dd>A copy of the polygon.</dd>
 			</dl>
 		</div>
@@ -773,7 +736,7 @@ end</code></pre>
 			<dl>
 				<dt>numbers <code>x, y</code></dt>
 				<dd>Coordinates of the direction to move.</dd>
-				<dt>vector <code>direction</code></dt>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>direction</code></dt>
 				<dd>Direction to move.</dd>
 			</dl>
 		</div>
@@ -800,7 +763,7 @@ end</code></pre>
 				<dd>The angle to rotate in radians.</dd>
 				<dt>numbers <code>cx, cy</code></dt>
 				<dd>The rotation center.</dd>
-				<dt>vector <code>center</code></dt>
+				<dt><a href="http://vrld.github.com/hump/#vector.lua">vector</a> <code>center</code></dt>
 				<dd>The rotation center.</dd>
 			</dl>
 		</div>
@@ -826,7 +789,7 @@ p2:rotate(math.pi/4, 100,100) -- rotate p2 by 45&deg; around the point 100,100</
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Array of Polygon <code>triangles</code></dt>
+				<dt>Array of <a href="#polygon">Polygon</a> <code>triangles</code></dt>
 				<dd>Triangles that the polygon is composed of.</dd>
 			</dl>
 		</div>
@@ -849,7 +812,7 @@ end	</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Array of Polygon <code>convex_polygons</code></dt>
+				<dt>Array of <a href="#polygon">Polygon</a> <code>convex_polygons</code></dt>
 				<dd>Convex polygons that form the original polygon.</dd>
 			</dl>
 		</div>
@@ -870,13 +833,13 @@ end</code></pre>
 		<p>This function does not change either polygon, but rather create a new one.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>Polygon <code>other</code></dt>
+				<dt><a href="#polygon">Polygon</a> <code>other</code></dt>
 				<dd>The polygon to merge with.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Polygon <code>merged</code></dt>
+				<dt><a href="#polygon">Polygon</a> <code>merged</code></dt>
 				<dd>The merged polygon, or <code>nil</code> if the two polygons don't share an edge.</dd>
 			</dl>
 		</div>
