@@ -25,13 +25,13 @@ THE SOFTWARE.
 ]]--
 
 module(..., package.seeall)
-require(_NAME .. '.shape')
+require(_NAME .. '.shapes')
 require(_NAME .. '.polygon')
 require(_NAME .. '.spatialhash')
 require(_NAME .. '.vector')
 
-local PolygonShape = shape.PolygonShape
-local CircleShape  = shape.CircleShape
+local PolygonShape = shapes.PolygonShape
+local CircleShape  = shapes.CircleShape
 
 local is_initialized = false
 hash = nil
