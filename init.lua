@@ -25,19 +25,19 @@ THE SOFTWARE.
 ]]--
 
 module(..., package.seeall)
-require(_NAME .. '.shapes')
-require(_NAME .. '.polygon')
-require(_NAME .. '.spatialhash')
-require(_NAME .. '.vector')
+local Shapes      = require(_NAME .. '.shapes')
+local Polygon     = require(_NAME .. '.polygon')
+local Spatialhash = require(_NAME .. '.spatialhash')
+local vector      =require(_NAME .. '.vector')
 
-local PolygonShape = shapes.PolygonShape
-local CircleShape  = shapes.CircleShape
+local PolygonShape = Shapes.PolygonShape
+local CircleShape  = Shapes.CircleShape
 
 local is_initialized = false
-hash = nil
+local hash = nil
 
 local shapes, ghosts = {}, {}
-local shape_ids = {}
+local shape_ids = setmetatable({}, {__mode = "k"})
 local groups = {}
 
 local function __NOT_INIT() error("Not yet initialized") end
@@ -48,7 +48,7 @@ function init(cell_size, callback_start, callback_persist, callback_stop)
 	cb_start   = callback_start   or __NULL
 	cb_persist = callback_persist or __NULL
 	cb_stop    = callback_stop    or __NULL
-	hash = spatialhash(cell_size)
+	hash = Spatialhash(cell_size)
 	is_initialized = true
 end
 
@@ -63,8 +63,9 @@ function setCallbacks(start,persist,stop)
 end
 
 local function new_shape(shape, ul,lr)
-	shapes[#shapes+1] = shape
-	shape_ids[shape] = #shapes
+	local id = #shapes+1
+	shapes[id] = shape
+	shape_ids[shape] = id
 	hash:insert(shape, ul,lr)
 	shape._groups = {}
 	return shape
@@ -94,7 +95,7 @@ function addPolygon(...)
 	end
 	function shape:_removeFromHash()
 		local x1,y1, x2,y2 = self._polygon:getBBox()
-		hash:remove(shape, vector(x1,y1), vector(x2,y2))
+		hash:remove(shape)--, vector(x1,y1), vector(x2,y2))
 	end
 
 	local x1,y1, x2,y2 = shape._polygon:getBBox()
@@ -150,8 +151,7 @@ end
 
 -- update with a minimum time step
 local function update_min_step(dt, min_step)
-	-- step fixed to framerate of ~33
-	local min_step = min_step or 0.03
+	assert(type(min_step) == "number")
 	while dt > min_step do
 		update(min_step)
 		dt = dt - min_step
@@ -169,16 +169,18 @@ function update(dt, min_step)
 	-- collect colliding shapes
 	local tested, colliding = {}, {}
 	for _,shape in pairs(shapes) do
-		local neighbors = shape:_getNeighbors()
-		for _,other in ipairs(neighbors) do
-			local id = collision_id(shape,other)
-			if not tested[id] then
-				if not (other._ghost or share_group(shape, other)) then
-					local collide, sep = shape:collidesWith(other)
-					if collide then
-						colliding[id] = {shape, other, sep.x, sep.y}
+		if not ghosts[shape] then
+			local neighbors = shape:_getNeighbors()
+			for _,other in ipairs(neighbors) do
+				local id = collision_id(shape,other)
+				if not tested[id] then
+					if not (ghosts[other] or share_group(shape, other)) then
+						local collide, sep = shape:collidesWith(other)
+						if collide then
+							colliding[id] = {shape, other, sep.x, sep.y}
+						end
+						tested[id] = true
 					end
-					tested[id] = true
 				end
 			end
 		end
@@ -206,9 +208,9 @@ end
 -- remove shape from internal tables and the hash
 function remove(shape)
 	local id = shape_ids[shape]
+	if not id then return end
 	shapes[id] = nil
-	ghosts[id] = nil
-	shape_ids[shape] = nil
+	ghosts[shape] = nil
 	shape:_removeFromHash()
 end
 
@@ -231,17 +233,17 @@ end
 function setGhost(shape, ...)
 	if not shape then return end
 	local id = shape_ids[shape]
-	shapes[id] = nil
-	ghosts[id] = shape
-	shape._ghost = true
+	if not id then return end
+
+	ghosts[shape] = shape
 	return setGhost(...)
 end
 
 function setSolid(shape, ...)
 	if not shape then return end
 	local id = shape_ids[shape]
-	ghosts[id] = nil
-	shapes[id] = shape
-	shape._ghost = nil
+	if not id then return end
+
+	ghosts[shape] = nil
 	return setSolid(...)
 end
