@@ -57,6 +57,11 @@ end
 local Shape = Class{name = 'Shape', function(self, t)
 	self._type = t
 end}
+function Shape:moveTo(x,y)
+	local current = vector( self:center() )
+	local to = vector.isvector(x) and x or vector(x,y)
+	self:move( to-current )
+end
 
 -- supported shapes
 Shape.POLYGON  = setmetatable({}, {__tostring = function() return 'POLYGON'  end})
