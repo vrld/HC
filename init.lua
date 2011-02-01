@@ -149,23 +149,40 @@ local function share_group(shape, other)
 	return false
 end
 
--- update with a minimum time step
-local function update_min_step(dt, min_step)
-	assert(type(min_step) == "number")
-	while dt > min_step do
-		update(min_step)
-		dt = dt - min_step
+local _love_update
+function setAutoUpdate(max_step)
+	assert(_love_update == nil, "Auto update already enabled!")
+
+	if max_step > 1 then -- assume it's a framerate
+		max_step = 1 / max_step
 	end
-	update(dt)
+
+	_love_update = love.update
+	love.update = function(dt)
+		_love_update(dt)
+		update(dt)
+	end
+
+	if type(max_step) == "number" then
+		local combined_update = love.update
+		love.update = function(dt)
+			while dt > max_step do
+				combined_update(max_step)
+				dt = dt - max_step
+			end
+			combined_update(dt)
+		end
+	end
+end
+
+function setNoAutoUpdate()
+	love.update = _love_update
+	_love_update = nil
 end
 
 -- check for collisions
 local colliding_last_frame = {}
-function update(dt, min_step)
-	if min_step then
-		update_min_step(dt, min_step)
-		return
-	end
+function update(dt)
 	-- collect colliding shapes
 	local tested, colliding = {}, {}
 	for _,shape in pairs(shapes) do
