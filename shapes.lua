@@ -58,6 +58,12 @@ local Shape = Class{name = 'Shape', function(self, t)
 	self._type = t
 end}
 
+function Shape:moveTo(x,y)
+	if y then x = vector(x,y) end
+	x = x - vector(self:center())
+	self:move(x)
+end
+
 -- supported shapes
 Shape.POLYGON  = setmetatable({}, {__tostring = function() return 'POLYGON'  end})
 Shape.COMPOUND = setmetatable({}, {__tostring = function() return 'COMPOUND' end})
