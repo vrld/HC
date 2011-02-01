@@ -66,6 +66,10 @@
 			<dd>Set callback functions.</dd>
 			<dt><a href="#hardoncollider-update">update()</a></dt>
 			<dd>Update collision detection.</dd>
+			<dt><a href="#hardoncollider-setAutoUpdate">setAutoUpdate()</a></dt>
+			<dd>Update collision detection automatically.</dd>
+			<dt><a href="#hardoncollider-setNoAutoUpdate">setNoAutoUpdate()</a></dt>
+			<dd>Disable automatic updating.</dd>
 			<dt><a href="#hardoncollider-addPolygon">addPolygon()</a></dt>
 			<dd>Add polygon to the scene.</dd>
 			<dt><a href="#hardoncollider-addRectangle">addRectangle()</a></dt>
@@ -175,7 +179,7 @@ end</code></pre>
 
 	<a name="hardoncollider-update"></a>
 	<div id="update" class="function">
-		<div class="definition">function <span class="name">update</span><span class="arglist">(dt, max_delta)</span><a class="top" href="#hardoncollider">^ top</a></div>
+		<div class="definition">function <span class="name">update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
 		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
 		not bigger than this maximum and the scene is updated for each time slice.</p>
@@ -186,8 +190,6 @@ end</code></pre>
 			<dl>
 				<dt>number <code>dt</code></dt>
 				<dd>The time since the last update.</dd>
-				<dt>number <code>max_delta</code></dt>
-				<dd>Maximum time delta (see description).</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -198,6 +200,78 @@ end</code></pre>
 		<div class="example">Example:
 			<pre><code class="lua">function love.update(dt)
     hardoncollider.update(dt, .02)
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="hardoncollider-setAutoUpdate"></a>
+	<div id="setAutoUpdate" class="function">
+		<div class="definition">function <span class="name">setAutoUpdate</span><span class="arglist">(max_step)</span><a class="top" href="#hardoncollider">^ top</a></div>
+		<p>Automatically call <code>hardoncollider.update(dt)</code> after each <code>love.update(dt)</code>.</p>
+		<p>Basically overwrites <code>love.update(dt)</code> with the following function:</p>
+		<pre><code class="lua">function love.update(dt)
+    _old_love_update(dt)
+    hardoncollider.update(dt)
+end</code></pre>
+
+		<p>You can define a maximum time step. If <code>dt</code> is bigger than this step, the
+		new <code>update</code> function will be called multiple times with a <code>dt</code>
+		smaller or equal to the maximum time step:</p>
+		<pre><code class="lua">while dt &gt; max_step do
+    update(max_step)
+    dt = dt - max_step
+end
+update(dt)</code></pre>
+		<p>If <code>max_step</code> is bigger than <code>1</code>, it is assumed to declare a
+		minimum frame rate.</p>
+
+		<p>Once set, you can disable the auto update with
+		<a href="#hardoncollider-setNoAutoUpdate"><code>setNoAutoUpdate()</code></a>, but beware that this
+		might break other libs that hook into love.update, e.g.
+		<a href="http://vrld.github.com/hump/#gamestate">hump.gamestate</a>. To prevent unexpected
+		side effects, it's best practice to call <code>setAutoUpdate()</code> after any other
+		library hooked itself into <code>love.update()</code></p>
+		
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>number <code>max_step</code> (optional)</dt>
+				<dd>Maximum time step (see above).</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">function love.load()
+    HC.init(100, collision_start, collision_persist, collision_stop)
+    game_init()
+    HC.setAutoUpdate(30) -- maintain at least a update framerate of 30 FPS
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="hardoncollider-setNoAutoUpdate"></a>
+	<div id="setNoAutoUpdate" class="function">
+		<div class="definition">function <span class="name">setNoAutoUpdate</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^ top</a></div>
+
+		<p>Resets <code>love.update()</code> to the state before calling
+		<a href="#hardoncollider-setAutoUpdate"><code>setAutoUpdate()</code></a>.</p>
+
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>None</dt>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if game_over then
+    hardoncollider.setNoAutoUpdate()
 end</code></pre>
 		</div>
 	</div>
