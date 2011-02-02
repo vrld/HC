@@ -87,6 +87,7 @@ function addPolygon(...)
 		end
 	end
 	shape.move = hash_aware_member(shape.move)
+	shape.moveTo = hash_aware_member(shape.moveTo)
 	shape.rotate = hash_aware_member(shape.rotate)
 
 	function shape:_getNeighbors()
@@ -153,10 +154,6 @@ local _love_update
 function setAutoUpdate(max_step)
 	assert(_love_update == nil, "Auto update already enabled!")
 
-	if max_step > 1 then -- assume it's a framerate
-		max_step = 1 / max_step
-	end
-
 	_love_update = love.update
 	love.update = function(dt)
 		_love_update(dt)
@@ -164,6 +161,9 @@ function setAutoUpdate(max_step)
 	end
 
 	if type(max_step) == "number" then
+		if max_step > 1 then -- assume it's a framerate
+			max_step = 1 / max_step
+		end
 		local combined_update = love.update
 		love.update = function(dt)
 			while dt > max_step do

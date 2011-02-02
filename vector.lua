@@ -25,7 +25,7 @@ THE SOFTWARE.
 ]]--
 
 local setmetatable, getmetatable = setmetatable, getmetatable
-local assert, type, tonumber = assert, type, tonumber
+local type, tonumber = type, tonumber
 local sqrt, cos, sin = math.sqrt, math.cos, math.sin
 module(...)
 
@@ -34,8 +34,7 @@ vector.__index = vector
 
 function new(x,y)
 	local v = {x = x or 0, y = y or 0}
-	setmetatable(v, vector)
-	return v
+	return setmetatable(v, vector)
 end
 
 function isvector(v)
@@ -59,12 +58,10 @@ function vector.__unm(a)
 end
 
 function vector.__add(a,b)
-	assert(isvector(a) and isvector(b), "Add: wrong argument types (<vector> expected)")
 	return new(a.x+b.x, a.y+b.y)
 end
 
 function vector.__sub(a,b)
-	assert(isvector(a) and isvector(b), "Sub: wrong argument types (<vector> expected)")
 	return new(a.x-b.x, a.y-b.y)
 end
 
@@ -74,13 +71,11 @@ function vector.__mul(a,b)
 	elseif type(b) == "number" then
 		return new(b*a.x, b*a.y)
 	else
-		assert(isvector(a) and isvector(b), "Mul: wrong argument types (<vector> or <number> expected)")
 		return a.x*b.x + a.y*b.y
 	end
 end
 
 function vector.__div(a,b)
-	assert(isvector(a) and type(b) == "number", "wrong argument types (expected <vector> / <number>)")
 	return new(a.x / b, a.y / b)
 end
 
@@ -97,7 +92,6 @@ function vector.__le(a,b)
 end
 
 function vector.permul(a,b)
-	assert(isvector(a) and isvector(b), "permul: wrong argument types (<vector> expected)")
 	return new(a.x*b.x, a.y*b.y)
 end
 
@@ -110,7 +104,6 @@ function vector:len()
 end
 
 function vector.dist(a, b)
-	assert(isvector(a) and isvector(b), "dist: wrong argument types (<vector> expected)")
 	return (b-a):len()
 end
 
@@ -139,12 +132,10 @@ function vector:perpendicular()
 end
 
 function vector:projectOn(v)
-	assert(isvector(v), "invalid argument: cannot project onto anything other than a new.")
 	return (self * v) * v / v:len2()
 end
 
 function vector:cross(other)
-	assert(isvector(other), "cross: wrong argument types (<vector> expected)")
 	return self.x * other.y - self.y * other.x
 end
 

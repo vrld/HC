@@ -196,12 +196,16 @@ function Polygon:isConvex()
 	return status
 end
 
-function Polygon:move(direction, dy)
-	if dy then direction = vector(direction,dy) end
-	for i,v in ipairs(self.vertices) do
-		self.vertices[i] = self.vertices[i] + direction
+function Polygon:move(dx, dy)
+	if not dy then
+		dx, dy = dx:unpack()
 	end
-	self.centroid = self.centroid + direction
+	for i,v in ipairs(self.vertices) do
+		self.vertices[i].x = self.vertices[i].x + dx
+		self.vertices[i].y = self.vertices[i].y + dy
+	end
+	self.centroid.x = self.centroid.x + dx
+	self.centroid.y = self.centroid.y + dy
 end
 
 function Polygon:rotate(angle, center, cy)

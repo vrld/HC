@@ -32,10 +32,10 @@ local vector = require(_PACKAGE .. 'vector')
 -- to a string before using as keys
 local cell_meta = {}
 function cell_meta.__newindex(tbl, key, val)
-	return rawset(tbl, tostring(key), val)
+	return rawset(tbl, key.x..","..key.y, val)
 end
 function cell_meta.__index(tbl, key)
-	local key = tostring(key)
+	local key = key.x..","..key.y
 	local ret = rawget(tbl, key)
 	if not ret then
 		ret = setmetatable({}, {__mode = "kv"})
@@ -64,7 +64,7 @@ function Spatialhash:insert(obj, ul, lr)
 	local lr = self:cellCoords(lr)
 	for i = ul.x,lr.x do
 		for k = ul.y,lr.y do
-			self.cells[vector(i,k)][obj] = obj
+			self.cells[ {x=i,y=k} ][obj] = obj
 		end
 	end
 end
@@ -83,7 +83,7 @@ function Spatialhash:remove(obj, ul, lr)
 	-- els: remove only from bbox
 	for i = ul.x,lr.x do
 		for k = ul.y,lr.y do
-			self.cells[vector(i,k)][obj] = nil
+			self.cells[{x=i,y=k}][obj] = nil
 		end
 	end
 end
@@ -104,9 +104,9 @@ function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
 			local region_old = i >= ul_old.x and i <= lr_old.x and k >= ul_old.y and k <= lr_old.y
 			local region_new = i >= ul_new.x and i <= lr_new.x and k >= ul_new.y and k <= lr_new.y
 			if region_new and not region_old then
-				self.cells[vector(i,k)][obj] = obj
+				self.cells[{x=i,y=k}][obj] = obj
 			elseif not region_new and region_old then
-				self.cells[vector(i,k)][obj] = nil
+				self.cells[{x=i,y=k}][obj] = nil
 			end
 		end
 	end
@@ -118,7 +118,7 @@ function Spatialhash:getNeighbors(obj, ul, lr)
 	local set,items = {}, {}
 	for i = ul.x,lr.x do
 		for k = ul.y,lr.y do
-			local cell = self.cells[ vector(i,k) ] or {}
+			local cell = self.cells[{x=i,y=k}] or {}
 			for other,_ in pairs(cell) do
 				if other ~= obj then set[other] = other end
 			end
