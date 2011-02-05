@@ -28,7 +28,13 @@ module(..., package.seeall)
 local Shapes      = require(_NAME .. '.shapes')
 local Polygon     = require(_NAME .. '.polygon')
 local Spatialhash = require(_NAME .. '.spatialhash')
-local vector      =require(_NAME .. '.vector')
+local vector      = require(_NAME .. '.vector')
+
+-- hide submodules
+_M.shapes = nil
+_M.polygon = nil
+_M.spatialhash = nil
+_M.vector = nil
 
 local PolygonShape = Shapes.PolygonShape
 local CircleShape  = Shapes.CircleShape
@@ -234,6 +240,7 @@ end
 -- group support
 function addToGroup(group, shape, ...)
 	if not shape then return end
+	assert(shape_ids[shape], "Shape was not created by main module!")
 	if not groups[group] then groups[group] = {} end
 	groups[group][shape] = true
 	shape._groups[group] = groups[group]
@@ -242,6 +249,7 @@ end
 
 function removeFromGroup(group, shape, ...)
 	if not shape or not groups[group] then return end
+	assert(shape_ids[shape], "Shape was not created by main module!")
 	groups[group][shape] = nil
 	shape._groups[group] = nil
 	return removeFromGroup(group, ...)
@@ -249,6 +257,7 @@ end
 
 function setGhost(shape, ...)
 	if not shape then return end
+	assert(shape_ids[shape], "Shape was not created by main module!")
 	local id = shape_ids[shape]
 	if not id then return end
 
@@ -258,6 +267,7 @@ end
 
 function setSolid(shape, ...)
 	if not shape then return end
+	assert(shape_ids[shape], "Shape was not created by main module!")
 	local id = shape_ids[shape]
 	if not id then return end
 
