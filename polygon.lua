@@ -144,6 +144,12 @@ Polygon = Class{name = "Polygon", function(self, ...)
 		self.centroid.y = self.centroid.y + (p.y+q.y) * det
 	end
 	self.centroid = self.centroid / (6 * self.area)
+
+	-- get outcircle
+	self._radius = 0
+	for i = 1,#vertices do
+		self._radius = math.max(vertices[i]:dist(self.centroid), self._radius)
+	end
 end}
 
 -- return vertices as x1,y1,x2,y2, ..., xn,yn
@@ -320,6 +326,32 @@ function Polygon:splitConvex()
 	
 	return convex
 end
+
+function Polygon:contains(x,y)
+	-- test if an edge cuts the ray
+	local function cut_ray(p,q)
+		return ((p.y > y and q.y < y) or (p.y < y and q.y > y)) -- possible cut
+			and (x - p.x < (y - p.y) * (q.x - p.x) / (q.y - p.y)) -- x < cut.x
+	end
+
+	-- test if the ray crosses boundary from interior to exterior.
+	-- this is needed due to edge cases, when the ray passes through
+	-- polygon corners
+	local function cross_boundary(p,q)
+		return (p.y == y and p.x > x and q.y < y)
+			or (q.y == y and q.x > x and p.y < y)
+	end
+
+	local v = self.vertices
+	local in_polygon = false
+	for i = 1, #v - 1 do
+		if cut_ray(v[i], v[i+1]) or cross_boundary(v[i], v[i+1]) then
+			in_polygon = not in_polygon
+		end
+	end
+	return in_polygon
+end
+
 
 -- module() as shortcut to module.Polygon()
 do
