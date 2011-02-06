@@ -28,6 +28,9 @@ module(..., package.seeall)
 local Class   = require(_PACKAGE .. 'class')
 local vector  = require(_PACKAGE .. 'vector')
 local Polygon = require(_PACKAGE .. 'polygon')
+_M.class = nil
+_M.vector = nil
+_M.polygon = nil
 
 local function test_axes(axes, shape_one, shape_two, sep, min_overlap)
 	for _,axis in ipairs(axes) do

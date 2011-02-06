@@ -27,6 +27,8 @@ THE SOFTWARE.
 module(..., package.seeall)
 local Class = require(_PACKAGE .. 'class')
 local vector = require(_PACKAGE .. 'vector')
+_M.class = nil
+_M.vector = nil
 
 ----------------------------
 -- Private helper functions
