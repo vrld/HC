@@ -352,6 +352,39 @@ function Polygon:contains(x,y)
 	return in_polygon
 end
 
+function Polygon:intersectsRay(x,y, dx,dy)
+	local p = vector(x,y)
+	local v = vector(dx,dy):normalize_inplace()
+	local n = v:perpendicular()
+
+	local vertices = self.vertices
+	for i = 1, #vertices do
+		local q1, q2 = vertices[i], vertices[ (i % #vertices) + 1 ]
+		local w = q2 - q1
+		local det = v:cross(w)
+
+		if det ~= 0 then
+			-- there is an intersection point. check if it lies on both
+			-- the ray and the segment.
+			local r = q2 - p
+			local l = r:cross(w)
+			local m = v:cross(r)
+			if l >= 0 and m >= 0 and m <= det then return true end
+		else
+			-- lines parralel or incident. get distance of line to
+			-- anchor point. if they are incident, check if an endpoint
+			-- lies on the ray
+			local dist = (q1 - p) * n
+			if dist == 0 then
+				if n:cross(q1) > 0 or n:cross(q2) > 0 then
+					return true
+				end
+			end
+		end
+	end
+	return false
+end
+
 
 -- module() as shortcut to module.Polygon()
 do

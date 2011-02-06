@@ -216,6 +216,23 @@ function CircleShape:contains(x,y)
 	return (x - self._center):len2() < self._radius * self._radius
 end
 
+
+function ConcavePolygonShape:intersectsRay(x,y, dx,dy)
+	return self._polygon:intersectsRay(x,y, dx,dy)
+end
+
+function ConvexPolygonShape:intersectsRay(x,y, dx,dy)
+	return self._polygon:intersectsRay(x,y, dx,dy)
+end
+
+-- circle intersection if distance of ray/center is smaller
+-- than radius
+function CircleShape:intersectsRay(x,y, dx,dy)
+	local n = vector(-dy,dx):normalize_inplace() -- normal vector
+	local d = vector(x,y) - self._center
+	return d * vector(dx,dy) >= 0 and (d * n) < self._radius
+end
+
 --
 -- auxiliary
 --
@@ -310,6 +327,4 @@ function CircleShape:draw(mode, segments)
 	local segments = segments or math.max(3, math.floor(math.pi * math.log(self._radius)))
 	love.graphics.circle(mode, self._center.x, self._center.y, self._radius, segments)
 end
-
-
 
