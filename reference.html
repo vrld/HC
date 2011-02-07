@@ -20,7 +20,6 @@
 </head>
 
 <body><a name="top"></a>
-<a href="http://github.com/vrld/HardonCollider"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
 <div id="header">
 	<h1>Hardon Collider <span class="small">Collision detection for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
@@ -206,7 +205,7 @@ end</code></pre>
 
 	<a name="hardoncollider-setAutoUpdate"></a>
 	<div id="setAutoUpdate" class="function">
-		<div class="definition">function <span class="name">setAutoUpdate</span><span class="arglist">(max_step)</span><a class="top" href="#hardoncollider">^ top</a></div>
+		<div class="definition">function <span class="name">setAutoUpdate</span><span class="arglist">(max_step, times)</span><a class="top" href="#hardoncollider">^ top</a></div>
 		<p>Automatically call <code>hardoncollider.update(dt)</code> after each <code>love.update(dt)</code>.</p>
 		<p>Basically overwrites <code>love.update(dt)</code> with the following function:</p>
 		<pre><code class="lua">function love.update(dt)
@@ -215,15 +214,20 @@ end</code></pre>
 end</code></pre>
 
 		<p>You can define a maximum time step. If <code>dt</code> is bigger than this step, the
-		new <code>update</code> function will be called multiple times with a <code>dt</code>
+		new <code>update</code> function will be called up to <code>times</code> times with a <code>dt</code>
 		smaller or equal to the maximum time step:</p>
-		<pre><code class="lua">while dt &gt; max_step do
+		<pre><code class="lua">local i = 1
+    while dt &gt; max_step do
     update(max_step)
     dt = dt - max_step
+    i = i + 1
+    if i &gt; times then return end
 end
 update(dt)</code></pre>
 		<p>If <code>max_step</code> is bigger than <code>1</code>, it is assumed to declare a
 		minimum frame rate.</p>
+		<p>If <code>times</code> is omitted, it is set to <code>1</code> and the code is equivalent to
+		<code class="lua">update(math.min(dt, max_step))</code></p>
 
 		<p>Once set, you can disable the auto update with
 		<a href="#hardoncollider-setNoAutoUpdate"><code>setNoAutoUpdate()</code></a>, but beware that this
@@ -237,6 +241,10 @@ update(dt)</code></pre>
 				<dt>number <code>max_step</code> (optional)</dt>
 				<dd>Maximum time step (see above).</dd>
 			</dl>
+			<dl>
+				<dt>number <code>times</code> (optional, default: 1)</dt>
+				<dd>Number of times to call the update function.</dd>
+			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
@@ -247,7 +255,7 @@ update(dt)</code></pre>
 			<pre><code class="lua">function love.load()
     HC.init(100, collision_start, collision_persist, collision_stop)
     game_init()
-    HC.setAutoUpdate(30) -- maintain at least a update framerate of 30 FPS
+    HC.setAutoUpdate(30)
 end</code></pre>
 		</div>
 	</div>
@@ -491,12 +499,20 @@ end</code></pre>
 			<dd>A polygon shape.</dd>
 			<dt><a href="#shapes-CircleShape">shapes.CircleShape</a></dt>
 			<dd>A circle shape.</dd>
+			<dt><a href="#shapes-shape:contains">shape:contains()</a></dt>
+			<dd>Test if shape contains a point.</dd>
+			<dt><a href="#shapes-shape:intersectsRay">shape:intersectsRay()</a></dt>
+			<dd>Test if shape intersects a ray.</dd>
 			<dt><a href="#shapes-shape:move">shape:move()</a></dt>
 			<dd>Move the shape.</dd>
+			<dt><a href="#shapes-shape:moveTo">shape:moveTo()</a></dt>
+			<dd>Set the shape's position.</dd>
 			<dt><a href="#shapes-shape:rotate">shape:rotate()</a></dt>
 			<dd>Rotate the shape.</dd>
 			<dt><a href="#shapes-shape:center">shape:center()</a></dt>
 			<dd>Get the shape's center.</dd>
+			<dt><a href="#shapes-shape:outcircle">shape:outcircle()</a></dt>
+			<dd>Get circumscribing circle.</dd>
 			<dt><a href="#shapes-shape:draw">shape:draw()</a></dt>
 			<dd>Draw the shape.</dd>
 			<dt><a href="#shapes-shape:collidesWith">shape:collidesWith()</a></dt>
@@ -552,6 +568,60 @@ end</code></pre>
 		</div>
 	</div>
 
+	<a name="shapes-shape:contains"></a>
+	<div id="shape:contains" class="function">
+		<div class="definition">function <span class="name">shape:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
+		<p>Test if the shape contains a given point.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>Point to test.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>boolean</dt>
+				<dd><code>true</code> if <code>x,y</code> lies in the interior of the shape.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if unit.shape:contains(love.mouse.getPosition) then
+    unit:setHovered(true)
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:intersectsRay"></a>
+	<div id="shape:intersectsRay" class="function">
+		<div class="definition">function <span class="name">shape:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></div>
+		<p>Test if the shape intersects a ray.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>Starting point of the ray.</dd>
+			</dl>
+			<dl>
+				<dt>numbers <code>dx, dy</code></dt>
+				<dd>Direction of the ray.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>boolean <code>intersection</code></dt>
+				<dd><code>true</code> if the given ray intersects the shape.</dd>
+				<dt>number <code>t</code> (only if intersecting)</dt>
+				<dd>Ray parameter of the intersection.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">local intersecting, t = player:intersectsRay(x,y, dx,dy)
+if intersecting then -- laser pointer hits player
+    local intersectionPoint = vector(x,y) + t * vector(dx,dy)
+    player:addMark(intersectionPoint)
+end</code></pre>
+		</div>
+	</div>
+
 	<a name="shapes-shape:move"></a>
 	<div id="shape:move" class="function">
 		<div class="definition">function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
@@ -569,6 +639,26 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">circle:move(10,15) -- move the circle 10 units right and 15 units down</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:moveTo"></a>
+	<div id="shape:move" class="function">
+		<div class="definition">function <span class="name">shape:moveTo</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
+		<p>Set the shape's position.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>Point to place the shape.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">circle:moveTo(400,300) -- move circle to screen center</code></pre>
 		</div>
 	</div>
 
@@ -613,6 +703,31 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">print("Circle at:", circle:center())</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:outcircle"></a>
+	<div id="shape:outcircle" class="function">
+		<div class="definition">function <span class="name">shape:outcircle</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></div>
+		<p>Get circumscribing circle.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>None</dt>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>Center of the circle.</dd>
+				<dt>number <code>r</code></dt>
+				<dd>Radius of the circle.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if player:hasShield() then
+    -- draw shield
+    love.graphics.circle('line', player:outcircle())
+end</code></pre>
 		</div>
 	</div>
 
@@ -696,6 +811,10 @@ end</code></pre>
 			<dd>Split polygon into convex polygons.</dd>
 			<dt><a href="#polygon-polygon:mergedWith">polygon:mergedWith()</a></dt>
 			<dd>Merge polygon with other polygon.</dd>
+			<dt><a href="#polygon-polygon:contains">polygon:contains()</a></dt>
+			<dd>Test if polygon contains a point.</dd>
+			<dt><a href="#polygon-polygon:intersectsRay">polygon:intersectsRay()</a></dt>
+			<dd>Test if polygon intersects a ray.</dd>
 		</dl>
 	</div>
 
@@ -940,6 +1059,58 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">merged = p1:mergedWith(p2)</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-polygon:contains"></a>
+	<div id="polygon:contains" class="function">
+		<div class="definition">function <span class="name">polygon:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
+		<p>Test if the polygon contains a given point.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>Point to test.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>boolean</dt>
+				<dd><code>true</code> if <code>x,y</code> lies in the interior of the polygon.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if button:contains(love.mouse.getPosition) then
+    button:setHovered(true)
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="polygon-polygon:intersectsRay"></a>
+	<div id="polygon:intersectsRay" class="function">
+		<div class="definition">function <span class="name">polygon:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></div>
+		<p>Test if the polygon intersects a ray.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>Starting point of the ray.</dd>
+			</dl>
+			<dl>
+				<dt>numbers <code>dx, dy</code></dt>
+				<dd>Direction of the ray.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>boolean <code>intersection</code></dt>
+				<dd><code>true</code> if the given ray intersects the shape.</dd>
+				<dt>number <code>t</code> (only if intersecting)</dt>
+				<dd>Ray parameter of the intersection.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">if poly:intersectsRay(400,300, dx,dy) then
+    love.graphics.setLine(2) -- highlight polygon
+end</code></pre>
 		</div>
 	</div>
 
