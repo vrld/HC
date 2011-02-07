@@ -24,6 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
+local floor = math.floor
+local min, max = math.min, math.max
 module(..., package.seeall)
 local Class = require(_PACKAGE .. 'class')
 local vector = require(_PACKAGE .. 'vector')
@@ -52,9 +54,7 @@ Spatialhash = Class{name = 'Spatialhash', function(self, cell_size)
 end}
 
 function Spatialhash:cellCoords(v)
-	local v = v / self.cell_size
-	v.x, v.y = math.floor(v.x), math.floor(v.y)
-	return v
+	return {x=floor(v.x / self.cell_size), y=floor(v.y / self.cell_size)}
 end
 
 function Spatialhash:cell(v)
@@ -66,7 +66,7 @@ function Spatialhash:insert(obj, ul, lr)
 	local lr = self:cellCoords(lr)
 	for i = ul.x,lr.x do
 		for k = ul.y,lr.y do
-			self.cells[ {x=i,y=k} ][obj] = obj
+			rawset(self.cells[ {x=i,y=k} ], obj, obj)
 		end
 	end
 end
@@ -75,17 +75,17 @@ function Spatialhash:remove(obj, ul, lr)
 	-- no bbox given. => must check all cells
 	if not ul or not lr then
 		for _,cell in pairs(self.cells) do
-			cell[obj] = nil
+			rawset(cell, obj, nil)
 		end
 		return
 	end
 
 	local ul = self:cellCoords(ul)
 	local lr = self:cellCoords(lr)
-	-- els: remove only from bbox
+	-- else: remove only from bbox
 	for i = ul.x,lr.x do
 		for k = ul.y,lr.y do
-			self.cells[{x=i,y=k}][obj] = nil
+			rawset(self.cells[{x=i,y=k}], obj, nil)
 		end
 	end
 end
@@ -95,12 +95,11 @@ function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
 	local ul_old, lr_old = self:cellCoords(ul_old), self:cellCoords(lr_old)
 	local ul_new, lr_new = self:cellCoords(ul_new), self:cellCoords(lr_new)
 
-	-- cells where the object has to be updated
-	local xmin, xmax = math.min(ul_old.x, ul_new.x), math.max(lr_old.x, lr_new.x)
-	local ymin, ymax = math.min(ul_old.y, ul_new.y), math.max(lr_old.y, lr_new.y)
+	local xmin, xmax = min(ul_old.x, ul_new.x), max(lr_old.x, lr_new.x)
+	local ymin, ymax = min(ul_old.y, ul_new.y), max(lr_old.y, lr_new.y)
 
-	-- check for regions that are only occupied by either the old or the new bbox
-	-- remove or add accordingly
+	if xmin == xmax and ymin == ymax then return end
+
 	for i = xmin,xmax do
 		for k = ymin,ymax do
 			local region_old = i >= ul_old.x and i <= lr_old.x and k >= ul_old.y and k <= lr_old.y
@@ -122,11 +121,17 @@ function Spatialhash:getNeighbors(obj, ul, lr)
 		for k = ul.y,lr.y do
 			local cell = self.cells[{x=i,y=k}] or {}
 			for other,_ in pairs(cell) do
-				if other ~= obj then set[other] = other end
+				if obj ~= other then
+					rawset(set, other, true)
+				end
 			end
 		end
 	end
-	for other,_ in pairs(set) do items[#items+1] = other end
+	local i = 1
+	for other,_ in pairs(set) do
+		items[i] = other
+		i = i + 1
+	end
 	return items
 end
 

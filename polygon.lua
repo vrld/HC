@@ -209,8 +209,8 @@ function Polygon:move(dx, dy)
 		dx, dy = dx:unpack()
 	end
 	for i,v in ipairs(self.vertices) do
-		self.vertices[i].x = self.vertices[i].x + dx
-		self.vertices[i].y = self.vertices[i].y + dy
+		v.x = v.x + dx
+		v.y = v.y + dy
 	end
 	self.centroid.x = self.centroid.x + dx
 	self.centroid.y = self.centroid.y + dy
