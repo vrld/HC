@@ -354,7 +354,7 @@ end
 
 function Polygon:intersectsRay(x,y, dx,dy)
 	local p = vector(x,y)
-	local v = vector(dx,dy):normalize_inplace()
+	local v = vector(dx,dy)
 	local n = v:perpendicular()
 
 	local vertices = self.vertices
@@ -369,16 +369,16 @@ function Polygon:intersectsRay(x,y, dx,dy)
 			local r = q2 - p
 			local l = r:cross(w)
 			local m = v:cross(r)
-			if l >= 0 and m >= 0 and m <= det then return true end
+			if l >= 0 and m >= 0 and m <= det then return true, l end
 		else
 			-- lines parralel or incident. get distance of line to
 			-- anchor point. if they are incident, check if an endpoint
 			-- lies on the ray
 			local dist = (q1 - p) * n
 			if dist == 0 then
-				if n:cross(q1) > 0 or n:cross(q2) > 0 then
-					return true
-				end
+				local l,m = v * (q1 - p), v * (q2 - p)
+				if l >= 0 and l >= m then return true, l end
+				if m >= 0 then return true, m end
 			end
 		end
 	end

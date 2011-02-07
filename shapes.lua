@@ -228,9 +228,17 @@ end
 -- circle intersection if distance of ray/center is smaller
 -- than radius
 function CircleShape:intersectsRay(x,y, dx,dy)
-	local n = vector(-dy,dx):normalize_inplace() -- normal vector
-	local d = vector(x,y) - self._center
-	return d * vector(dx,dy) >= 0 and (d * n) < self._radius
+	local pc = vector(x,y) - self._center
+	local d = vector(dx,dy)
+
+	local a = d*d
+	local b = 4 * d * pc
+	local c = pc * pc - self._radius * self._radius
+	local discriminant = b*b - 4*a*c
+	if discriminant < 0 then return false end
+
+	discriminant = math.sqrt(discriminant)
+	return true, math.min(-b + discriminant, -b - discriminant) / (2*a)
 end
 
 --
