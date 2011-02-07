@@ -68,7 +68,8 @@ local Shape = Class{name = 'Shape', function(self, t)
 end}
 
 function Shape:moveTo(x,y)
-	self:move(vector(x,y) - vector(self:center()))
+	local cx,cy = self:center()
+	self:move(x - cx, y - cy)
 end
 
 -- supported shapes
