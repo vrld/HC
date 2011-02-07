@@ -68,9 +68,7 @@ local Shape = Class{name = 'Shape', function(self, t)
 end}
 
 function Shape:moveTo(x,y)
-	if y then x = vector(x,y) end
-	x = x - vector(self:center())
-	self:move(x)
+	self:move(vector(x,y) - vector(self:center()))
 end
 
 -- supported shapes
@@ -212,8 +210,7 @@ function ConcavePolygonShape:contains(x,y)
 end
 
 function CircleShape:contains(x,y)
-	if y then x = vector(x,y) end
-	return (x - self._center):len2() < self._radius * self._radius
+	return (vector(x,y) - self._center):len2() < self._radius * self._radius
 end
 
 
@@ -231,7 +228,7 @@ function CircleShape:intersectsRay(x,y, dx,dy)
 	local pc = vector(x,y) - self._center
 	local d = vector(dx,dy)
 
-	local a = d*d
+	local a = d * d
 	local b = 4 * d * pc
 	local c = pc * pc - self._radius * self._radius
 	local discriminant = b*b - 4*a*c
@@ -274,44 +271,36 @@ end
 
 
 function ConvexPolygonShape:move(x,y)
-	-- y not given => x is a vector
-	if y then x = vector(x,y) end
-	self._polygon:move(x)
+	self._polygon:move(x,y)
 end
 
 function ConcavePolygonShape:move(x,y)
-	-- y not give => x is a vector
-	if y then x = vector(x,y) end
-	self._polygon:move(x)
+	self._polygon:move(x,y)
 	for _,p in ipairs(self._shapes) do
-		p:move(x)
+		p:move(x,y)
 	end
 end
 
 function CircleShape:move(x,y)
-	-- y not given => x is a vector
-	if y then x = vector(x,y) end
-	self._center = self._center + x
+	self._center = self._center + vector(x,y)
 end
 
 
 function ConcavePolygonShape:rotate(angle,cx,cy)
-	if cx and cy then cx = vector(cx,cy) end
 	self._polygon:rotate(angle,cx)
 	for _,p in ipairs(self._shapes) do
-		p:rotate(angle, cx or self._polygon.centroid)
+		p:rotate(angle, cx and vector(cx,cy) or self._polygon.centroid)
 	end
 end
 
 function ConvexPolygonShape:rotate(angle, cx,cy)
-	if cx and cy then cx = vector(cx,cy) end
-	self._polygon:rotate(angle, cx)
+	self._polygon:rotate(angle, cx, cy)
 end
 
 function CircleShape:rotate(angle, cx,cy)
 	if not cx then return end
-	if cx and cy then cx = vector(cx,cy) end
-	self._center = (self._center - cx):rotate_inplace(angle) + cx
+	local c = vector(cx,cy)
+	self._center = (self._center - c):rotate_inplace(angle) + c
 end
 
 
