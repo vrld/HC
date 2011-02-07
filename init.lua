@@ -157,7 +157,7 @@ local function share_group(shape, other)
 end
 
 local _love_update
-function setAutoUpdate(max_step)
+function setAutoUpdate(max_step, times)
 	assert(_love_update == nil, "Auto update already enabled!")
 
 	_love_update = love.update
@@ -170,11 +170,14 @@ function setAutoUpdate(max_step)
 		if max_step > 1 then -- assume it's a framerate
 			max_step = 1 / max_step
 		end
+		local times = time or 1
 		local combined_update = love.update
 		love.update = function(dt)
+			local i = 1
 			while dt > max_step do
 				combined_update(max_step)
 				dt = dt - max_step
+				if i > times then return end
 			end
 			combined_update(dt)
 		end
