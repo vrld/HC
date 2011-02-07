@@ -177,6 +177,7 @@ function setAutoUpdate(max_step, times)
 			while dt > max_step do
 				combined_update(max_step)
 				dt = dt - max_step
+				i = i + 1
 				if i > times then return end
 			end
 			combined_update(dt)
