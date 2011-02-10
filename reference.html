@@ -1324,13 +1324,13 @@ end</code></pre>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>Array</dt>
-				<dd>An array of neighboring objects.</dd>
+				<dt>Set</dt>
+				<dd>A set (i.e. table of <code>t[other] = other</code>) of neighboring objects.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">local others = hash:getNeighbors(obj, vector(-100,-70), vector(0,0))
-for _,other in ipairs(others) do
+for _,other in pairs(others) do
     obj:pushAway(other)
 end</code></pre>
 		</div>
