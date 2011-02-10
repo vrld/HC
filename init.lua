@@ -198,7 +198,7 @@ function update(dt)
 	for _,shape in pairs(shapes) do
 		if not ghosts[shape] then
 			local neighbors = shape:_getNeighbors()
-			for _,other in ipairs(neighbors) do
+			for _,other in pairs(neighbors) do
 				local id = collision_id(shape,other)
 				if not tested[id] then
 					if not (ghosts[other] or share_group(shape, other)) then

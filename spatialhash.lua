@@ -121,18 +121,12 @@ function Spatialhash:getNeighbors(obj, ul, lr)
 		for k = ul.y,lr.y do
 			local cell = self.cells[{x=i,y=k}] or {}
 			for other,_ in pairs(cell) do
-				if obj ~= other then
-					rawset(set, other, true)
-				end
+				rawset(set, other, other)
 			end
 		end
 	end
-	local i = 1
-	for other,_ in pairs(set) do
-		items[i] = other
-		i = i + 1
-	end
-	return items
+	rawset(set, obj, nil)
+	return set
 end
 
 -- module() as shortcut to module.Spatialhash()
