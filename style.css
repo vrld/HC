@@ -108,7 +108,7 @@ h2 {
 	margin-left: 2em;
 }
 
-.overview, .preamble, .function, .class, .module > .name, .caveats {
+.overview, .preamble, .function, .class, .module > .name, .caveats, .tutblock {
 	border: 1px solid #aaa;
 	border-radius: 5px; -moz-border-radius: 5px;
 	padding: .2em .5em;
@@ -130,7 +130,8 @@ h2 {
 .overview {
 	margin-bottom: 2em;
 }
-.caveats h3, .overview h3 {
+
+h3 {
 	margin: 0;
 	color: #405070;
 }
@@ -179,6 +180,7 @@ pre {
 	padding: .2em;
 	margin: 1em 2em;
 	font-weight: normal;
+	max-height: 450px; overflow: auto;
 }
 pre code {
 	font-size: 11pt;
