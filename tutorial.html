@@ -32,8 +32,8 @@
 </div>
 
 <a name="common-ground"></a>
-<div id="common-ground" class="module">
-	<div class="name">Part 0: Common Ground<a class="top" href="#top">^ top</a></div>
+<div id="common-ground" class="outer-block">
+	<h3>Part 0: Common Ground<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		<p>I suck at writing Introductions, so let&#39;s dive right in:</p>
 
@@ -45,8 +45,8 @@
 			shows some coding tricks that make your life easier.</li>
 		</p>
 	</div>
-	<div class="tutblock">
-		<h3>Prerequisites</h3>
+	<div class="tut-block">
+		<h4>Prerequisites</h4>
 		
 		<p>You should already know how to program games with Lua and L&Ouml;VE. If not, <a href="http://love2d.org/wiki/Getting_Started">this</a>,
 		<a href="http://love2d.org/wiki/Tutorial:Hamster_Ball">this</a>, <a href="http://love2d.org/wiki/Tutorial:Callback_Functions">this</a> and
@@ -59,8 +59,8 @@
 </div>
 
 <a name="hello-pong"></a>
-<div id="hello-pong" class="module">
-	<div class="name">Part 1: Hello, PONG!<a class="top" href="#top">^ top</a></div>
+<div id="hello-pong" class="outer-block">
+	<h3>Part 1: Hello, PONG!<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		<p>In our first steps with HardonCollider we will write (yet another) clone of Pong.
 		Using a collision detection library for this task is probably a little over the top,
@@ -79,8 +79,8 @@
 |   `-- vector.lua
 `-- main.lua</pre></p>
 	</div>
-	<div class="function">
-		<h3>Holy Trinity and a Half</h3>
+	<div class="tut-block">
+		<h4>Holy Trinity and a Half</h4>
 		<p>Fill your main.lua with the following:</p>
 		<pre><code class="lua">HC = require 'hardoncollider'
 
@@ -107,22 +107,24 @@ end</code></pre>
 		<p>The next line defines an empty function called <code class="lua">on_collide</code>
 		in which we will handle what should happen when two shapes collide. We will cover
 		the different parameters later.</p>
-		<p><code class="lua">HC.init(100, on_collide)</code>
-		initializes the library, setting the function <code class="lua">on_collide</code>
-		as callback function. The <code class="lua">100</code> defines a cell size which
-		is used internally and which you don't have to worry about at the moment.</p>
-		<p>Finally, <code class="lua">HC.update(dt)</code> will check for collisions and
-		run the callback functions if needed. Instead of manually calling this function
-		in <code class="lua">love.update(dt)</code>, we could have used
-		<code class="lua">HC.setAutoUpdate()</code>:</p>
+		<p><a href="reference.html#hardoncollider-init"><code class="lua">HC.init(100, on_collide)</code></a>
+		initializes the library, setting the <code class="lua">on_collide</code>
+		as <a href="reference.html#hardoncollider-setCallbacks">callback function</a>.
+		The first argument defines a cell size which is used internally to speed things
+		up. You don't have to worry about that at the moment.</p>
+		<p>Finally, <a href="reference.html#hardoncollider-update"><code class="lua">HC.update(dt)</code></a>
+		will check for collisions and run the callback functions if needed. Instead
+		of manually calling this function in <code class="lua">love.update(dt)</code>,
+		we can register HardonCollider to update itself with
+		<a href="reference.html#hardoncollider-setAutoUpdate"><code class="lua">HC.setAutoUpdate()</code></a>:</p>
 		<pre><code class="lua">function love.load()
     HC.init(100, on_collide)
     HC.setAutoUpdate(30) -- run update with a lower boundary of 30 FPS
 end</code></pre>
 	</div>
 
-	<div class="tutblock">
-		<h3>Filling the Void</h3>
+	<div class="tut-block">
+		<h4>Filling the Void</h4>
 		<p>Pong wouldn't be Pong without two paddles and a ball. In fact, it wouldn't be anything.
 		So let's add them by creating two rectangles and a circle shape:</p>
 		<pre><code class="lua">function love.load()
@@ -160,8 +162,8 @@ end</code></pre>
 end</code></pre>
 	</div>
 
-	<div class="tutblock">
-		<h3>Rebound</h3>
+	<div class="tut-block">
+		<h4>Rebound</h4>
 		<p>If you run what we have done so far, you will see the ball moving very, very slowly from the screen
 		center to the left paddle. And then passing it. That's not Pong! The ball needs to
 		bounce off the paddle. This is where <code class="lua">on_collide(dt, shape_a, shape_b)</code>
@@ -217,8 +219,8 @@ end</code></pre>
 end</code></pre>
 	</div>
 
-	<div class="tutblock">
-		<h3>Re-Rebound</h3>
+	<div class="tut-block">
+		<h4>Re-Rebound</h4>
 		<p>Hooray, we've done it! Or have we? As it turns out, we have missed two very important
 		parts: The ball won't bounce off the upper and lower screen border and it's not reset
 		to the screen center once a player scores a goal. We can do both by introducing more
@@ -273,15 +275,15 @@ end</code></pre>
 end</code></pre>
 		<p>Because we want to react on collision only when the ball is involved, we
 		return early if neither one of the shapes is the ball - can you tell what these shapes are in this case?
-		<a href="#---" title="One of the paddles colliding with the top or bottom screen edge">(answer)</a>.
+		<a href="#42" title="one of the paddles colliding with the top or bottom screen edge">(answer)</a>.
 		The rest is relatively straightforward: If the ball hits a goal, it is reset to
 		the screen center and will move to the scoring player's paddle. If the ball hit's
 		either the top or bottom screen edge, it's y-direction is inverted. If it hit's
 		one of the paddles, it is bounced off as before.</p>
 	</div>
 
-	<div class="tutblock">
-		<h3>The Whole Picture</h3>
+	<div class="tut-block">
+		<h4>The Whole Picture</h4>
         <p>And there you have it: Your very first and very feature lacking Pong-clone using HardonCollider:</p>
         <pre><code class="lua">HC = require 'hardoncollider'
 
@@ -363,8 +365,8 @@ function love.draw()
 end</code></pre>
 	</div>
 
-	<div class="tutblock">
-		<h3>Room for Improvements</h3>
+	<div class="tut-block">
+		<h4>Room for Improvements</h4>
 		<p>There is a lot of things you can do to not only make this game more fun
 		but also practice using HardonCollider:
 		<ul>
@@ -388,16 +390,16 @@ end</code></pre>
 </div>
 
 <a name="fly-me-to-the-moon"></a>
-<div id="fly-me-to-the-moon" class="module">
-	<div class="name">Part 2: Fly Me To The Moon<a class="top" href="#top">^ top</a></div>
+<div id="fly-me-to-the-moon" class="outer-block">
+	<h3>Part 2: Fly Me To The Moon<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		This space intentionally left blank.
 	</div>
 </div>
 
 <a name="holygrail"></a>
-<div id="holygrail" class="module">
-	<div class="name">Part 3: Down To Earth<a class="top" href="#top">^ top</a></div>
+<div id="holygrail" class="outer-block">
+	<h3>Part 3: Down To Earth<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		This space intentionally left blank.
 	</div>

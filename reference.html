@@ -43,8 +43,8 @@
 </div>
 
 <a name="hardoncollider"></a>
-<div id="hardoncollider" class="module">
-	<div class="name">hardoncollider<a class="top" href="#top">^ top</a></div>
+<div id="hardoncollider" class="outer-block">
+	<h3>hardoncollider<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		<pre><code class="lua">require "hardoncollider"</code></pre>
 		<p>The main module.</p>
@@ -57,7 +57,7 @@
 	</div>
 
 	<div class="overview">
-		<h3>Module overview</h3>
+		<h4>Module overview</h4>
 		<dl>
 			<dt><a href="#hardoncollider-init">init()</a></dt>
 			<dd>Initialize module.</dd>
@@ -89,8 +89,8 @@
 	</div>
 
 	<a name="hardoncollider-init"></a>
-	<div id="hardoncollider-init" class="function">
-		<div class="definition">function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="hardoncollider-init" class="ref-block">
+		<h4>function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Initializes the library. Call this in <code>love.load()</code>. All the parameters can be omitted.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -117,9 +117,9 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-setCallbacks"></a>
-	<div id="setCallbacks" class="function">
-		<div class="definition">function <span class="name">setCallbacks</span><span class="arglist">(start,persist,stop)</span><a class="top" href="#hardoncollider">^ top</a></div>
-		<div class="definition">function <span class="name">setCallbacks</span><span class="arglist">{start = start,persist = persist,stop = stop}</span></div>
+	<div id="setCallbacks" class="ref-block">
+		<h4>function <span class="name">setCallbacks</span><span class="arglist">(start,persist,stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">setCallbacks</span><span class="arglist">{start = start,persist = persist,stop = stop}</span></h4>
 		<p>Sets the different callbacks. The second calling style let's you specify the callbacks by name, see the example.</p>
 		<p>If <code>nil</code> is passed as any callback, the callback will not be changed.</p>
 		<p>Each callback has the following prototype:
@@ -177,8 +177,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-update"></a>
-	<div id="update" class="function">
-		<div class="definition">function <span class="name">update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="update" class="ref-block">
+		<h4>function <span class="name">update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
 		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
 		not bigger than this maximum and the scene is updated for each time slice.</p>
@@ -204,8 +204,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-setAutoUpdate"></a>
-	<div id="setAutoUpdate" class="function">
-		<div class="definition">function <span class="name">setAutoUpdate</span><span class="arglist">(max_step, times)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="setAutoUpdate" class="ref-block">
+		<h4>function <span class="name">setAutoUpdate</span><span class="arglist">(max_step, times)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Automatically call <code>hardoncollider.update(dt)</code> after each <code>love.update(dt)</code>.</p>
 		<p>Basically overwrites <code>love.update(dt)</code> with the following function:</p>
 		<pre><code class="lua">function love.update(dt)
@@ -261,8 +261,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-setNoAutoUpdate"></a>
-	<div id="setNoAutoUpdate" class="function">
-		<div class="definition">function <span class="name">setNoAutoUpdate</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="setNoAutoUpdate" class="ref-block">
+		<h4>function <span class="name">setNoAutoUpdate</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^ top</a></h4>
 
 		<p>Resets <code>love.update()</code> to the state before calling
 		<a href="#hardoncollider-setAutoUpdate"><code>setAutoUpdate()</code></a>.</p>
@@ -285,8 +285,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-addPolygon"></a>
-	<div id="addPolygon" class="function">
-		<div class="definition">function <span class="name">addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="addPolygon" class="ref-block">
+		<h4>function <span class="name">addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a polygon to the collision detection system. Any non-intersection polygon will work, even convex polygons.</p>
 		<p>Note that if three consecutive points lie on a line, the middle point will be discarded. This means
 		you cannot construct polygon shapes out of lines.</p>
@@ -308,8 +308,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-addRectangle"></a>
-	<div id="addRectangle" class="function">
-		<div class="definition">function <span class="name">addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="addRectangle" class="ref-block">
+		<h4>function <span class="name">addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a rectangle shape to the collision detection system.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -331,8 +331,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-addCircle"></a>
-	<div id="addCircle" class="function">
-		<div class="definition">function <span class="name">addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="addCircle" class="ref-block">
+		<h4>function <span class="name">addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a circle shape to the collision detection system.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -354,8 +354,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-remove"></a>
-	<div id="remove" class="function">
-		<div class="definition">function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="remove" class="ref-block">
+		<h4>function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Remove a shape from the collision detection system. Note that if you remove a shape in
 		the <code>start</code> or <code>persist</code> callback, other shapes might still have
 		collided with it, so the shape will be argument to the other calls of <code>start</code>
@@ -378,8 +378,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-addToGroup"></a>
-	<div id="addToGroup" class="function">
-		<div class="definition">function <span class="name">addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="addToGroup" class="ref-block">
+		<h4>function <span class="name">addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add shapes to a group. <a href="#shapes">Shapes</a> in the same group will not collide with each other.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -402,8 +402,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-removeFromGroup"></a>
-	<div id="removeFromGroup" class="function">
-		<div class="definition">function <span class="name">removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="removeFromGroup" class="ref-block">
+		<h4>function <span class="name">removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Remove shapes from a group.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -426,8 +426,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-setGhost"></a>
-	<div id="setGhost" class="function">
-		<div class="definition">function <span class="name">setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="setGhost" class="ref-block">
+		<h4>function <span class="name">setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Makes a shape permeable. Ghost shapes will not collide with any other shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -448,8 +448,8 @@ end</code></pre>
 	</div>
 
 	<a name="hardoncollider-setSolid"></a>
-	<div id="setSolid" class="function">
-		<div class="definition">function <span class="name">setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></div>
+	<div id="setSolid" class="ref-block">
+		<h4>function <span class="name">setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Makes a shape opaque. <a href="#shapes">Shapes</a> that were ghosts before will be subject to collision again.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -473,8 +473,8 @@ end</code></pre>
 
 
 <a name="shapes"></a>
-<div id="shapes" class="module">
-	<div class="name">hardoncollider.shapes<a class="top" href="#top">^ top</a></div>
+<div id="shapes" class="outer-block">
+	<h3>hardoncollider.shapes<a class="top" href="#top">^ top</a></h3>
 
 	<div class="preamble">
 		<pre><code class="lua">shapes = require "hardoncollider.shapes"</code></pre>
@@ -493,7 +493,7 @@ end</code></pre>
 	</div>
 
 	<div class="overview">
-	<h3>Module overview</h3>
+	<h4>Module overview</h4>
 		<dl>
 			<dt><a href="#shapes-PolygonShape">shapes.PolygonShape</a></dt>
 			<dd>A polygon shape.</dd>
@@ -521,9 +521,9 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-PolygonShape"></a>
-	<div id="PolygonShape" class="class">
-		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shapes">^ top</a></div>
-		<div class="constructor">class <span class="name">PolygonShape</span><span class="arglist">(polygon)</span></div>
+	<div id="PolygonShape" class="ref-block">
+		<h4>class <span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shapes">^ top</a></h4>
+		<h4>class <span class="name">PolygonShape</span><span class="arglist">(polygon)</span></h4>
 		<p>Construct a shape using a non-intersecting ploygon.</p>
 		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the <a href="#polygon"><code>Polygon</code></a> class.</p>
 		<div class="arguments">Parameters:
@@ -546,8 +546,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-CircleShape"></a>
-	<div id="CircleShape" class="class">
-		<div class="constructor">class <span class="name">CircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="CircleShape" class="ref-block">
+		<h4>class <span class="name">CircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Construct a circular shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -569,8 +569,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:contains"></a>
-	<div id="shape:contains" class="function">
-		<div class="definition">function <span class="name">shape:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:contains" class="ref-block">
+		<h4>function <span class="name">shape:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Test if the shape contains a given point.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -592,8 +592,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:intersectsRay"></a>
-	<div id="shape:intersectsRay" class="function">
-		<div class="definition">function <span class="name">shape:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:intersectsRay" class="ref-block">
+		<h4>function <span class="name">shape:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Test if the shape intersects a ray.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -623,8 +623,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:move"></a>
-	<div id="shape:move" class="function">
-		<div class="definition">function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:move" class="ref-block">
+		<h4>function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Move the shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -643,8 +643,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:moveTo"></a>
-	<div id="shape:move" class="function">
-		<div class="definition">function <span class="name">shape:moveTo</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:move" class="ref-block">
+		<h4>function <span class="name">shape:moveTo</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Set the shape's position.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -663,8 +663,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:rotate"></a>
-	<div id="shape:rotate" class="function">
-		<div class="definition">function <span class="name">shape:rotate</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:rotate" class="ref-block">
+		<h4>function <span class="name">shape:rotate</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Rotate the shape. A rotation center can be specified. If no center is given, the
 		shape's center is used.</p>
 		<div class="arguments">Parameters:
@@ -686,8 +686,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:center"></a>
-	<div id="shape:center" class="function">
-		<div class="definition">function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:center" class="ref-block">
+		<h4>function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Get the center of the shape.</p>
 		<p>If the shape is a CircleShape, this is the circle center, else it's the polygon's centroid.</p>
 		<div class="arguments">Parameters:
@@ -707,8 +707,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:outcircle"></a>
-	<div id="shape:outcircle" class="function">
-		<div class="definition">function <span class="name">shape:outcircle</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:outcircle" class="ref-block">
+		<h4>function <span class="name">shape:outcircle</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Get circumscribing circle.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -732,8 +732,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:draw"></a>
-	<div id="shape:draw" class="function">
-		<div class="definition">function <span class="name">shape:draw</span><span class="arglist">(mode)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:draw" class="ref-block">
+		<h4>function <span class="name">shape:draw</span><span class="arglist">(mode)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Draw the shape either filled or as outline.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -752,8 +752,8 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:collidesWith"></a>
-	<div id="shape:collidesWith" class="function">
-		<div class="definition">function <span class="name">shape:collidesWith</span><span class="arglist">(other)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="shape:collidesWith" class="ref-block">
+		<h4>function <span class="name">shape:collidesWith</span><span class="arglist">(other)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Test if two shapes collide.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -780,8 +780,8 @@ end</code></pre>
 
 
 <a name="polygon"></a>
-<div id="polygon" class="module">
-	<div class="name">hardoncollider.polygon<a class="top" href="#top">^ top</a></div>
+<div id="polygon" class="outer-block">
+	<h3>hardoncollider.polygon<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		<pre><code class="lua">polygon = require "hardoncollider.polygon"</code></pre>
 		<p>Definition of a Polygon class and implementation of some handy algorithms.</p>
@@ -789,7 +789,7 @@ end</code></pre>
 	</div>
 
 	<div class="overview">
-	<h3>Module overview</h3>
+	<h4>Module overview</h4>
 		<dl>
 			<dt><a href="#polygon-Polygon">Polygon</a></dt>
 			<dd>The polygon class.</dd>
@@ -819,8 +819,8 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-Polygon"></a>
-	<div id="name" class="class">
-		<div class="constructor">class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="name" class="ref-block">
+		<h4>class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Construct a polygon.</p>
 		<p>At least three points that are not collinear (being on a straight line) are needed to construct the polygon.
 		If there are collinear points, these points will be removed so that the overall shape of the polygon is not changed.</p>
@@ -845,8 +845,8 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-polygon:unpack"></a>
-	<div id="polygon:unpack" class="function">
-		<div class="definition">function <span class="name">polygon:unpack</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="polygon:unpack" class="ref-block">
+		<h4>function <span class="name">polygon:unpack</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Get the polygon's vertices. Useful for drawing with <code>love.graphics.polygon()</code>.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -865,8 +865,8 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-polygon:clone"></a>
-	<div id="polygon:clone" class="function">
-		<div class="definition">function <span class="name">polygon:clone</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="polygon:clone" class="ref-block">
+		<h4>function <span class="name">polygon:clone</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Get a copy of the polygon.</p>
 		<p>Since Lua uses references when simply assigning an existing polygon to a variable, unexpected things can happen when
 		operating on the variable. Consider this code:</p>
@@ -893,8 +893,8 @@ copy:move(10,20)</code></pre>
 	</div>
 
 	<a name="polygon-polygon:getBBox"></a>
-	<div id="polygon:getBBox" class="function">
-		<div class="definition">function <span class="name">polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="polygon:getBBox" class="ref-block">
+		<h4>function <span class="name">polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Get axis aligned bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -917,8 +917,8 @@ love.graphics.rectangle('line', x1,y2, x2-x1, y2-y1)</code></pre>
 	</div>
 
 	<a name="polygon-polygon:isConvex"></a>
-	<div id="polygon:isConvex" class="function">
-		<div class="definition">function <span class="name">polygon:isConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="polygon:isConvex" class="ref-block">
+		<h4>function <span class="name">polygon:isConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Test if a polygon is convex, i.e. a line line between any two points inside the polygon will lie in the interior of the polygon.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -942,9 +942,9 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-polygon:move"></a>
-	<div id="polygon:move" class="function">
-		<div class="definition">function <span class="name">polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#polygon">^ top</a></div>
-		<div class="definition">function <span class="name">polygon:move</span><span class="arglist">(direction)</span></div>
+	<div id="polygon:move" class="ref-block">
+		<h4>function <span class="name">polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#polygon">^ top</a></h4>
+		<h4>function <span class="name">polygon:move</span><span class="arglist">(direction)</span></h4>
 		<p>Move a polygon in a direction. You can either use coordinates <code>x,y</code> or a <a href="http://vrld.github.com/hump/#vector">hump vector</a>.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -965,10 +965,10 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-polygon:rotate"></a>
-	<div id="polygon:rotate" class="function">
-		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle)</span><a class="top" href="#polygon">^ top</a></div>
-		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle, cx, cy)</span></div>
-		<div class="definition">function <span class="name">polygon:rotate</span><span class="arglist">(angle, center)</span></div>
+	<div id="polygon:rotate" class="ref-block">
+		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle)</span><a class="top" href="#polygon">^ top</a></h4>
+		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle, cx, cy)</span></h4>
+		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle, center)</span></h4>
 		<p>Rotate the polygon. You can define a rotation center. If it is omitted, the polygon will be rotated around it's centroid.</p>
 		<p>For defining a rotation center, you can either use coordinate form <code>cx,cy</code> or a <a href="http://vrld.github.com/hump/#vector">hump vector</a>.</p>
 		<div class="arguments">Parameters:
@@ -993,8 +993,8 @@ p2:rotate(math.pi/4, 100,100) -- rotate p2 by 45&deg; around the point 100,100</
 	</div>
 
 	<a name="polygon-polygon:triangulate"></a>
-	<div id="polygon:triangulate" class="function">
-		<div class="definition">function <span class="name">polygon:triangulate</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="polygon:triangulate" class="ref-block">
+		<h4>function <span class="name">polygon:triangulate</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Split the polygon into triangles.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1016,8 +1016,8 @@ end	</code></pre>
 	</div>
 
 	<a name="polygon-polygon:splitConvex"></a>
-	<div id="polygon:splitConvex" class="function">
-		<div class="definition">function <span class="name">polygon:splitConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="polygon:splitConvex" class="ref-block">
+		<h4>function <span class="name">polygon:splitConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Split the polygon into convex sub polygons.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1041,8 +1041,8 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-polygon:mergedWith"></a>
-	<div id="polygon:mergedWith" class="function">
-		<div class="definition">function <span class="name">polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#polygon">^ top</a></div>
+	<div id="polygon:mergedWith" class="ref-block">
+		<h4>function <span class="name">polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#polygon">^ top</a></h4>
 		<p>Create a merged polygon of two polygons if, and only if the two polygons share one edge. If the polygons share more than one edge, the result may be erroneous.</p>
 		<p>This function does not change either polygon, but rather create a new one.</p>
 		<div class="arguments">Parameters:
@@ -1063,8 +1063,8 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-polygon:contains"></a>
-	<div id="polygon:contains" class="function">
-		<div class="definition">function <span class="name">polygon:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="polygon:contains" class="ref-block">
+		<h4>function <span class="name">polygon:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Test if the polygon contains a given point.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1086,8 +1086,8 @@ end</code></pre>
 	</div>
 
 	<a name="polygon-polygon:intersectsRay"></a>
-	<div id="polygon:intersectsRay" class="function">
-		<div class="definition">function <span class="name">polygon:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></div>
+	<div id="polygon:intersectsRay" class="ref-block">
+		<h4>function <span class="name">polygon:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Test if the polygon intersects a ray.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1118,8 +1118,8 @@ end</code></pre>
 
 
 <a name="spatialhash"></a>
-<div id="spatialhash" class="module">
-	<div class="name">hardoncollider.spatialhash<a class="top" href="#top">^ top</a></div>
+<div id="spatialhash" class="outer-block">
+	<h3>hardoncollider.spatialhash<a class="top" href="#top">^ top</a></h3>
 
 	<div class="preamble">
 		<pre><code class="lua">spatialhash = require "hardoncollider.spatialhash"</code></pre>
@@ -1128,7 +1128,7 @@ end</code></pre>
 	</div>
 
 	<div class="overview">
-	<h3>Module overview</h3>
+	<h4>Module overview</h4>
 		<dl>
 			<dt><a href="#spatialhash-Spatialhash">Spatialhash</a></dt>
 			<dd>Spatial hash class.</dd>
@@ -1148,8 +1148,8 @@ end</code></pre>
 	</div>
 
 	<a name="spatialhash-Spatialhash"></a>
-	<div id="Spatialhash" class="class">
-		<div class="constructor"><span class="name">Spatialhash</span><span class="arglist">(cell_size)</span><a class="top" href="#spatialhash">^ top</a></div>
+	<div id="Spatialhash" class="ref-block">
+		<h4><span class="name">Spatialhash</span><span class="arglist">(cell_size)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Create a new spatial hash given a cell size.</p>
 		<p>Choosing a good cell size depends on your application. To get a decent speedup,
 		the average cell should not contain too many objects, nor should a single object
@@ -1176,8 +1176,8 @@ end</code></pre>
 	</div>
 
 	<a name="spatialhash-Spatialhash:cellCoords"></a>
-	<div id="Spatialhash:cellCoords" class="function">
-		<div class="definition">function <span class="name">hash:cellCoords</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
+	<div id="Spatialhash:cellCoords" class="ref-block">
+		<h4>function <span class="name">hash:cellCoords</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Get coordinates of a given value, i.e. the cell index in which a given
 		<a href="http://vrld.github.com/hump/#vector">vector</a> would be placed.</p>
 		</p>
@@ -1199,8 +1199,8 @@ end</code></pre>
 	</div>
 
 	<a name="spatialhash-Spatialhash:cell"></a>
-	<div id="Spatialhash:cell" class="function">
-		<div class="definition">function <span class="name">hash:cell</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></div>
+	<div id="Spatialhash:cell" class="ref-block">
+		<h4>function <span class="name">hash:cell</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Get the cell a given <a href="http://vrld.github.com/hump/#vector">vector</a> would be
 		placed in. This is an actual cell, not the index.</p>
 		<p>A cell is a table which's keys and value are the objects stored in the cell, i.e.:
@@ -1229,8 +1229,8 @@ end</code></pre>
 	</div>
 
 	<a name="spatialhash-Spatialhash:insert"></a>
-	<div id="Spatialhash:insert" class="function">
-		<div class="definition">function <span class="name">hash:insert</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+	<div id="Spatialhash:insert" class="ref-block">
+		<h4>function <span class="name">hash:insert</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Insert an object into the hash using a given bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1253,9 +1253,9 @@ end</code></pre>
 	</div>
 
 	<a name="spatialhash-Spatialhash:remove"></a>
-	<div id="Spatialhash:remove" class="function">
-		<div class="definition">function <span class="name">hash:remove</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
-		<div class="definition">function <span class="name">hash:remove</span><span class="arglist">(obj)</span></div>
+	<div id="Spatialhash:remove" class="ref-block">
+		<h4>function <span class="name">hash:remove</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<h4>function <span class="name">hash:remove</span><span class="arglist">(obj)</span></h4>
 		<p>Remove an object from the hash using a bounding box.</p>
 		<p>If no bounding box is given, search the whole hash to delete the object.</p>
 		<div class="arguments">Parameters:
@@ -1280,8 +1280,8 @@ end</code></pre>
 	</div>
 
 	<a name="spatialhash-Spatialhash:update"></a>
-	<div id="Spatialhash:update" class="function">
-		<div class="definition">function <span class="name">hash:update</span><span class="arglist">(obj, ul_old, lr_old, ul_new, lr_new)</span><a class="top" href="#spatialhash">^ top</a></div>
+	<div id="Spatialhash:update" class="ref-block">
+		<h4>function <span class="name">hash:update</span><span class="arglist">(obj, ul_old, lr_old, ul_new, lr_new)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Update an objects position given the old bounding box and the new bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1309,8 +1309,8 @@ end</code></pre>
 	</div>
 
 	<a name="spatialhash-Spatialhash:getNeighbors"></a>
-	<div id="Spatialhash:getNeighbors" class="function">
-		<div class="definition">function <span class="name">hash:getNeighbors</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></div>
+	<div id="Spatialhash:getNeighbors" class="ref-block">
+		<h4>function <span class="name">hash:getNeighbors</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Query for neighbors of an object given it's bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1339,8 +1339,8 @@ end</code></pre>
 </div>
 
 <a name="vector"></a>
-<div id="vector" class="module">
-	<div class="name">hardoncollider.vector<a class="top" href="#top">^ top</a></div>
+<div id="vector" class="outer-block">
+	<h3>hardoncollider.vector<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		<pre><code class="lua">require "hardoncollider.vector"</code></pre>
 		<p>See <a href="http://vrld.github.com/hump/#vector">hump.vector</a></p>
@@ -1348,8 +1348,8 @@ end</code></pre>
 </div>
 
 <a name="class"></a>
-<div id="class" class="module">
-	<div class="name">hardoncollider.class<a class="top" href="#top">^ top</a></div>
+<div id="class" class="outer-block">
+	<h3>hardoncollider.class<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
 		<pre><code class="lua">require "hardoncollider.class"</code></pre>
 		<p>See <a href="http://vrld.github.com/hump/#class">hump.class</a></p>
