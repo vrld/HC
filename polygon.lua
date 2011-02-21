@@ -344,8 +344,9 @@ function Polygon:contains(x,y)
 
 	local v = self.vertices
 	local in_polygon = false
-	for i = 1, #v - 1 do
-		if cut_ray(v[i], v[i+1]) or cross_boundary(v[i], v[i+1]) then
+	for i = 1, #v do
+		local p, q = v[i], v[(i % #v) + 1]
+		if cut_ray(p,q) or cross_boundary(p,q) then
 			in_polygon = not in_polygon
 		end
 	end
