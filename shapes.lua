@@ -156,7 +156,8 @@ end
 -- let circle shape or compund shape handle the collision
 function ConvexPolygonShape:collidesWith(other)
 	if other._type ~= Shape.POLYGON then
-		return other:collidesWith(self)
+		local collide, sep = other:collidesWith(self)
+		return collide, sep and -sep
 	end
 
 	-- else: type is POLYGON, use the SAT
@@ -190,7 +191,8 @@ function CircleShape:collidesWith(other)
 		end
 		return false
 	elseif other._type == Shape.COMPOUND then
-		return other:collidesWith(self)
+		local collide, sep = other:collidesWith(self)
+		return collide, sep and -sep
 	end
 
 	-- else: other._type == POLYGON
