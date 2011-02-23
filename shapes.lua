@@ -24,6 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
+local math_abs, math_floor, math_min, math_max = math.abs, math.floor, math.min, math.max
+local math_sqrt, math_log, math_pi, math_huge = math.sqrt, math.log, math.pi, math.huge
+local function math_absmin(a,b) return math_abs(a) < math_abs(b) and a or b end
 module(..., package.seeall)
 local Class   = require(_PACKAGE .. 'class')
 local vector  = require(_PACKAGE .. 'vector')
@@ -36,21 +39,23 @@ local function test_axes(axes, shape_one, shape_two, sep, min_overlap)
 	for _,axis in ipairs(axes) do
 		local l1,r1 = shape_one:projectOn(axis)
 		local l2,r2 = shape_two:projectOn(axis)
-		local overlap = math.min(r1,r2) - math.max(l1,l2)
-		if overlap <= 0 then return false end
+		-- do the intervals overlap?
+		if r1 < l2 or r2 < l1 then return false end
 
-		if overlap < min_overlap then
-			sep, min_overlap = -overlap * axis, overlap
+		-- get the smallest absolute overlap
+		local overlap = math_absmin(l2-r1, r2-l1)
+		if math_abs(overlap) < min_overlap then
+			sep, min_overlap = overlap * axis, math_abs(overlap)
 		end
 	end
 	return true, sep, min_overlap
 end
 
 local function SAT(shape_one, axes_one, shape_two, axes_two)
-	local collide, sep, overlap = false, vector(0,0), math.huge
+	local collide, sep, overlap = false, vector(0,0), math_huge
 	collide, sep, overlap = test_axes(axes_one, shape_one, shape_two, sep, overlap)
 	if not collide then return false end
-	collide, sep = test_axes(axes_two, shape_two, shape_one, sep, overlap)
+	collide, sep = test_axes(axes_two, shape_one, shape_two, sep, overlap)
 	return collide, sep
 end
 
@@ -124,10 +129,9 @@ CircleShape:inherit(Shape)
 function ConvexPolygonShape:getAxes()
 	local axes = {}
 	local vert = self._polygon.vertices
-	for i = 1,#vert-1 do
-		axes[#axes+1] = (vert[i+1]-vert[i]):perpendicular():normalize_inplace()
+	for i = 1,#vert do
+		axes[#axes+1] = (vert[i]-vert[(i%#vert)+1]):perpendicular():normalize_inplace()
 	end
-	axes[#axes+1] = (vert[1]-vert[#vert]):perpendicular():normalize_inplace()
 	return axes
 end
 
@@ -137,7 +141,7 @@ function ConvexPolygonShape:projectOn(axis)
 	for i = 1,#vertices do
 		projection[i] = vertices[i] * axis -- same as vertices[i]:projectOn(axis) * axis
 	end
-	return math.min(unpack(projection)), math.max(unpack(projection))
+	return math_min(unpack(projection)), math_max(unpack(projection))
 end
 
 function CircleShape:projectOn(axis)
@@ -177,8 +181,12 @@ end
 function CircleShape:collidesWith(other)
 	if other._type == Shape.CIRCLE then
 		local d = self._center:dist(other._center)
-		if d < self._radius + other._radius then
-			return true, d * (self._center - other.center)
+		local radii = self._radius + other._radius
+		if d < radii then
+			-- if circles overlap, push it out upwards
+			if d == 0 then return true, radii * vector(0,1) end
+			-- otherwise push out in best direction
+			return true, (radii - d) * (self._center - other._center):normalize_inplace()
 		end
 		return false
 	elseif other._type == Shape.COMPOUND then
@@ -196,7 +204,9 @@ function CircleShape:collidesWith(other)
 			closest, dist = points[i], d
 		end
 	end
-	return SAT(self, {(closest-self._center):normalize_inplace()}, other, other:getAxes())
+	local axis = vector(0,1)
+	if dist ~= 0 then axis = (closest - self._center):normalize_inplace() end
+	return SAT(self, {axis}, other, other:getAxes())
 end
 
 --
@@ -235,8 +245,8 @@ function CircleShape:intersectsRay(x,y, dx,dy)
 	local discriminant = b*b - 4*a*c
 	if discriminant < 0 then return false end
 
-	discriminant = math.sqrt(discriminant)
-	return true, math.min(-b + discriminant, -b - discriminant) / (2*a)
+	discriminant = math_sqrt(discriminant)
+	return true, math_min(-b + discriminant, -b - discriminant) / (2*a)
 end
 
 --
@@ -322,7 +332,7 @@ function ConcavePolygonShape:draw(mode)
 end
 
 function CircleShape:draw(mode, segments)
-	local segments = segments or math.max(3, math.floor(math.pi * math.log(self._radius)))
+	local segments = segments or math_max(3, math_floor(math_pi * math_log(self._radius)))
 	love.graphics.circle(mode, self._center.x, self._center.y, self._radius, segments)
 end
 
