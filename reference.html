@@ -75,6 +75,8 @@
 			<dd>Add rectangle to the scene.</dd>
 			<dt><a href="#hardoncollider-addCircle">addCircle()</a></dt>
 			<dd>Add circle to the scene.</dd>
+			<dt><a href="#hardoncollider-addPoint">addPoint()</a></dt>
+			<dd>Add point to the scene.</dd>
 			<dt><a href="#remove">remove()</a></dt>
 			<dd>Remove shape from scene.</dd>
 			<dt><a href="#addToGroup">addToGroup()</a></dt>
@@ -126,7 +128,8 @@ end</code></pre>
 		<pre><code class="lua">function callback(dt, shape_one, shape_two, mtv_x, mtv_y)</code></pre>
 		The two <code>shape</code> parameters are the colliding shapes. The last two parameters, <code>mtv_x</code> and <code>mtv_y</code>
 		define the <em>minimum translation vector</em>, i.e. the direction and magnitude shape_one has to be moved so that
-		the collision will be resolved.</p>
+		the collision will be resolved. Note that if one of the shapes is a <a href="#hardoncollider-addPoint">point shape</a>, the
+		translation vector will be invalid.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>function <code>start</code></dt>
@@ -353,6 +356,31 @@ end</code></pre>
 		</div>
 	</div>
 
+	<a name="hardoncollider-addPoint"></a>
+	<div id="addPoint" class="ref-block">
+		<h4>function <span class="name">addPoint</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Add a point shape to the collision detection system.</p>
+		<p>Point shapes are most useful for bullets or suchs, because
+		detecting collisions between a point and any other shape is a little faster than
+		detecting collision between two non-point shapes. In case of a collision, the callback
+		will not receive a valid minimum translation vector.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>The point's position.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt><a href="#shapes">Shape</a></dt>
+				<dd>The point added to the scene.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">bullets[#bulltes+1] = hardoncollider.addPoint(player.pos.x,player.pos.y)</code></pre>
+		</div>
+	</div>
+
 	<a name="hardoncollider-remove"></a>
 	<div id="remove" class="ref-block">
 		<h4>function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^ top</a></h4>
@@ -499,6 +527,8 @@ end</code></pre>
 			<dd>A polygon shape.</dd>
 			<dt><a href="#shapes-CircleShape">shapes.CircleShape</a></dt>
 			<dd>A circle shape.</dd>
+			<dt><a href="#shapes-PointShape">shapes.PointShape</a></dt>
+			<dd>A point shape.</dd>
 			<dt><a href="#shapes-shape:contains">shape:contains()</a></dt>
 			<dd>Test if shape contains a point.</dd>
 			<dt><a href="#shapes-shape:intersectsRay">shape:intersectsRay()</a></dt>
@@ -565,6 +595,27 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">shape = shapes.CircleShape(400,300, 100)</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-PointShape"></a>
+	<div id="CircleShape" class="ref-block">
+		<h4>class <span class="name">PointShape</span><span class="arglist">(x,y)</span><a class="top" href="#shapes">^ top</a></h4>
+		<p>Construct a point shape.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>The point's position.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt><a href="#shapes">Shape</a></dt>
+				<dd>The constructed point shape.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">shape = shapes.PointShape(400,300)</code></pre>
 		</div>
 	</div>
 
