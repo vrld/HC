@@ -105,9 +105,9 @@ function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
 			local region_old = i >= ul_old.x and i <= lr_old.x and k >= ul_old.y and k <= lr_old.y
 			local region_new = i >= ul_new.x and i <= lr_new.x and k >= ul_new.y and k <= lr_new.y
 			if region_new and not region_old then
-				self.cells[{x=i,y=k}][obj] = obj
+				rawset(self.cells[{x=i,y=k}, obj, obj)
 			elseif not region_new and region_old then
-				self.cells[{x=i,y=k}][obj] = nil
+				rawset(self.cells[{x=i,y=k}, obj, nil)
 			end
 		end
 	end
