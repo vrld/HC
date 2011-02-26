@@ -116,7 +116,7 @@ end
 function Spatialhash:getNeighbors(obj, ul, lr)
 	local ul = self:cellCoords(ul)
 	local lr = self:cellCoords(lr)
-	local set,items = {}, {}
+	local set = {}
 	for i = ul.x,lr.x do
 		for k = ul.y,lr.y do
 			local cell = self.cells[{x=i,y=k}] or {}

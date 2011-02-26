@@ -38,6 +38,7 @@ _M.vector = nil
 
 local PolygonShape = Shapes.PolygonShape
 local CircleShape  = Shapes.CircleShape
+local PointShape   = Shapes.PointShape
 
 local is_initialized = false
 local hash = nil
@@ -141,6 +142,33 @@ function addCircle(cx, cy, radius)
 	return new_shape(shape, c-r, c+r)
 end
 
+function addPoint(x,y)
+	assert(is_initialized, "Not properly initialized!")
+	local shape = PointShape(x,y)
+	local function hash_aware_member(oldfunc)
+		return function(self, ...)
+			rawset(hash:cell(self._pos), self, nil)
+			oldfunc(self, ...)
+			rawset(hash:cell(self._pos), self, self)
+		end
+	end
+	shape.move = hash_aware_member(shape.move)
+	shape.rotate = hash_aware_member(shape.rotate)
+	function shape:_getNeighbors()
+		local set = {}
+		for _,other in pairs(hash:cell(self._pos)) do
+			rawset(set, other, other)
+		end
+		rawset(set, self, nil)
+		return set
+	end
+	function shape:_removeFromHash()
+		hash:remove(self, self._pos, self._pos)
+	end
+
+	return new_shape(shape, shape._pos, shape._pos)
+end
+
 -- get unique indentifier for an unordered pair of shapes, i.e.:
 -- collision_id(s,t) = collision_id(t,s)
 local function collision_id(s,t)
@@ -235,7 +263,7 @@ end
 -- remove shape from internal tables and the hash
 function remove(shape)
 	local id = shape_ids[shape]
-	if not id then return end
+	if not id or not shapes[id] then return end
 	shapes[id] = nil
 	ghosts[shape] = nil
 	shape:_removeFromHash()

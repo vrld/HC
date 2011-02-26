@@ -81,6 +81,7 @@ end
 Shape.POLYGON  = setmetatable({}, {__tostring = function() return 'POLYGON'  end})
 Shape.COMPOUND = setmetatable({}, {__tostring = function() return 'COMPOUND' end})
 Shape.CIRCLE   = setmetatable({}, {__tostring = function() return 'CIRCLE' end})
+Shape.POINT    = setmetatable({}, {__tostring = function() return 'POINT' end})
 
 --
 -- class definitions
@@ -122,6 +123,12 @@ CircleShape = Class{name = 'CircleShape', function(self, cx,cy, radius)
 	self._radius = radius
 end}
 CircleShape:inherit(Shape)
+
+PointShape = Class{name = 'PointShape', function(self, x,y)
+	Shape.construct(self, Shape.POINT)
+	self._pos = vector(x,y)
+end}
+PointShape:inherit(Shape)
 
 --
 -- collision functions
@@ -166,6 +173,10 @@ function ConvexPolygonShape:collidesWith(other)
 end
 
 function ConcavePolygonShape:collidesWith(other)
+	if other._type == Shape.POINT then
+		return other:collidesWith(self)
+	end
+
 	if not outcircles_intersect(self, other) then return false end
 
 	local sep, collide, collisions = vector(0,0), false, 0
@@ -193,6 +204,8 @@ function CircleShape:collidesWith(other)
 	elseif other._type == Shape.COMPOUND then
 		local collide, sep = other:collidesWith(self)
 		return collide, sep and -sep
+	elseif other._type == Shape.POINT then
+		return other:collidesWith(self)
 	end
 
 	-- else: other._type == POLYGON
@@ -211,6 +224,13 @@ function CircleShape:collidesWith(other)
 	return SAT(self, {axis}, other, other:getAxes())
 end
 
+function PointShape:collidesWith(other)
+	if other._type == Shape.POINT then
+		return (self._pos == other._pos), vector(0,0)
+	end
+	return other:contains(self._pos.x, self._pos.y), vector(0,0)
+end
+
 --
 -- point location/ray intersection
 --
@@ -224,6 +244,10 @@ end
 
 function CircleShape:contains(x,y)
 	return (vector(x,y) - self._center):len2() < self._radius * self._radius
+end
+
+function PointShape:contains(x,y)
+	return x == self._pos.x and y == self._pos.y
 end
 
 
@@ -251,6 +275,13 @@ function CircleShape:intersectsRay(x,y, dx,dy)
 	return true, math_min(-b + discriminant, -b - discriminant) / (2*a)
 end
 
+-- point shape intersects ray if it lies on the ray
+function PointShape:intersectsRay(x,y,dx,dy)
+	local p = self._pos - vector(x,y)
+	local d = vector(dx,dy)
+	return p * vector(dy, -dx), p * d / d:len2()
+end
+
 --
 -- auxiliary
 --
@@ -266,6 +297,9 @@ function CircleShape:center()
 	return self._center:unpack()
 end
 
+function PointShape:center()
+	return self._pos:unpack()
+end
 
 function ConvexPolygonShape:outcircle()
 	local cx,cy = self:center()
@@ -280,6 +314,10 @@ end
 function CircleShape:outcircle()
 	local cx,cy = self:center()
 	return cx,cy, self._radius
+end
+
+function PointShape:outcircle()
+	return self._pos.x, self._pos.y, 0
 end
 
 
@@ -298,6 +336,11 @@ function CircleShape:move(x,y)
 	self._center = self._center + vector(x,y)
 end
 
+function PointShape:move(x,y)
+	self._pos.x = self._pos.x + x
+	self._pos.y = self._pos.y + y
+end
+
 
 function ConcavePolygonShape:rotate(angle,cx,cy)
 	self._polygon:rotate(angle,cx)
@@ -314,6 +357,12 @@ function CircleShape:rotate(angle, cx,cy)
 	if not cx then return end
 	local c = vector(cx,cy)
 	self._center = (self._center - c):rotate_inplace(angle) + c
+end
+
+function PointShape:rotate(angle, cx,cy)
+	if not cx then return end
+	local c = vector(cx,cy)
+	self._pos = (self._pos - c):rotate_inplace(angle) + c
 end
 
 
@@ -338,3 +387,6 @@ function CircleShape:draw(mode, segments)
 	love.graphics.circle(mode, self._center.x, self._center.y, self._radius, segments)
 end
 
+function PointShape:draw()
+	love.graphics.point(self._pos.x, self._pos.y)
+end
