@@ -279,7 +279,8 @@ end
 function PointShape:intersectsRay(x,y,dx,dy)
 	local p = self._pos - vector(x,y)
 	local d = vector(dx,dy)
-	return p * vector(dy, -dx), p * d / d:len2()
+	local t = p * d / d:len2()
+	return t >= 0, t
 end
 
 --
