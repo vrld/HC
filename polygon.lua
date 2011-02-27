@@ -218,7 +218,7 @@ end
 
 function Polygon:rotate(angle, center, cy)
 	local center = center or self.centroid
-	if cy then center = vector(cy) end
+	if cy then center = vector(center, cy) end
 	for i,v in ipairs(self.vertices) do
 		self.vertices[i] = (self.vertices[i] - center):rotate_inplace(angle) + center
 	end
