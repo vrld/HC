@@ -70,11 +70,24 @@ end
 --
 local Shape = Class{name = 'Shape', function(self, t)
 	self._type = t
+	self._rotation = 0
 end}
 
 function Shape:moveTo(x,y)
 	local cx,cy = self:center()
 	self:move(x - cx, y - cy)
+end
+
+function Shape:rotation()
+	return self._rotation
+end
+
+function Shape:rotate(angle)
+	self._rotation = self._rotation + angle
+end
+
+function Shape:setRotation(angle, x,y)
+	return self:rotate(angle - self._rotation, x,y)
 end
 
 -- supported shapes
@@ -344,6 +357,7 @@ end
 
 
 function ConcavePolygonShape:rotate(angle,cx,cy)
+	Shape.rotate(self, angle)
 	self._polygon:rotate(angle,cx)
 	for _,p in ipairs(self._shapes) do
 		p:rotate(angle, cx and vector(cx,cy) or self._polygon.centroid)
@@ -351,16 +365,19 @@ function ConcavePolygonShape:rotate(angle,cx,cy)
 end
 
 function ConvexPolygonShape:rotate(angle, cx,cy)
+	Shape.rotate(self, angle)
 	self._polygon:rotate(angle, cx, cy)
 end
 
 function CircleShape:rotate(angle, cx,cy)
+	Shape.rotate(self, angle)
 	if not cx then return end
 	local c = vector(cx,cy)
 	self._center = (self._center - c):rotate_inplace(angle) + c
 end
 
 function PointShape:rotate(angle, cx,cy)
+	Shape.rotate(self, angle)
 	if not cx then return end
 	local c = vector(cx,cy)
 	self._pos = (self._pos - c):rotate_inplace(angle) + c
