@@ -539,8 +539,12 @@ end</code></pre>
 			<dd>Set the shape's position.</dd>
 			<dt><a href="#shapes-shape:rotate">shape:rotate()</a></dt>
 			<dd>Rotate the shape.</dd>
+			<dt><a href="#shapes-shape:setRotation">shape:setRotation()</a></dt>
+			<dd>Set the shape's rotation.</dd>
 			<dt><a href="#shapes-shape:center">shape:center()</a></dt>
 			<dd>Get the shape's center.</dd>
+			<dt><a href="#shapes-shape:rotation()">shape:rotation()</a></dt>
+			<dd>Get the shape's rotation.</dd>
 			<dt><a href="#shapes-shape:outcircle">shape:outcircle()</a></dt>
 			<dd>Get circumscribing circle.</dd>
 			<dt><a href="#shapes-shape:draw">shape:draw()</a></dt>
@@ -722,7 +726,7 @@ end</code></pre>
 			<dl>
 				<dt>number <code>angle</code></dt>
 				<dd>Amount to rotate the shape (in radians).</dd>
-				<dt>numbers <code>cx, cy</code></dt>
+				<dt>numbers <code>cx, cy</code> (optional)</dt>
 				<dd>Rotation center. Defaults to the shape's center if omitted.</dd>
 			</dl>
 		</div>
@@ -736,11 +740,37 @@ end</code></pre>
 		</div>
 	</div>
 
+	<a name="shapes-shape:setRotation"></a>
+	<div id="shape:setRotation" class="ref-block">
+		<h4>function <span class="name">shape:setRotation</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shapes">^ top</a></h4>
+		<p>Set the rotation of a shape. A rotation center can be specified. If no center is given, the
+		shape's center is used.</p>
+		<p>Equivalent to:</p>
+		<pre><code class="lua">shape:rotate(angle - shape.rotation, cx,cy)</code></pre>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>number <code>angle</code></dt>
+				<dd>Rotation angle (in radians).</dd>
+				<dt>numbers <code>cx, cy</code> (optional)</dt>
+				<dd>Rotation center. Defaults to the shape's center if omitted.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">rectangle:setRotation(math.pi, 100,100)</code></pre>
+		</div>
+	</div>
+
 	<a name="shapes-shape:center"></a>
 	<div id="shape:center" class="ref-block">
 		<h4>function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Get the center of the shape.</p>
-		<p>If the shape is a CircleShape, this is the circle center, else it's the polygon's centroid.</p>
+		<p>If the shape is a CircleShape, returns the circle center. In case of a point shape, returns the position.
+		Else returns the polygon's centroid.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>None</dt>
@@ -754,6 +784,26 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">print("Circle at:", circle:center())</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:rotation"></a>
+	<div id="shape:rotation" class="ref-block">
+		<h4>function <span class="name">shape:rotation</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
+		<p>Get the shape's rotation angle in radians.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>None</dt>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>number <code>angle</code></dt>
+				<dd>The rotation angle in radians.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">print("Box rotation:", box:rotation())</code></pre>
 		</div>
 	</div>
 
