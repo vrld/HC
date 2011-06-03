@@ -30,12 +30,6 @@ local Polygon     = require(_NAME .. '.polygon')
 local Spatialhash = require(_NAME .. '.spatialhash')
 local vector      = require(_NAME .. '.vector')
 
--- hide submodules
-_M.shapes = nil
-_M.polygon = nil
-_M.spatialhash = nil
-_M.vector = nil
-
 local PolygonShape = Shapes.PolygonShape
 local CircleShape  = Shapes.CircleShape
 local PointShape   = Shapes.PointShape
@@ -43,36 +37,45 @@ local PointShape   = Shapes.PointShape
 local is_initialized = false
 local hash = nil
 
-local shapes, ghosts = {}, {}
+local active_shapes, passive_shapes, ghosts = {}, {}, {}
+local current_shape_id = 0
 local shape_ids = setmetatable({}, {__mode = "k"})
 local groups = {}
 
 local function __NOT_INIT() error("Not yet initialized") end
 local function __NULL() end
-local cb_start, cb_persist, cb_stop = __NOT_INIT, __NOT_INIT, __NOT_INIT
+local cb_collide, cb_stop = __NOT_INIT, __NOT_INIT
 
-function init(cell_size, callback_start, callback_persist, callback_stop)
-	cb_start   = callback_start   or __NULL
-	cb_persist = callback_persist or __NULL
+function init(cell_size, callback_collide, callback_stop)
+	cb_collide = callback_collide or __NULL
 	cb_stop    = callback_stop    or __NULL
 	hash = Spatialhash(cell_size)
 	is_initialized = true
 end
 
-function setCallbacks(start,persist,stop)
-	local tbl = start
-	if type(start) == "function" then
-		tbl = {start = start, persist = persist, stop = stop}
+function setCallbacks(collide, stop)
+	if type(collide) == "table" and not (getmetatable(collide) or {}).__call then
+		stop = collide.stop
+		collide = collide.collide
 	end
-	if tbl.start   then cb_start   = tbl.start   end
-	if tbl.persist then cb_persist = tbl.persist end
-	if tbl.stop    then cb_stop    = tbl.stop    end
+
+	if collide then
+		assert(type(collide) == "function" or (getmetatable(collide) or {}).__call,
+			"collision callback must be a function or callable table")
+		cb_collide = collide
+	end
+
+	if stop then
+		assert(type(stop) == "function" or (getmetatable(stop) or {}).__call,
+			"stop callback must be a function or callable table")
+		cb_stop = stop
+	end
 end
 
 local function new_shape(shape, ul,lr)
-	local id = #shapes+1
-	shapes[id] = shape
-	shape_ids[shape] = id
+	current_shape_id = current_shape_id + 1
+	active_shapes[current_shape_id] = shape
+	shape_ids[shape] = current_shape_id
 	hash:insert(shape, ul,lr)
 	shape._groups = {}
 	return shape
@@ -223,19 +226,17 @@ local colliding_last_frame = {}
 function update(dt)
 	-- collect colliding shapes
 	local tested, colliding = {}, {}
-	for _,shape in pairs(shapes) do
-		if not ghosts[shape] then
-			local neighbors = shape:_getNeighbors()
-			for _,other in pairs(neighbors) do
-				local id = collision_id(shape,other)
-				if not tested[id] then
-					if not (ghosts[other] or share_group(shape, other)) then
-						local collide, sep = shape:collidesWith(other)
-						if collide then
-							colliding[id] = {shape, other, sep.x, sep.y}
-						end
-						tested[id] = true
+	for _,shape in pairs(active_shapes) do
+		local neighbors = shape:_getNeighbors()
+		for _,other in pairs(neighbors) do
+			local id = collision_id(shape,other)
+			if not tested[id] then
+				if not (ghosts[other] or share_group(shape, other)) then
+					local collide, sep = shape:collidesWith(other)
+					if collide then
+						colliding[id] = {shape, other, sep.x, sep.y}
 					end
+					tested[id] = true
 				end
 			end
 		end
@@ -243,12 +244,8 @@ function update(dt)
 
 	-- call colliding callbacks on colliding shapes
 	for id,info in pairs(colliding) do
-		if colliding_last_frame[id] then
-			colliding_last_frame[id] = nil
-			cb_persist( dt, unpack(info) )
-		else
-			cb_start( dt, unpack(info) )
-		end
+		colliding_last_frame[id] = nil
+		cb_collide( dt, unpack(info) )
 	end
 
 	-- call stop callback on shapes that do not collide
@@ -263,9 +260,12 @@ end
 -- remove shape from internal tables and the hash
 function remove(shape)
 	local id = shape_ids[shape]
-	if not id or not shapes[id] then return end
-	shapes[id] = nil
+	if id then
+		active_shapes[id] = nil
+		passive_shapes[id] = nil
+	end
 	ghosts[shape] = nil
+	shape_ids[shape] = nil
 	shape:_removeFromHash()
 end
 
@@ -287,12 +287,38 @@ function removeFromGroup(group, shape, ...)
 	return removeFromGroup(group, ...)
 end
 
+function setPassive(shape, ...)
+	if not shape then return end
+	assert(shape_ids[shape], "Shape was not created by main module!")
+	local id = shape_ids[shape]
+	if not id or ghosts[shape] then return end
+
+	active_shapes[id] = nil
+	passive_shapes[id] = shape
+
+	return setPassive(...)
+end
+
+function setActive(shape, ...)
+	if not shape then return end
+	assert(shape_ids[shape], "Shape was not created by main module!")
+	local id = shape_ids[shape]
+	if not id or ghosts[shape] then return end
+
+	active_shapes[id] = shape
+	passive_shapes[id] = nil
+
+	return setActive(...)
+end
+
 function setGhost(shape, ...)
 	if not shape then return end
 	assert(shape_ids[shape], "Shape was not created by main module!")
 	local id = shape_ids[shape]
 	if not id then return end
 
+	active_shapes[id] = nil
+	passive_shapes[id] = nil
 	ghosts[shape] = shape
 	return setGhost(...)
 end
@@ -303,6 +329,8 @@ function setSolid(shape, ...)
 	local id = shape_ids[shape]
 	if not id then return end
 
+	active_shapes[id] = shape
+	passive_shapes[id] = nil
 	ghosts[shape] = nil
 	return setSolid(...)
 end
