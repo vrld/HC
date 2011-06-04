@@ -75,15 +75,9 @@
 -- array to hold collision messages
 local text = {}
 
--- this is called when two shapes begin colliding
-function collision_start(dt, shape_a, shape_b, mtv_x, mtv_y)
-    text[#text+1] = string.format("Started colliding. mtv = (%s,%s)",
-                                    mtv_x, mtv_y)
-end
-
--- this is called when two shapes continue colliding
-function collision_persist(dt, shape_a, shape_b, mtv_x, mtv_y)
-    text[#text+1] = string.format("Still colliding. mtv = (%s,%s)", 
+-- this is called when two shapes collide
+function on_collision(dt, shape_a, shape_b, mtv_x, mtv_y)
+    text[#text+1] = string.format("Colliding. mtv = (%s,%s)", 
                                     mtv_x, mtv_y)
 end
 
@@ -94,7 +88,7 @@ end
 
 function love.load()
     -- initialize library
-    HC.init(100, collision_start, collision_persist, collision_stop)
+    HC.init(100, on_collision, collision_stop)
 
     -- add a rectangle to the scene
     rect = HC.addRectangle(200,400,400,20)

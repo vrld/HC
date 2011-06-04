@@ -83,6 +83,10 @@
 			<dd>Group shapes that should not collide.</dd>
 			<dt><a href="#removeFromGroup">removeFromGroup()</a></dt>
 			<dd>Remove shape from a group.</dd>
+			<dt><a href="#setPassive">setPassive()</a></dt>
+			<dd>Stops shape actively searching for collision candidates.</dd>
+			<dt><a href="#setActive">setActive()</a></dt>
+			<dd>Let shape actively search for collision candidates.</dd>
 			<dt><a href="#setGhost">setGhost()</a></dt>
 			<dd>Stops shape from colliding.</dd>
 			<dt><a href="#setSolid">setSolid()</a></dt>
@@ -92,18 +96,16 @@
 
 	<a name="hardoncollider-init"></a>
 	<div id="hardoncollider-init" class="ref-block">
-		<h4>function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">init</span><span class="arglist">(cell_size, callback_collide, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Initializes the library. Call this in <code>love.load()</code>. All the parameters can be omitted.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>number <code>cell_size</code> (100)</dt>
 				<dd>Cell size for internal search structure.</dd>
-				<dt>function <code>callback_start</code> (empty function)</dt>
-				<dd>Called when two shapes start colliding.</dd>
-				<dt>function <code>callback_persist</code> (empty function)</dt>
-				<dd>Called when two continue to collide, i.e. if the collision lasts more than one frame.</dd>
+				<dt>function <code>callback_collide</code> (empty function)</dt>
+				<dd>Called when two shapes collide.</dd>
 				<dt>function <code>callback_stop</code> (empty function)</dt>
-				<dd>Called when two shapes stop colliding.</dd>
+				<dd>Called when two shapes stopped colliding.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -120,24 +122,22 @@ end</code></pre>
 
 	<a name="hardoncollider-setCallbacks"></a>
 	<div id="setCallbacks" class="ref-block">
-		<h4>function <span class="name">setCallbacks</span><span class="arglist">(start,persist,stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<h4>function <span class="name">setCallbacks</span><span class="arglist">{start = start,persist = persist,stop = stop}</span></h4>
+		<h4>function <span class="name">setCallbacks</span><span class="arglist">(collide, stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">setCallbacks</span><span class="arglist">{collide = collide, stop = stop}</span></h4>
 		<p>Sets the different callbacks. The second calling style let's you specify the callbacks by name, see the example.</p>
 		<p>If <code>nil</code> is passed as any callback, the callback will not be changed.</p>
-		<p>Each callback has the following prototype:
+		<p>The callbacks have the following function prototype:
 		<pre><code class="lua">function callback(dt, shape_one, shape_two, mtv_x, mtv_y)</code></pre>
-		The two <code>shape</code> parameters are the colliding shapes. The last two parameters, <code>mtv_x</code> and <code>mtv_y</code>
+		<code>shape_one</code> and <code>shape_two</code> are the colliding shapes. <code>mtv_x</code> and <code>mtv_y</code>
 		define the <em>minimum translation vector</em>, i.e. the direction and magnitude shape_one has to be moved so that
 		the collision will be resolved. Note that if one of the shapes is a <a href="#hardoncollider-addPoint">point shape</a>, the
 		translation vector will be invalid.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>function <code>start</code></dt>
-				<dd>Called when two shapes start colliding.</dd>
-				<dt>function <code>persist</code></dt>
-				<dd>Called when two continue to collide, i.e. if the collision lasts more than one frame.</dd>
-				<dt>function <code>stop</code></dt>
-				<dd>Called when two shapes stop colliding.</dd>
+				<dt>function <code>callback_collide</code></dt>
+				<dd>Called when two shapes collide.</dd>
+				<dt>function <code>callback_stop</code></dt>
+				<dd>Called when two shapes stopped colliding.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -146,20 +146,15 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">function start(dt, shape_one, shape_two, mtv_x, mtv_y)
-    print('started colliding:', shape_one, shape_two)
-	print('mtv:', mtv_x, mtv_y)
-end
-
-function persist_one(dt, shape_one, shape_two, mtv_x, mtv_y)
-    print('still colliding:', shape_one, shape_two)
+			<pre><code class="lua">function collide_one(dt, shape_one, shape_two, mtv_x, mtv_y)
+    print('colliding:', shape_one, shape_two)
     -- move both shape_one and shape_two to resolve the collision
     shape_one:move(mtv_x/2, mtv_y/2)
     shape_two:move(-mtv_x/2, -mtv_y/2)
 end
 
-function persist_two(dt, shape_one, shape_two, mtv_x, mtv_y)
-    print('still colliding:', shape_one, shape_two)
+function collide_two(dt, shape_one, shape_two, mtv_x, mtv_y)
+    print('colliding:', shape_one, shape_two)
     -- move only shape_one to resolve the collision
     shape_one:move(mtv_x, mtv_y)
 end
@@ -172,9 +167,9 @@ end
 function love.load()
     hardoncollider.init(100)
     -- set initial callbacks
-    hardoncollider.setCallbacks(start, persist_one, stop)
+    hardoncollider.setCallbacks(collide_one, stop)
     -- change persist callback
-    hardoncollider.setCallbacks{persist = persist_two}
+    hardoncollider.setCallbacks{collide = collide_two}
 end</code></pre>
 		</div>
 	</div>
@@ -183,8 +178,6 @@ end</code></pre>
 	<div id="update" class="ref-block">
 		<h4>function <span class="name">update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
-		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
-		not bigger than this maximum and the scene is updated for each time slice.</p>
 		<p>Note that the delta time has no effect on the collision detection itself, but
 		will be passed to the callback functions.</p>
 		
@@ -450,6 +443,53 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">hardoncollider.removeFromGroup("platforms", not_a_platform)</code></pre>
+		</div>
+	</div>
+
+	<a name="hardoncollider-setPassive"></a>
+	<div id="setPassive" class="ref-block">
+		<h4>function <span class="name">setPassive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Sets shape to be passive. Passive shapes will be subject to collision detection,
+		but will not actively search for collision candidates. This means that if two
+		passive shapes collide, no collision callback will be invoked (in fact, the
+		collision won't even be detected).</p>
+		<p>This function exists purely for performance optimisation. Use it wisely.
+		Good candidates for passive shapes are traps and terrain.</p>
+		<p><em>Note:</em> Shapes are active by default</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to become passive.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">hardoncollider.setPassive(ground, bridge, spikes)</code></pre>
+		</div>
+	</div>
+
+	<a name="hardoncollider-setActive"></a>
+	<div id="setActive" class="ref-block">
+		<h4>function <span class="name">setActive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Makes shapes active again.</p>
+		<p><em>Note:</em> Shapes are active by default</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to become active.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">hardoncollider.setActive(collapsing_bridge)</code></pre>
 		</div>
 	</div>
 
