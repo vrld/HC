@@ -53,6 +53,14 @@ function init(cell_size, callback_collide, callback_stop)
 	is_initialized = true
 end
 
+function clear()
+	hash = Spatialhash(hash.cell_size)
+	active_shapes, passive_shapes, ghosts = {}, {}, {}
+	current_shape_id = 0
+	shape_ids = setmetatable({}, {__mode = "k"})
+	groups = {}
+end
+
 function setCallbacks(collide, stop)
 	if type(collide) == "table" and not (getmetatable(collide) or {}).__call then
 		stop = collide.stop
