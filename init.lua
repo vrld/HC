@@ -51,7 +51,14 @@ local HC = Class{name = "HardonCollider", function(self, cell_size, callback_col
 end}
 
 function HC:clear()
-	self = HC(self.hash.cell_size, self.on_collide, self.on_stop)
+	self._active_shapes  = {}
+	self._passive_shapes = {}
+	self._ghost_shapes   = {}
+	self._current_shape_id = 0
+	self._shape_ids      = setmetatable({}, {__mode = "k"}) -- reverse lookup
+	self.groups          = {}
+	self._colliding_last_frame = {}
+	self._hash           = Spatialhash(self.hash.cell_size)
 	return self
 end
 
