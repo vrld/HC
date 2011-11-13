@@ -24,11 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-module(..., package.seeall)
-local Class = require(_PACKAGE .. 'class')
-local vector = require(_PACKAGE .. 'vector')
-_M.class = nil
-_M.vector = nil
+local _PACKAGE = (...):match("^(.+)%.[^%.]+")
+local Class = require(_PACKAGE .. '.class')
+local vector = require(_PACKAGE .. '.vector')
 
 ----------------------------
 -- Private helper functions
@@ -108,7 +106,7 @@ end
 -----------------
 -- Polygon class
 --
-Polygon = Class{name = "Polygon", function(self, ...)
+local Polygon = Class{name = "Polygon", function(self, ...)
 	local vertices = removeCollinear( toVertexList({}, ...) )
 	assert(#vertices >= 3, "Need at least 3 non collinear points to build polygon (got "..#vertices..")")
 
@@ -222,6 +220,7 @@ function Polygon:rotate(angle, center, cy)
 	for i,v in ipairs(self.vertices) do
 		self.vertices[i] = (self.vertices[i] - center):rotate_inplace(angle) + center
 	end
+	self.centroid = (self.centroid - center):rotate_inplace(angle) + center
 end
 
 -- triangulation by the method of kong
@@ -386,9 +385,4 @@ function Polygon:intersectsRay(x,y, dx,dy)
 	return false
 end
 
-
--- module() as shortcut to module.Polygon()
-do
-	local m = getmetatable(_M)
-	m.__call = function(_, ...) return Polygon(...) end
-end
+return Polygon

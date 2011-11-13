@@ -26,11 +26,10 @@ THE SOFTWARE.
 
 local floor = math.floor
 local min, max = math.min, math.max
-module(..., package.seeall)
-local Class = require(_PACKAGE .. 'class')
-local vector = require(_PACKAGE .. 'vector')
-_M.class = nil
-_M.vector = nil
+
+local _PACKAGE = (...):match("^(.+)%.[^%.]+")
+local Class = require(_PACKAGE .. '.class')
+local vector = require(_PACKAGE .. '.vector')
 
 -- special cell accesor metamethods, so vectors are converted
 -- to a string before using as keys
@@ -48,7 +47,7 @@ function cell_meta.__index(tbl, key)
 	return ret
 end
 
-Spatialhash = Class{name = 'Spatialhash', function(self, cell_size)
+local Spatialhash = Class{name = 'Spatialhash', function(self, cell_size)
 	self.cell_size = cell_size or 100
 	self.cells = setmetatable({}, cell_meta)
 end}
@@ -95,20 +94,18 @@ function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
 	local ul_old, lr_old = self:cellCoords(ul_old), self:cellCoords(lr_old)
 	local ul_new, lr_new = self:cellCoords(ul_new), self:cellCoords(lr_new)
 
-	local xmin, xmax = min(ul_old.x, ul_new.x), max(lr_old.x, lr_new.x)
-	local ymin, ymax = min(ul_old.y, ul_new.y), max(lr_old.y, lr_new.y)
+	if ul_old.x == ul_new.x and ul_old.y == ul_new.x and lr_old.x == lr_new.x and lr_old.y == lr_new.y then
+		return
+	end
 
-	if xmin == xmax and ymin == ymax then return end
-
-	for i = xmin,xmax do
-		for k = ymin,ymax do
-			local region_old = i >= ul_old.x and i <= lr_old.x and k >= ul_old.y and k <= lr_old.y
-			local region_new = i >= ul_new.x and i <= lr_new.x and k >= ul_new.y and k <= lr_new.y
-			if region_new and not region_old then
-				rawset(self.cells[{x=i,y=k}], obj, obj)
-			elseif not region_new and region_old then
-				rawset(self.cells[{x=i,y=k}], obj, nil)
-			end
+	for i = ul_old.x,lr_old.x do
+		for k = ul_old.y,lr_old.y do
+			rawset(self.cells[{x=i,y=k}], obj, nil)
+		end
+	end
+	for i = ul_new.x,lr_new.x do
+		for k = ul_new.y,lr_new.y do
+			rawset(self.cells[{x=i,y=k}], obj, obj)
 		end
 	end
 end
@@ -129,8 +126,4 @@ function Spatialhash:getNeighbors(obj, ul, lr)
 	return set
 end
 
--- module() as shortcut to module.Spatialhash()
-do
-	local m = getmetatable(_M)
-	m.__call = function(_, ...) return Spatialhash(...) end
-end
+return Spatialhash

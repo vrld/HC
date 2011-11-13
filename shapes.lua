@@ -26,15 +26,13 @@ THE SOFTWARE.
 
 local math_abs, math_floor, math_min, math_max = math.abs, math.floor, math.min, math.max
 local math_sqrt, math_log, math_pi, math_huge = math.sqrt, math.log, math.pi, math.huge
-local function math_absmin(a,b) return math_abs(a) < math_abs(b) and a or b end
-module(..., package.seeall)
-local Class   = require(_PACKAGE .. 'class')
-local vector  = require(_PACKAGE .. 'vector')
-local Polygon = require(_PACKAGE .. 'polygon')
-_M.class = nil
-_M.vector = nil
-_M.polygon = nil
 
+local _PACKAGE = (...):match("^(.+)%.[^%.]+")
+local Class   = require(_PACKAGE .. '.class')
+local vector  = require(_PACKAGE .. '.vector')
+local Polygon = require(_PACKAGE .. '.polygon')
+
+local function math_absmin(a,b) return math_abs(a) < math_abs(b) and a or b end
 local function test_axes(axes, shape_one, shape_two, sep, min_overlap)
 	for _,axis in ipairs(axes) do
 		local l1,r1 = shape_one:projectOn(axis)
@@ -116,7 +114,7 @@ local ConcavePolygonShape = Class{name = 'ConcavePolygonShape', function(self, p
 end}
 ConcavePolygonShape:inherit(Shape)
 
-function PolygonShape(polygon, ...)
+local function PolygonShape(polygon, ...)
 	-- create from coordinates if needed
 	if type(polygon) == "number" then
 		polygon = Polygon(polygon, ...)
@@ -130,14 +128,14 @@ function PolygonShape(polygon, ...)
 	return ConcavePolygonShape(polygon)
 end
 
-CircleShape = Class{name = 'CircleShape', function(self, cx,cy, radius)
+local CircleShape = Class{name = 'CircleShape', function(self, cx,cy, radius)
 	Shape.construct(self, Shape.CIRCLE)
 	self._center = vector(cx,cy)
 	self._radius = radius
 end}
 CircleShape:inherit(Shape)
 
-PointShape = Class{name = 'PointShape', function(self, x,y)
+local PointShape = Class{name = 'PointShape', function(self, x,y)
 	Shape.construct(self, Shape.POINT)
 	self._pos = vector(x,y)
 end}
@@ -181,7 +179,9 @@ function ConvexPolygonShape:collidesWith(other)
 	end
 
 	-- else: type is POLYGON, use the SAT
+	print('collide?')
 	if not outcircles_intersect(self, other) then return false end
+	print('sat')
 	return SAT(self, self:getAxes(), other, other:getAxes())
 end
 
@@ -408,3 +408,12 @@ end
 function PointShape:draw()
 	love.graphics.point(self._pos.x, self._pos.y)
 end
+
+return {
+	ConcavePolygonShape = ConcavePolygonShape,
+	ConvexPolygonShape = ConvexPolygonShape,
+	PolygonShape = PolygonShape,
+	CircleShape  = CircleShape,
+	PointShape   = PointShape,
+}
+

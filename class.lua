@@ -28,19 +28,20 @@ local function __NULL__() end
 
 -- class "inheritance" by copying functions
 local function inherit(class, interface, ...)
-	if not interface or type(interface) ~= "table" then return end
+	if not interface then return end
+	assert(type(interface) == "table", "Can only inherit from other classes.")
 
 	-- __index and construct are not overwritten as for them class[name] is defined
 	for name, func in pairs(interface) do
-		if not class[name] and type(func) == "function" then
+		if not class[name] then
 			class[name] = func
 		end
 	end
-	for super in pairs(interface.__is_a) do
+	for super in pairs(interface.__is_a or {}) do
 		class.__is_a[super] = true
 	end
 
-	inherit(class, ...)
+	return inherit(class, ...)
 end
 
 -- class builder
@@ -60,14 +61,13 @@ local function new(args)
 	local class = {}
 	class.__index = class
 	class.__tostring = function() return ("<instance of %s>"):format(tostring(class)) end
-	class.construct, class.Construct = constructor or __NULL__, constructor or __NULL__
-	class.Construct = class.construct
-	class.inherit, class.Inherit = inherit, inherit
+	class.construct = constructor or __NULL__
+	class.inherit = inherit
 	class.__is_a = {[class] = true}
 	class.is_a = function(self, other) return not not self.__is_a[other] end
 
 	-- intercept assignment in global environment to infer the class name
-	if not (args and args.name) then
+	if not (type(args) == "table" and args.name) then
 		local env, env_meta, interceptor = getfenv(0), getmetatable(getfenv(0)), {}
 		function interceptor:__newindex(key, value)
 			if value == class then
@@ -89,13 +89,24 @@ local function new(args)
 	local meta = {
 		__call = function(self, ...)
 			local obj = {}
+			setmetatable(obj, self)
 			self.construct(obj, ...)
-			return setmetatable(obj, self)
+			return obj
 		end,
 		__tostring = function() return name end
 	}
 	return setmetatable(class, meta)
 end
+
+-- interface for cross class-system compatibility (see https://github.com/bartbes/Class-Commons).
+if class_commons ~= false then
+	common = common or {}
+	function common.class(name, prototype, parent)
+		local init = prototype.init or (parent or {}).init
+		return new{name = name, inherits = {prototype, parent}, init}
+	end
+end
+
 
 -- the module
 return setmetatable({new = new, inherit = inherit},

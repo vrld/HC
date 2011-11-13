@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2010-2011 Matthias Richter
+Copyright (c) 2010 Matthias Richter
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +24,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local setmetatable, getmetatable = setmetatable, getmetatable
-local type, tonumber = type, tonumber
+-- somewhat speed optimized version of hump.vector
+
 local sqrt, cos, sin = math.sqrt, math.cos, math.sin
-module(...)
 
 local vector = {}
 vector.__index = vector
 
-function new(x,y)
+local function new(x,y)
 	local v = {x = x or 0, y = y or 0}
-	return setmetatable(v, vector)
-end
-
-function isvector(v)
-	return getmetatable(v) == vector
+	setmetatable(v, vector)
+	return v
 end
 
 function vector:clone()
@@ -96,25 +92,27 @@ function vector.permul(a,b)
 end
 
 function vector:len2()
-	return self * self
+	return self.x * self.x + self.y * self.y
 end
 
 function vector:len()
-	return sqrt(self*self)
+	return sqrt(self.x * self.x + self.y * self.y)
 end
 
 function vector.dist(a, b)
-	return (b-a):len()
+	local dx = a.x - b.x
+	local dy = a.y - b.y
+	return sqrt( dx*dx + dy*dy )
 end
 
 function vector:normalize_inplace()
-	local l = self:len()
+	local l = sqrt(self.x * self.x + self.y * self.y)
 	self.x, self.y = self.x / l, self.y / l
 	return self
 end
 
 function vector:normalized()
-	return self / self:len()
+	return self / sqrt(self.x * self.x + self.y * self.y)
 end
 
 function vector:rotate_inplace(phi)
@@ -124,7 +122,8 @@ function vector:rotate_inplace(phi)
 end
 
 function vector:rotated(phi)
-	return self:clone():rotate_inplace(phi)
+	local c, s = cos(phi), sin(phi)
+	return new(c * self.x - s * self.y, s * self.x + c * self.y)
 end
 
 function vector:perpendicular()
@@ -132,16 +131,21 @@ function vector:perpendicular()
 end
 
 function vector:projectOn(v)
-	return (self * v) * v / v:len2()
+	-- (self * v) * v / v:len2()
+	local s = (self.x * v.x + self.y * v.y) / (v.x * v.x + v.y * v.y)
+	return new(s * v.x, s * v.y)
+end
+
+function vector:mirrorOn(v)
+	-- 2 * self:projectOn(other) - self
+	local s = 2 * (self.x * v.x + self.y * v.y) / (v.x * v.x + v.y * v.y)
+	return new(s * v.x - self.x, s * v.y - self.y)
 end
 
 function vector:cross(other)
 	return self.x * other.y - self.y * other.x
 end
 
--- vector() as shortcut to vector.new()
-do
-	local m = {}
-	m.__call = function(_, ...) return new(...) end
-	setmetatable(_M, m)
-end
+
+-- the module
+return setmetatable({new = new}, {__call = function(_, ...) return new(...) end})
