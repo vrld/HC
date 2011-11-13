@@ -46,64 +46,68 @@
 <div id="hardoncollider" class="outer-block">
 	<h3>hardoncollider<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
-		<pre><code class="lua">require "hardoncollider"</code></pre>
+		<pre><code class="lua">Collider = require "hardoncollider"</code></pre>
 		<p>The main module.</p>
 		<p>HardonCollider will automatically handle - but not resolve - collisions.
 		It uses search data structure - a spatial hash - to quickly find colliding shapes.</p>
-		<p>A spatial hash is simply a grid that is laid over the whole scene in which a shape can occupy
+		<p>A spatial hash is a grid that is laid over the whole scene in which a shape can occupy
 		several cells. To find shapes that may be colliding, you simply need to look which shapes occupy
-		the same cell. You can specify the cell size in the <a href="#hardoncollider-init"><code>init()</code></a> function.</p>
-		<p>To get a less boring explanation on how to use this, see the tutorial (once it's there).</p>
+		the same cell. You can specify the cell size in the <a href="#hardoncollider-new"><code>new()</code></a> function.</p>
+		<p>To get a less boring explanation on how to use this, see the tutorial.</p>
 	</div>
 
 	<div class="overview">
 		<h4>Module overview</h4>
 		<dl>
-			<dt><a href="#hardoncollider-init">init()</a></dt>
-			<dd>Initialize module.</dd>
-			<dt><a href="#hardoncollider-setCallbacks">setCallbacks()</a></dt>
+			<dt><a href="#hardoncollider-new">new()</a></dt>
+			<dd>Create a new collider instance.</dd>
+			<dt><a href="#hardoncollider-clear">HC:clear()</a></dt>
+			<dd>Clears collider data.</dd>
+			<dt><a href="#hardoncollider-setCallbacks">HC:setCallbacks()</a></dt>
 			<dd>Set callback functions.</dd>
-			<dt><a href="#hardoncollider-update">update()</a></dt>
+			<dt><a href="#hardoncollider-update">HC:update()</a></dt>
 			<dd>Update collision detection.</dd>
-			<dt><a href="#hardoncollider-setAutoUpdate">setAutoUpdate()</a></dt>
-			<dd>Update collision detection automatically.</dd>
-			<dt><a href="#hardoncollider-setNoAutoUpdate">setNoAutoUpdate()</a></dt>
-			<dd>Disable automatic updating.</dd>
-			<dt><a href="#hardoncollider-addPolygon">addPolygon()</a></dt>
+			<dt><a href="#hardoncollider-addPolygon">HC:addPolygon()</a></dt>
 			<dd>Add polygon to the scene.</dd>
-			<dt><a href="#hardoncollider-addRectangle">addRectangle()</a></dt>
+			<dt><a href="#hardoncollider-addRectangle">HC:addRectangle()</a></dt>
 			<dd>Add rectangle to the scene.</dd>
-			<dt><a href="#hardoncollider-addCircle">addCircle()</a></dt>
+			<dt><a href="#hardoncollider-addCircle">HC:addCircle()</a></dt>
 			<dd>Add circle to the scene.</dd>
-			<dt><a href="#hardoncollider-addPoint">addPoint()</a></dt>
+			<dt><a href="#hardoncollider-addPoint">HC:addPoint()</a></dt>
 			<dd>Add point to the scene.</dd>
-			<dt><a href="#remove">remove()</a></dt>
-			<dd>Remove shape from scene.</dd>
-			<dt><a href="#addToGroup">addToGroup()</a></dt>
+			<dt><a href="#hardoncollider-remove">HC:remove()</a></dt>
+			<dd>Remove a shape from scene.</dd>
+			<dt><a href="#hardoncollider-addToGroup">HC:addToGroup()</a></dt>
 			<dd>Group shapes that should not collide.</dd>
-			<dt><a href="#removeFromGroup">removeFromGroup()</a></dt>
+			<dt><a href="#hardoncollider-removeFromGroup">HC:removeFromGroup()</a></dt>
 			<dd>Remove shape from a group.</dd>
-			<dt><a href="#setGhost">setGhost()</a></dt>
+			<dt><a href="#hardoncollider-setPassive">HC:setPassive()</a></dt>
+			<dd>Flag a shape passive.</dd>
+			<dt><a href="#hardoncollider-setActive">HC:setActive()</a></dt>
+			<dd>Flag a shape active.</dd>
+			<dt><a href="#hardoncollider-setGhost">HC:setGhost()</a></dt>
 			<dd>Stops shape from colliding.</dd>
-			<dt><a href="#setSolid">setSolid()</a></dt>
-			<dd>Make shape subject to collision again.</dd>
+			<dt><a href="#hardoncollider-setSolid">HC:setSolid()</a></dt>
+			<dd>Make shape collidable.</dd>
 		</dl>
 	</div>
 
-	<a name="hardoncollider-init"></a>
-	<div id="hardoncollider-init" class="ref-block">
-		<h4>function <span class="name">init</span><span class="arglist">(cell_size, callback_start, callback_persist, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+	<a name="hardoncollider-new"></a>
+	<div id="hardoncollider-new" class="ref-block">
+		<h4>function <span class="name">new</span><span class="arglist">(cell_size, callback_collide, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Initializes the library. Call this in <code>love.load()</code>. All the parameters can be omitted.</p>
+		<p><u>Note:</u> The cell size does not determine the granularity of the collision detection, but is an
+		optimization device. Values that are too small or too big will have a negative impact on the detection
+		speed. The meaning of <em>too small</em> and <em>too big</em> depends on the size of the shapes in the
+		collision detection.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>number <code>cell_size</code> (100)</dt>
 				<dd>Cell size for internal search structure.</dd>
-				<dt>function <code>callback_start</code> (empty function)</dt>
-				<dd>Called when two shapes start colliding.</dd>
-				<dt>function <code>callback_persist</code> (empty function)</dt>
-				<dd>Called when two continue to collide, i.e. if the collision lasts more than one frame.</dd>
+				<dt>function <code>callback_collide</code> (empty function)</dt>
+				<dd>Called when two shapes are colliding.</dd>
 				<dt>function <code>callback_stop</code> (empty function)</dt>
-				<dd>Called when two shapes stop colliding.</dd>
+				<dd>Called when two shapes were colliding in the last frame, but aren't now.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -112,19 +116,21 @@
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">function love.load()
-    hardoncollider.init(150)
+			<pre><code class="lua">Collider = require 'hardoncollider'
+function love.load()
+    HC = Collider.new(150)
+    -- or: HC = Collider(150)
 end</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-setCallbacks"></a>
 	<div id="setCallbacks" class="ref-block">
-		<h4>function <span class="name">setCallbacks</span><span class="arglist">(start,persist,stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<h4>function <span class="name">setCallbacks</span><span class="arglist">{start = start,persist = persist,stop = stop}</span></h4>
-		<p>Sets the different callbacks. The second calling style let's you specify the callbacks by name, see the example.</p>
+		<h4>function <span class="name">setCallbacks</span><span class="arglist">(collide,stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">setCallbacks</span><span class="arglist">{collide = collide,stop = stop}</span></h4>
+		<p>Sets the collision callbacks. The second calling style let's you specify the callbacks by name, see the example.</p>
 		<p>If <code>nil</code> is passed as any callback, the callback will not be changed.</p>
-		<p>Each callback has the following prototype:
+		<p>The callbacks must have the following function prototype:
 		<pre><code class="lua">function callback(dt, shape_one, shape_two, mtv_x, mtv_y)</code></pre>
 		The two <code>shape</code> parameters are the colliding shapes. The last two parameters, <code>mtv_x</code> and <code>mtv_y</code>
 		define the <em>minimum translation vector</em>, i.e. the direction and magnitude shape_one has to be moved so that
@@ -133,11 +139,9 @@ end</code></pre>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>function <code>start</code></dt>
-				<dd>Called when two shapes start colliding.</dd>
-				<dt>function <code>persist</code></dt>
-				<dd>Called when two continue to collide, i.e. if the collision lasts more than one frame.</dd>
+				<dd>Called when two shapes are colliding.</dd>
 				<dt>function <code>stop</code></dt>
-				<dd>Called when two shapes stop colliding.</dd>
+				<dd>Called when two shapes were colliding in the last frame, but aren't now.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -146,20 +150,18 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">function start(dt, shape_one, shape_two, mtv_x, mtv_y)
-    print('started colliding:', shape_one, shape_two)
-	print('mtv:', mtv_x, mtv_y)
-end
+			<pre><code class="lua">Collider = require 'hardoncollider'
 
-function persist_one(dt, shape_one, shape_two, mtv_x, mtv_y)
-    print('still colliding:', shape_one, shape_two)
+function collide(dt, shape_one, shape_two, mtv_x, mtv_y)
+    print('colliding:', shape_one, shape_two)
+    print('mtv:', mtv_x, mtv_y)
     -- move both shape_one and shape_two to resolve the collision
     shape_one:move(mtv_x/2, mtv_y/2)
     shape_two:move(-mtv_x/2, -mtv_y/2)
 end
 
-function persist_two(dt, shape_one, shape_two, mtv_x, mtv_y)
-    print('still colliding:', shape_one, shape_two)
+function colliding_two(dt, shape_one, shape_two, mtv_x, mtv_y)
+    print('colliding:', shape_one, shape_two)
     -- move only shape_one to resolve the collision
     shape_one:move(mtv_x, mtv_y)
 end
@@ -170,21 +172,19 @@ function stop(dt, shape_one, shape_two)
 end
 
 function love.load()
-    hardoncollider.init(100)
+    HC = Collider()
     -- set initial callbacks
-    hardoncollider.setCallbacks(start, persist_one, stop)
-    -- change persist callback
-    hardoncollider.setCallbacks{persist = persist_two}
+    HC:setCallbacks(collide, stop)
+    -- change collide callback
+    HC:setCallbacks{collide = collide_two}
 end</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-update"></a>
 	<div id="update" class="ref-block">
-		<h4>function <span class="name">update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
-		<p>A maximum time delta can be specified. <code>dt</code> will be chopped up in slices
-		not bigger than this maximum and the scene is updated for each time slice.</p>
 		<p>Note that the delta time has no effect on the collision detection itself, but
 		will be passed to the callback functions.</p>
 		
@@ -201,95 +201,14 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">function love.update(dt)
-    hardoncollider.update(dt, .02)
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="hardoncollider-setAutoUpdate"></a>
-	<div id="setAutoUpdate" class="ref-block">
-		<h4>function <span class="name">setAutoUpdate</span><span class="arglist">(max_step, times)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Automatically call <code>hardoncollider.update(dt)</code> after each <code>love.update(dt)</code>.</p>
-		<p>Basically overwrites <code>love.update(dt)</code> with the following function:</p>
-		<pre><code class="lua">function love.update(dt)
-    _old_love_update(dt)
-    hardoncollider.update(dt)
-end</code></pre>
-
-		<p>You can define a maximum time step. If <code>dt</code> is bigger than this step, the
-		new <code>update</code> function will be called up to <code>times</code> times with a <code>dt</code>
-		smaller or equal to the maximum time step:</p>
-		<pre><code class="lua">local i = 1
-    while dt &gt; max_step do
-    update(max_step)
-    dt = dt - max_step
-    i = i + 1
-    if i &gt; times then return end
-end
-update(dt)</code></pre>
-		<p>If <code>max_step</code> is bigger than <code>1</code>, it is assumed to declare a
-		minimum frame rate.</p>
-		<p>If <code>times</code> is omitted, it is set to <code>1</code> and the code is equivalent to
-		<code class="lua">update(math.min(dt, max_step))</code></p>
-
-		<p>Once set, you can disable the auto update with
-		<a href="#hardoncollider-setNoAutoUpdate"><code>setNoAutoUpdate()</code></a>, but beware that this
-		might break other libs that hook into love.update, e.g.
-		<a href="http://vrld.github.com/hump/#gamestate">hump.gamestate</a>. To prevent unexpected
-		side effects, it's best practice to call <code>setAutoUpdate()</code> after any other
-		library hooked itself into <code>love.update()</code></p>
-		
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>max_step</code> (optional)</dt>
-				<dd>Maximum time step (see above).</dd>
-			</dl>
-			<dl>
-				<dt>number <code>times</code> (optional, default: 1)</dt>
-				<dd>Number of times to call the update function.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">function love.load()
-    HC.init(100, collision_start, collision_persist, collision_stop)
-    game_init()
-    HC.setAutoUpdate(30)
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="hardoncollider-setNoAutoUpdate"></a>
-	<div id="setNoAutoUpdate" class="ref-block">
-		<h4>function <span class="name">setNoAutoUpdate</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^ top</a></h4>
-
-		<p>Resets <code>love.update()</code> to the state before calling
-		<a href="#hardoncollider-setAutoUpdate"><code>setAutoUpdate()</code></a>.</p>
-
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">if game_over then
-    hardoncollider.setNoAutoUpdate()
+    HC:update(dt)
 end</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-addPolygon"></a>
 	<div id="addPolygon" class="ref-block">
-		<h4>function <span class="name">addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a polygon to the collision detection system. Any non-intersection polygon will work, even convex polygons.</p>
 		<p>Note that if three consecutive points lie on a line, the middle point will be discarded. This means
 		you cannot construct polygon shapes out of lines.</p>
@@ -306,13 +225,13 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">shape = hardoncollider.addPolygon(10,10, 40,50, 70,10, 40,30)</code></pre>
+			<pre><code class="lua">shape = HC:addPolygon(10,10, 40,50, 70,10, 40,30)</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-addRectangle"></a>
 	<div id="addRectangle" class="ref-block">
-		<h4>function <span class="name">addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a rectangle shape to the collision detection system.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -329,13 +248,13 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">rect = hardoncollider.addRectangle(100,120, 200,40)</code></pre>
+			<pre><code class="lua">rect = HC:addRectangle(100,120, 200,40)</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-addCircle"></a>
 	<div id="addCircle" class="ref-block">
-		<h4>function <span class="name">addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a circle shape to the collision detection system.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -352,13 +271,13 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">circle = hardoncollider.addCircle(400,300, 100)</code></pre>
+			<pre><code class="lua">circle = HC:addCircle(400,300, 100)</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-addPoint"></a>
 	<div id="addPoint" class="ref-block">
-		<h4>function <span class="name">addPoint</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:addPoint</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a point shape to the collision detection system.</p>
 		<p>Point shapes are most useful for bullets or suchs, because
 		detecting collisions between a point and any other shape is a little faster than
@@ -377,22 +296,22 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">bullets[#bulltes+1] = hardoncollider.addPoint(player.pos.x,player.pos.y)</code></pre>
+			<pre><code class="lua">bullets[#bulltes+1] = HC:addPoint(player.pos.x,player.pos.y)</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-remove"></a>
 	<div id="remove" class="ref-block">
-		<h4>function <span class="name">remove</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:remove</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Remove a shape from the collision detection system. Note that if you remove a shape in
-		the <code>start</code> or <code>persist</code> callback, other shapes might still have
-		collided with it, so the shape will be argument to the other calls of <code>start</code>
-		or <code>persist</code>. In any case, the <code>stop</code> callback will be called
-		in the next call to <code>update</code> for each shape which the removed shape collided with.</p>
+		the <code>collide()</code> callback, other shapes might still have collided with it, so the
+		shape will be argument to the other calls of <code>collide()</code>.
+		In any case, the <code>stop()</code> callback will be called in the next call to
+		<code>update</code> for each shape which the removed shape collided with.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt><a href="#shapes">Shape</a> <code>shape</code></dt>
-				<dd>The shape to be removed.</dd>
+				<dt><a href="#shapes">Shape(s)</a> <code>shape, ...</code></dt>
+				<dd>The shape(s) to be removed.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -401,22 +320,25 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hardoncollider.remove(circle)</code></pre>
+			<pre><code class="lua">HC:remove(circle)</code></pre>
+			<pre><code class="lua">HC:remove(enemy1, enemy2)</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-addToGroup"></a>
+	<a name="hardoncollider-removeFromGroup"></a>
 	<div id="addToGroup" class="ref-block">
-		<h4>function <span class="name">addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Add shapes to a group. <a href="#shapes">Shapes</a> in the same group will not collide with each other.</p>
+		<h4>function <span class="name">HC:addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Add or remove shapes to/from a group. <a href="#shapes">Shapes</a> in the same group will not emit collision callbacks when colliding with each other.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>string <code>group</code></dt>
-				<dd>The name of the group where shapes should be added.</dd>
+				<dd>The name of the group.</dd>
 			</dl>
 			<dl>
 				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to be added to the group.</dd>
+				<dd>The shapes to be added or removed to the group.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -425,22 +347,24 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hardoncollider.addToGroup("platforms", platform1, platform2, platform3)</code></pre>
+			<pre><code class="lua">HC:addToGroup("platforms", platform1, platform2, platform3)</code></pre>
+			<pre><code class="lua">HC:removeFromGroup("platforms", platform1)</code></pre>
 		</div>
 	</div>
 
-	<a name="hardoncollider-removeFromGroup"></a>
-	<div id="removeFromGroup" class="ref-block">
-		<h4>function <span class="name">removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Remove shapes from a group.</p>
+	<a name="hardoncollider-setPassive"></a>
+	<a name="hardoncollider-setActive"></a>
+	<div id="setGhost" class="ref-block">
+		<h4>function <span class="name">HC:setPassive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:setActive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Flags a shape active or passive. Only active shapes will search for colliding shapes, i.e.
+		there will be no collision reported when two passive shapes collide.</p>
+		<p>This enables you to significantly speed up the collision detection. Typical candidates for
+		passive shapes are those which are numerous, but don't act in themselves, e.g. the level geometry.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>string <code>group</code></dt>
-				<dd>The name of the group where shapes should be added.</dd>
-			</dl>
-			<dl>
 				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to be removed from the group.</dd>
+				<dd>The shapes to be flagged as passive/active.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -449,18 +373,20 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hardoncollider.removeFromGroup("platforms", not_a_platform)</code></pre>
+			<pre><code class="lua">HC:setPassive(platform1, platform2, platform3)</code></pre>
 		</div>
 	</div>
 
 	<a name="hardoncollider-setGhost"></a>
+	<a name="hardoncollider-setSolid"></a>
 	<div id="setGhost" class="ref-block">
-		<h4>function <span class="name">setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Makes a shape permeable. Ghost shapes will not collide with any other shape.</p>
+		<h4>function <span class="name">HC:setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<h4>function <span class="name">HC:setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Makes a shape permeable or solid. Ghost shapes will not collide with any other shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to become permeable.</dd>
+				<dd>The shapes to become permeable/solid.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -469,33 +395,12 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">if cheat.set_ghost then
-    hardoncollider.setGhost(player)
-end</code></pre>
+			<pre><code class="lua">-- make player invincible for 5 seconds
+HC:setGhost(player)
+Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 		</div>
 	</div>
 
-	<a name="hardoncollider-setSolid"></a>
-	<div id="setSolid" class="ref-block">
-		<h4>function <span class="name">setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Makes a shape opaque. <a href="#shapes">Shapes</a> that were ghosts before will be subject to collision again.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to become opaque again.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">if cheat.set_no_ghost then
-    hardoncollider.setSolid(player_recording)
-end</code></pre>
-		</div>
-	</div>
 
 </div>
 

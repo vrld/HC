@@ -82,17 +82,17 @@
 	<div class="tut-block">
 		<h4>Holy Trinity and a Half</h4>
 		<p>Fill your main.lua with the following:</p>
-		<pre><code class="lua">HC = require 'hardoncollider'
+		<pre><code class="lua">Collider = require 'hardoncollider'
 
 function on_collide(dt, shape_a, shape_b)
 end
 
 function love.load()
-    HC.init(100, on_collide)
+    HC = Collider(100, on_collide)
 end
 
 function love.update(dt)
-    HC.update(dt)
+    HC:update(dt)
 end
 
 function love.draw()
@@ -107,20 +107,13 @@ end</code></pre>
 		<p>The next line defines an empty function called <code class="lua">on_collide</code>
 		in which we will handle what should happen when two shapes collide. We will cover
 		the different parameters later.</p>
-		<p><a href="reference.html#hardoncollider-init"><code class="lua">HC.init(100, on_collide)</code></a>
+		<p><a href="reference.html#hardoncollider-init"><code class="lua">Collider(100, on_collide)</code></a>
 		initializes the library, setting the <code class="lua">on_collide</code>
 		as <a href="reference.html#hardoncollider-setCallbacks">callback function</a>.
 		The first argument defines a cell size which is used internally to speed things
 		up. You don't have to worry about that at the moment.</p>
 		<p>Finally, <a href="reference.html#hardoncollider-update"><code class="lua">HC.update(dt)</code></a>
-		will check for collisions and run the callback functions if needed. Instead
-		of manually calling this function in <code class="lua">love.update(dt)</code>,
-		we can register HardonCollider to update itself with
-		<a href="reference.html#hardoncollider-setAutoUpdate"><code class="lua">HC.setAutoUpdate()</code></a>:</p>
-		<pre><code class="lua">function love.load()
-    HC.init(100, on_collide)
-    HC.setAutoUpdate(30) -- run update with a lower boundary of 30 FPS
-end</code></pre>
+		will check for collisions and run the callback functions if needed.</p>
 	</div>
 
 	<div class="tut-block">
@@ -128,24 +121,18 @@ end</code></pre>
 		<p>Pong wouldn't be Pong without two paddles and a ball. In fact, it wouldn't be anything.
 		So let's add them by creating two rectangles and a circle shape:</p>
 		<pre><code class="lua">function love.load()
-    HC.init(100, on_collide)
+    HC = Collider(100, on_collide)
 
-    ball        = HC.addCircle(400,300, 10)
-    paddleLeft  = HC.addRectangle(10,250, 20,100)
-    paddleRight = HC.addRectangle(770,250, 20,100)
+    ball        = HC:addCircle(400,300, 10)
+    paddleLeft  = HC:addRectangle(10,250, 20,100)
+    paddleRight = HC:addRectangle(770,250, 20,100)
 
     ball.velocity = {x = -100, y = 0}
-
-    HC.setAutoUpdate(30)
 end</code></pre>
 		<p>We now have defined three shapes that are subject to collision detection. Because
 		shapes are just Lua tables with <a href="reference.html#shapes">some functions</a>
 		and properties defined on them, we can add stuff to them. We exploit this by adding
 		a velocity field to the ball, which will be used to move the it.</p>
-		<p>Note that <code class="lua">HC.setAutoUpdate()</code> is still right before the
-		end of <code class="lua">love.load()</code>. This is generally considered to be good
-		style. <a href="reference.html#hardoncollider-setAutoUpdate">The Reference</a> tells
-		you why.</p>
 		<p>To see what we've created, we need to draw the shapes. Mostly for debugging
 		purposes, shapes have functions for drawing themselves. We, however, will not use
 		these functions for debugging, but as our only means to show what's going on:</p>
@@ -159,6 +146,9 @@ end</code></pre>
 		according to it's velocity:</p>
 		<pre><code class="lua">function love.update(dt)
     ball:move(ball.velocity.x * dt, ball.velocity.y * dt)
+
+    -- check for collisions
+    HC:update(dt)
 end</code></pre>
 	</div>
 
@@ -216,6 +206,9 @@ end</code></pre>
     elseif love.keyboard.isDown('down') then
         paddleRight:move(0,  100 * dt)
     end
+
+    -- check for collisions
+    HC:update(dt)
 end</code></pre>
 	</div>
 
@@ -228,12 +221,10 @@ end</code></pre>
 		<pre><code class="lua">function love.load()
     -- ... as before ...
 
-    borderTop    = HC.addRectangle(0,-100, 800,100)
-    borderBottom = HC.addRectangle(0,600, 800,100)
-    goalLeft     = HC.addRectangle(-100,0, 100,600)
-    goalRight    = HC.addRectangle(800,0, 100,600)
-
-    HC.setAutoUpdate(30)
+    borderTop    = HC:addRectangle(0,-100, 800,100)
+    borderBottom = HC:addRectangle(0,600, 800,100)
+    goalLeft     = HC:addRectangle(-100,0, 100,600)
+    goalRight    = HC:addRectangle(800,0, 100,600)
 end</code></pre>
         <p>We also need to define what happens when the ball touches a border or a goal.
         Because there are now more things that can collide, the collision callback
@@ -285,7 +276,7 @@ end</code></pre>
 	<div class="tut-block">
 		<h4>The Whole Picture</h4>
         <p>And there you have it: Your very first and very feature lacking Pong-clone using HardonCollider:</p>
-        <pre><code class="lua">HC = require 'hardoncollider'
+        <pre><code class="lua">Collider = require 'hardoncollider'
 
 function on_collide(dt, shape_a, shape_b)
     -- determine which shape is the ball and which is not
@@ -324,20 +315,18 @@ function on_collide(dt, shape_a, shape_b)
 end
 
 function love.load()
-    HC.init(100, on_collide)
+    HC = Collider(100, on_collide)
 
-    ball        = HC.addCircle(400,300, 10)
-    leftPaddle  = HC.addRectangle(10,250, 20,100)
-    rightPaddle = HC.addRectangle(770,250, 20,100)
+    ball        = HC:addCircle(400,300, 10)
+    leftPaddle  = HC:addRectangle(10,250, 20,100)
+    rightPaddle = HC:addRectangle(770,250, 20,100)
 
     ball.velocity = {x = -100, y = 0}
 
-    borderTop    = HC.addRectangle(0,-100, 800,100)
-    borderBottom = HC.addRectangle(0,600, 800,100)
-    goalLeft     = HC.addRectangle(-100,0, 100,600)
-    goalRight    = HC.addRectangle(800,0, 100,600)
-
-    HC.setAutoUpdate(30)
+    borderTop    = HC:addRectangle(0,-100, 800,100)
+    borderBottom = HC:addRectangle(0,600, 800,100)
+    goalLeft     = HC:addRectangle(-100,0, 100,600)
+    goalRight    = HC:addRectangle(800,0, 100,600)
 end
 
 function love.update(dt)
@@ -356,6 +345,8 @@ function love.update(dt)
     elseif love.keyboard.isDown('down') then
         rightPaddle:move(0,  100 * dt)
     end
+
+    HC:update(dt)
 end
 
 function love.draw()
