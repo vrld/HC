@@ -132,13 +132,13 @@ end</code></pre>
 		<p>If <code>nil</code> is passed as any callback, the callback will not be changed.</p>
 		<p>The callbacks must have the following function prototype:
 		<pre><code class="lua">function callback(dt, shape_one, shape_two, mtv_x, mtv_y)</code></pre>
-		The two <code>shape</code> parameters are the colliding shapes. The last two parameters, <code>mtv_x</code> and <code>mtv_y</code>
+		<code>shape_one</code> and <code>shape_two</code> are the colliding shapes. <code>mtv_x</code> and <code>mtv_y</code>
 		define the <em>minimum translation vector</em>, i.e. the direction and magnitude shape_one has to be moved so that
 		the collision will be resolved. Note that if one of the shapes is a <a href="#hardoncollider-addPoint">point shape</a>, the
 		translation vector will be invalid.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>function <code>start</code></dt>
+				<dt>function <code>collide</code></dt>
 				<dd>Called when two shapes are colliding.</dd>
 				<dt>function <code>stop</code></dt>
 				<dd>Called when two shapes were colliding in the last frame, but aren't now.</dd>
@@ -374,6 +374,53 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">HC:setPassive(platform1, platform2, platform3)</code></pre>
+		</div>
+	</div>
+
+	<a name="hardoncollider-setPassive"></a>
+	<div id="setPassive" class="ref-block">
+		<h4>function <span class="name">setPassive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Sets shape to be passive. Passive shapes will be subject to collision detection,
+		but will not actively search for collision candidates. This means that if two
+		passive shapes collide, no collision callback will be invoked (in fact, the
+		collision won't even be detected).</p>
+		<p>This function exists purely for performance optimisation. Use it wisely.
+		Good candidates for passive shapes are traps and terrain.</p>
+		<p><em>Note:</em> Shapes are active by default</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to become passive.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">hardoncollider.setPassive(ground, bridge, spikes)</code></pre>
+		</div>
+	</div>
+
+	<a name="hardoncollider-setActive"></a>
+	<div id="setActive" class="ref-block">
+		<h4>function <span class="name">setActive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Makes shapes active again.</p>
+		<p><em>Note:</em> Shapes are active by default</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
+				<dd>The shapes to become active.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">hardoncollider.setActive(collapsing_bridge)</code></pre>
 		</div>
 	</div>
 
