@@ -70,7 +70,7 @@
 		<h4>First steps</h4>
 		<p>This is an example on how to use HardonCollider.
 		One shape will stick to the mouse position, while the other will stay in the same place:</p>
-		<pre><code class="lua">HC = require 'hardoncollider'
+		<pre><code class="lua">Collider = require 'hardoncollider'
 
 -- array to hold collision messages
 local text = {}
@@ -88,7 +88,7 @@ end
 
 function love.load()
     -- initialize library
-    HC.init(100, on_collision, collision_stop)
+    HC = Collider(100, on_collision, collision_stop)
 
     -- add a rectangle to the scene
     rect = HC.addRectangle(200,400,400,20)
@@ -106,7 +106,7 @@ function love.update(dt)
     rect:rotate(dt)
 
     -- check for collisions
-    HC.update(dt)
+    HC:update(dt)
 
     while #text &gt; 40 do
         table.remove(text, 1)
