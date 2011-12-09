@@ -82,37 +82,33 @@
 	<div class="tut-block">
 		<h4>Holy Trinity and a Half</h4>
 		<p>Fill your main.lua with the following:</p>
-		<pre><code class="lua">Collider = require 'hardoncollider'
+		<pre><code class="lua">HC = require 'hardoncollider'
 
 function on_collide(dt, shape_a, shape_b)
 end
 
 function love.load()
-    HC = Collider(100, on_collide)
+    Collider = HC(100, on_collide)
 end
 
 function love.update(dt)
-    HC:update(dt)
+    Collider:update(dt)
 end
 
 function love.draw()
 end</code></pre>
 		<p>This is the basic code skeleton for using HardonCollider.</p>
-		<p><code class="lua">HC = require 'hardoncollider'</code> loads the module and puts it into a variable
-		<code class="lua">HC</code>, so we can write <code class="lua">HC.foo()</code>
-		instead of the tiresome <code class="lua">hardoncollider.foo()</code>. Though
-		it appears as if <code class="lua">HC</code> is an instance of a class, it is not:
-		You can only have one and only one HardonCollider in your game. But usually this
-		is enough.</p>
-		<p>The next line defines an empty function called <code class="lua">on_collide</code>
+		<p><code class="lua">HC = require 'hardoncollider'</code> loads the module and puts it into the variable
+		<code class="lua">HC</code>.
+		<p>The next lines defines an empty function called <code class="lua">on_collide</code>
 		in which we will handle what should happen when two shapes collide. We will cover
 		the different parameters later.</p>
-		<p><a href="reference.html#hardoncollider-init"><code class="lua">Collider(100, on_collide)</code></a>
-		initializes the library, setting the <code class="lua">on_collide</code>
+		<p><a href="reference.html#hardoncollider-init"><code class="lua">Collider = HC(100, on_collide)</code></a>
+		creates a new collision detection instance, setting <code class="lua">on_collide</code>
 		as <a href="reference.html#hardoncollider-setCallbacks">callback function</a>.
 		The first argument defines a cell size which is used internally to speed things
 		up. You don't have to worry about that at the moment.</p>
-		<p>Finally, <a href="reference.html#hardoncollider-update"><code class="lua">HC.update(dt)</code></a>
+		<p>Finally, <a href="reference.html#hardoncollider-update"><code class="lua">Collider:update(dt)</code></a>
 		will check for collisions and run the callback functions if needed.</p>
 	</div>
 
@@ -121,18 +117,18 @@ end</code></pre>
 		<p>Pong wouldn't be Pong without two paddles and a ball. In fact, it wouldn't be anything.
 		So let's add them by creating two rectangles and a circle shape:</p>
 		<pre><code class="lua">function love.load()
-    HC = Collider(100, on_collide)
+    Collider = HC(100, on_collide)
 
-    ball        = HC:addCircle(400,300, 10)
-    paddleLeft  = HC:addRectangle(10,250, 20,100)
-    paddleRight = HC:addRectangle(770,250, 20,100)
+    ball        = Collider:addCircle(400,300, 10)
+    paddleLeft  = Collider:addRectangle(10,250, 20,100)
+    paddleRight = Collider:addRectangle(770,250, 20,100)
 
     ball.velocity = {x = -100, y = 0}
 end</code></pre>
 		<p>We now have defined three shapes that are subject to collision detection. Because
 		shapes are just Lua tables with <a href="reference.html#shapes">some functions</a>
-		and properties defined on them, we can add stuff to them. We exploit this by adding
-		a velocity field to the ball, which will be used to move the it.</p>
+		and properties in them, we can add anythin we like to them. We exploit this by adding
+		a table named <code class="lua">velocity</code> to the ball, which will be used to move the it.</p>
 		<p>To see what we've created, we need to draw the shapes. Mostly for debugging
 		purposes, shapes have functions for drawing themselves. We, however, will not use
 		these functions for debugging, but as our only means to show what's going on:</p>
@@ -148,7 +144,7 @@ end</code></pre>
     ball:move(ball.velocity.x * dt, ball.velocity.y * dt)
 
     -- check for collisions
-    HC:update(dt)
+    Collider:update(dt)
 end</code></pre>
 	</div>
 
@@ -208,7 +204,7 @@ end</code></pre>
     end
 
     -- check for collisions
-    HC:update(dt)
+    Collider:update(dt)
 end</code></pre>
 	</div>
 
@@ -221,10 +217,10 @@ end</code></pre>
 		<pre><code class="lua">function love.load()
     -- ... as before ...
 
-    borderTop    = HC:addRectangle(0,-100, 800,100)
-    borderBottom = HC:addRectangle(0,600, 800,100)
-    goalLeft     = HC:addRectangle(-100,0, 100,600)
-    goalRight    = HC:addRectangle(800,0, 100,600)
+    borderTop    = Collider:addRectangle(0,-100, 800,100)
+    borderBottom = Collider:addRectangle(0,600, 800,100)
+    goalLeft     = Collider:addRectangle(-100,0, 100,600)
+    goalRight    = Collider:addRectangle(800,0, 100,600)
 end</code></pre>
         <p>We also need to define what happens when the ball touches a border or a goal.
         Because there are now more things that can collide, the collision callback
@@ -276,7 +272,7 @@ end</code></pre>
 	<div class="tut-block">
 		<h4>The Whole Picture</h4>
         <p>And there you have it: Your very first and very feature lacking Pong-clone using HardonCollider:</p>
-        <pre><code class="lua">Collider = require 'hardoncollider'
+        <pre><code class="lua">HC = require 'hardoncollider'
 
 function on_collide(dt, shape_a, shape_b)
     -- determine which shape is the ball and which is not
@@ -315,18 +311,18 @@ function on_collide(dt, shape_a, shape_b)
 end
 
 function love.load()
-    HC = Collider(100, on_collide)
+    Collider = HC(100, on_collide)
 
-    ball        = HC:addCircle(400,300, 10)
-    leftPaddle  = HC:addRectangle(10,250, 20,100)
-    rightPaddle = HC:addRectangle(770,250, 20,100)
+    ball        = Collider:addCircle(400,300, 10)
+    leftPaddle  = Collider:addRectangle(10,250, 20,100)
+    rightPaddle = Collider:addRectangle(770,250, 20,100)
 
     ball.velocity = {x = -100, y = 0}
 
-    borderTop    = HC:addRectangle(0,-100, 800,100)
-    borderBottom = HC:addRectangle(0,600, 800,100)
-    goalLeft     = HC:addRectangle(-100,0, 100,600)
-    goalRight    = HC:addRectangle(800,0, 100,600)
+    borderTop    = Collider:addRectangle(0,-100, 800,100)
+    borderBottom = Collider:addRectangle(0,600, 800,100)
+    goalLeft     = Collider:addRectangle(-100,0, 100,600)
+    goalRight    = Collider:addRectangle(800,0, 100,600)
 end
 
 function love.update(dt)
@@ -346,7 +342,7 @@ function love.update(dt)
         rightPaddle:move(0,  100 * dt)
     end
 
-    HC:update(dt)
+    Collider:update(dt)
 end
 
 function love.draw()
