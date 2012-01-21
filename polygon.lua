@@ -25,7 +25,10 @@ THE SOFTWARE.
 ]]--
 
 local _PACKAGE = (...):match("^(.+)%.[^%.]+")
-local Class = require(_PACKAGE .. '.class')
+if not (common and common.class and common.instance) then
+	class_commons = true
+	require(_PACKAGE .. '.class')
+end
 local vector = require(_PACKAGE .. '.vector')
 
 ----------------------------
@@ -83,11 +86,11 @@ local function pointInTriangle(q, p1,p2,p3)
 	local v1,v2 = p2 - p1, p3 - p1
 	local qp = q - p1
 	local dv = v1:cross(v2)
-	local l = qp:cross(v2) / dv
+	local l = qp:cross(v2)
 	if l <= 0 then return false end
-	local m = v1:cross(qp) / dv
+	local m = v1:cross(qp)
 	if m <= 0 then return false end
-	return l+m < 1
+	return (l+m)/dv < 1
 end
 
 -- returns starting indices of shared edge, i.e. if p and q share the
@@ -106,7 +109,8 @@ end
 -----------------
 -- Polygon class
 --
-local Polygon = Class{name = "Polygon", function(self, ...)
+local Polygon = {}
+function Polygon:init(...)
 	local vertices = removeCollinear( toVertexList({}, ...) )
 	assert(#vertices >= 3, "Need at least 3 non collinear points to build polygon (got "..#vertices..")")
 
@@ -148,7 +152,8 @@ local Polygon = Class{name = "Polygon", function(self, ...)
 	for i = 1,#vertices do
 		self._radius = math.max(vertices[i]:dist(self.centroid), self._radius)
 	end
-end}
+end
+local newPolygon
 
 -- return vertices as x1,y1,x2,y2, ..., xn,yn
 function Polygon:unpack()
@@ -255,7 +260,13 @@ function Polygon:triangulate()
 	local p = adj[ vertices[2] ]
 	while nPoints > 3 do
 		if not concave[p.p] and isEar(p.l, p.p, p.r) then
-			triangles[#triangles+1] = Polygon( unpackHelper(p.l, p.p, p.r) )
+			-- polygon may be a 'collinear triangle', i.e.
+			-- all three points are on a line. In that case
+			-- the polygon constructor throws an error.
+			if not areCollinear(p.l, p.p, p.r) then
+				triangles[#triangles+1] = newPolygon(unpackHelper(p.l, p.p, p.r))
+			end
+
 			if concave[p.l] and ccw(adj[p.l].l, p.l, p.r) then
 				concave[p.l] = nil
 			end
@@ -275,7 +286,10 @@ function Polygon:triangulate()
 			assert(skipped <= nPoints, "Cannot triangulate polygon (is the polygon intersecting itself?)")
 		end
 	end
-	triangles[#triangles+1] = Polygon( unpackHelper(p.l, p.p, p.r) )
+
+	if not areCollinear(p.l, p.p, p.r) then
+		triangles[#triangles+1] = newPolygon(unpackHelper(p.l, p.p, p.r))
+	end
 
 	return triangles
 end
@@ -293,7 +307,7 @@ function Polygon:mergedWith(other)
 		ret[#ret+1] = other.vertices[k]
 	end
 	for i = p+1,#self.vertices do ret[#ret+1] = self.vertices[i] end
-	return Polygon( unpackHelper( unpack(ret) ) )
+	return newPolygon( unpackHelper( unpack(ret) ) )
 end
 
 -- split polygon into convex polygons.
@@ -385,4 +399,6 @@ function Polygon:intersectsRay(x,y, dx,dy)
 	return false
 end
 
+Polygon = common.class('Polygon', Polygon)
+newPolygon = function(...) return common.instance(Polygon, ...) end
 return Polygon

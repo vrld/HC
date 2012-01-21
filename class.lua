@@ -99,11 +99,14 @@ local function new(args)
 end
 
 -- interface for cross class-system compatibility (see https://github.com/bartbes/Class-Commons).
-if class_commons ~= false then
-	common = common or {}
+if class_commons ~= false and not common then
+	common = {}
 	function common.class(name, prototype, parent)
 		local init = prototype.init or (parent or {}).init
 		return new{name = name, inherits = {prototype, parent}, init}
+	end
+	function common.instance(class, ...)
+		return class(...)
 	end
 end
 

@@ -25,18 +25,22 @@ THE SOFTWARE.
 ]]--
 
 local _NAME = (...)
-local Class       = require(_NAME .. '.class')
+if not (common and common.class and common.instance) then
+	class_commons = true
+	require(_NAME .. '.class')
+end
 local Shapes      = require(_NAME .. '.shapes')
 local Spatialhash = require(_NAME .. '.spatialhash')
 local vector      = require(_NAME .. '.vector')
 
-local PolygonShape = Shapes.PolygonShape
-local CircleShape  = Shapes.CircleShape
-local PointShape   = Shapes.PointShape
+local newPolygonShape = Shapes.newPolygonShape
+local newCircleShape  = Shapes.newCircleShape
+local newPointShape   = Shapes.newPointShape
 
 local function __NULL__() end
 
-local HC = Class{name = "HardonCollider", function(self, cell_size, callback_collide, callback_stop)
+local HC = {}
+function HC:init(cell_size, callback_collide, callback_stop)
 	self._active_shapes  = {}
 	self._passive_shapes = {}
 	self._ghost_shapes   = {}
@@ -47,8 +51,8 @@ local HC = Class{name = "HardonCollider", function(self, cell_size, callback_col
 
 	self.on_collide = callback_collide or __NULL__
 	self.on_stop    = callback_stop    or __NULL__
-	self._hash      = Spatialhash(cell_size)
-end}
+	self._hash      = common.instance(Spatialhash, cell_size)
+end
 
 function HC:clear()
 	self._active_shapes  = {}
@@ -58,7 +62,7 @@ function HC:clear()
 	self._shape_ids      = setmetatable({}, {__mode = "k"}) -- reverse lookup
 	self.groups          = {}
 	self._colliding_last_frame = {}
-	self._hash           = Spatialhash(self.hash.cell_size)
+	self._hash           = common.instance(Spatialhash, self.hash.cell_size)
 	return self
 end
 
@@ -94,7 +98,7 @@ end
 
 -- create polygon shape and add it to internal structures
 function HC:addPolygon(...)
-	local shape = PolygonShape(...)
+	local shape = newPolygonShape(...)
 	local hash = self._hash
 
 	-- replace shape member function with a function that updates
@@ -131,7 +135,7 @@ end
 
 -- create new polygon approximation of a circle
 function HC:addCircle(cx, cy, radius)
-	local shape = CircleShape(cx,cy, radius)
+	local shape = newCircleShape(cx,cy, radius)
 	local hash = self._hash
 
 	local function hash_aware_member(oldfunc)
@@ -162,7 +166,7 @@ function HC:addCircle(cx, cy, radius)
 end
 
 function HC:addPoint(x,y)
-	local shape = PointShape(x,y)
+	local shape = newPointShape(x,y)
 	local hash = self._hash
 
 	local function hash_aware_member(oldfunc)
@@ -327,4 +331,11 @@ function HC:setSolid(shape, ...)
 	return self:setSolid(...)
 end
 
-return setmetatable({new = HC}, {__call = function(_,...) return HC(...) end})
+-- the module
+HC = common.class("HardonCollider", HC)
+local function new(...)
+	return common.instance(HC, ...)
+end
+
+return setmetatable({HardonCollider = HC, new = new},
+	{__call = function(_,...) return new(...) end})

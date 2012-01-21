@@ -28,7 +28,10 @@ local floor = math.floor
 local min, max = math.min, math.max
 
 local _PACKAGE = (...):match("^(.+)%.[^%.]+")
-local Class = require(_PACKAGE .. '.class')
+if not (common and common.class and common.instance) then
+	class_commons = true
+	require(_PACKAGE .. '.class')
+end
 local vector = require(_PACKAGE .. '.vector')
 
 -- special cell accesor metamethods, so vectors are converted
@@ -47,10 +50,11 @@ function cell_meta.__index(tbl, key)
 	return ret
 end
 
-local Spatialhash = Class{name = 'Spatialhash', function(self, cell_size)
+local Spatialhash = {}
+function Spatialhash:init(cell_size)
 	self.cell_size = cell_size or 100
 	self.cells = setmetatable({}, cell_meta)
-end}
+end
 
 function Spatialhash:cellCoords(v)
 	return {x=floor(v.x / self.cell_size), y=floor(v.y / self.cell_size)}
@@ -94,7 +98,8 @@ function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
 	local ul_old, lr_old = self:cellCoords(ul_old), self:cellCoords(lr_old)
 	local ul_new, lr_new = self:cellCoords(ul_new), self:cellCoords(lr_new)
 
-	if ul_old.x == ul_new.x and ul_old.y == ul_new.x and lr_old.x == lr_new.x and lr_old.y == lr_new.y then
+	if ul_old.x == ul_new.x and ul_old.y == ul_new.y and
+	   lr_old.x == lr_new.x and lr_old.y == lr_new.y then
 		return
 	end
 
@@ -126,4 +131,22 @@ function Spatialhash:getNeighbors(obj, ul, lr)
 	return set
 end
 
-return Spatialhash
+function Spatialhash:draw(how, show_empty, print_key)
+	if show_empty == nil then show_empty = true end
+	for k,cell in pairs(self.cells) do
+		local empty = true
+		(function() for _ in pairs(cell) do empty = false; return end end)()
+		if show_empty or not empty then
+			local x,y = k:match("([^,]+),([^,]+)")
+			x = x * self.cell_size
+			y = y * self.cell_size
+			love.graphics.rectangle(how, x,y, self.cell_size, self.cell_size)
+
+			if print_key then
+				love.graphics.print(k, x+3,y+3)
+			end
+		end
+	end
+end
+
+return common.class('Spatialhash', Spatialhash)
