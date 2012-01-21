@@ -59,6 +59,8 @@
 	<div class="overview">
 		<h4>Module overview</h4>
 		<dl>
+			<dt><a href="#hardoncollider-new">HardonCollider</a></dt>
+			<dd>The collider class.</dd>
 			<dt><a href="#hardoncollider-new">new()</a></dt>
 			<dd>Create a new collider instance.</dd>
 			<dt><a href="#hardoncollider-clear">HC:clear()</a></dt>
@@ -475,12 +477,20 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 	<div class="overview">
 	<h4>Module overview</h4>
 		<dl>
-			<dt><a href="#shapes-PolygonShape">shapes.PolygonShape</a></dt>
-			<dd>A polygon shape.</dd>
-			<dt><a href="#shapes-CircleShape">shapes.CircleShape</a></dt>
-			<dd>A circle shape.</dd>
-			<dt><a href="#shapes-PointShape">shapes.PointShape</a></dt>
-			<dd>A point shape.</dd>
+			<dt><a href="#shapes-newPolygonShape">shapes.ConvexPolygonShape</a></dt>
+			<dd>Convex polygon shape class.</dd>
+			<dt><a href="#shapes-newPolygonShape">shapes.ConcavePolygonShape</a></dt>
+			<dd>Concave polygon shape class.</dd>
+			<dt><a href="#shapes-newCircleShape">shapes.CircleShape</a></dt>
+			<dd>Circle shape class.</dd>
+			<dt><a href="#shapes-newPointShape">shapes.PointShape</a></dt>
+			<dd>Point shape class.</dd>
+			<dt><a href="#shapes-newPolygonShape">shapes.newPolygonShape()</a></dt>
+			<dd>Creates a polygon shape.</dd>
+			<dt><a href="#shapes-newCircleShape">shapes.newCircleShape()</a></dt>
+			<dd>Creates a circle shape.</dd>
+			<dt><a href="#shapes-newPointShape">shapes.newPointShape()</a></dt>
+			<dd>Creates a point shape.</dd>
 			<dt><a href="#shapes-shape:contains">shape:contains()</a></dt>
 			<dd>Test if shape contains a point.</dd>
 			<dt><a href="#shapes-shape:intersectsRay">shape:intersectsRay()</a></dt>
@@ -506,10 +516,10 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 		</dl>
 	</div>
 
-	<a name="shapes-PolygonShape"></a>
-	<div id="PolygonShape" class="ref-block">
-		<h4>class <span class="name">PolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shapes">^ top</a></h4>
-		<h4>class <span class="name">PolygonShape</span><span class="arglist">(polygon)</span></h4>
+	<a name="shapes-newPolygonShape"></a>
+	<div id="newPolygonShape" class="ref-block">
+		<h4>function <span class="name">newPolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shapes">^ top</a></h4>
+		<h4>function <span class="name">newPolygonShape</span><span class="arglist">(polygon)</span></h4>
 		<p>Construct a shape using a non-intersecting ploygon.</p>
 		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the <a href="#polygon"><code>Polygon</code></a> class.</p>
 		<div class="arguments">Parameters:
@@ -527,13 +537,13 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">shape = shapes.PolygonShape(100,100, 200,200, 300,100)</code></pre>
+			<pre><code class="lua">shape = shapes.newPolygonShape(100,100, 200,200, 300,100)</code></pre>
 		</div>
 	</div>
 
-	<a name="shapes-CircleShape"></a>
-	<div id="CircleShape" class="ref-block">
-		<h4>class <span class="name">CircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shapes">^ top</a></h4>
+	<a name="shapes-newCircleShape"></a>
+	<div id="newCircleShape" class="ref-block">
+		<h4>function <span class="name">newCircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Construct a circular shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -550,13 +560,13 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">shape = shapes.CircleShape(400,300, 100)</code></pre>
+			<pre><code class="lua">shape = shapes.newCircleShape(400,300, 100)</code></pre>
 		</div>
 	</div>
 
-	<a name="shapes-PointShape"></a>
-	<div id="CircleShape" class="ref-block">
-		<h4>class <span class="name">PointShape</span><span class="arglist">(x,y)</span><a class="top" href="#shapes">^ top</a></h4>
+	<a name="shapes-newPointShape"></a>
+	<div id="newPointShape" class="ref-block">
+		<h4>function <span class="name">newPointShape</span><span class="arglist">(x,y)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Construct a point shape.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -571,7 +581,7 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">shape = shapes.PointShape(400,300)</code></pre>
+			<pre><code class="lua">shape = shapes.newPointShape(400,300)</code></pre>
 		</div>
 	</div>
 
@@ -874,6 +884,7 @@ end</code></pre>
 	<a name="polygon-Polygon"></a>
 	<div id="name" class="ref-block">
 		<h4>class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#polygon">^ top</a></h4>
+		<p><span class="warning">Syntax depends on used class system.</span> Shown syntax works for bundled <a href="http://vrld.github.com/hump/#Class">hump.class</a> and <a href="https://bitbucket.org/bartbes/slither">slither</a>.</p>
 		<p>Construct a polygon.</p>
 		<p>At least three points that are not collinear (being on a straight line) are needed to construct the polygon.
 		If there are collinear points, these points will be removed so that the overall shape of the polygon is not changed.</p>
@@ -890,10 +901,8 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">poly = polygon.Polygon(10,10, 40,50, 70,10, 40,30)</code></pre>
-			<p><code>polygon.Polygon</code> looks rather verbose - that is why you can actually
-			call the module like a function to create an instance of the <code>Polygon</code> class:</p>
-			<pre><code class="lua">poly = polygon(10,10, 40,50, 70,10, 40,30)</code></pre>
+			<pre><code class="lua">Polygon = require 'hardoncollider.polygon'
+poly = Polygon(10,10, 40,50, 70,10, 40,30)</code></pre>
 		</div>
 	</div>
 
@@ -1096,7 +1105,7 @@ end</code></pre>
 	<a name="polygon-polygon:mergedWith"></a>
 	<div id="polygon:mergedWith" class="ref-block">
 		<h4>function <span class="name">polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Create a merged polygon of two polygons if, and only if the two polygons share one edge. If the polygons share more than one edge, the result may be erroneous.</p>
+		<p>Create a merged polygon of two polygons if, and only if the two polygons share one complete edge. If the polygons share more than one edge, the result may be erroneous.</p>
 		<p>This function does not change either polygon, but rather create a new one.</p>
 		<div class="arguments">Parameters:
 			<dl>
@@ -1203,6 +1212,7 @@ end</code></pre>
 	<a name="spatialhash-Spatialhash"></a>
 	<div id="Spatialhash" class="ref-block">
 		<h4><span class="name">Spatialhash</span><span class="arglist">(cell_size)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p><span class="warning">Syntax depends on used class system.</span> Shown syntax works for bundled <a href="http://vrld.github.com/hump/#Class">hump.class</a> and <a href="https://bitbucket.org/bartbes/slither">slither</a>.</p>
 		<p>Create a new spatial hash given a cell size.</p>
 		<p>Choosing a good cell size depends on your application. To get a decent speedup,
 		the average cell should not contain too many objects, nor should a single object
@@ -1221,10 +1231,8 @@ end</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hash = spatialhash.Spatialhash(150)</code></pre>
-			<p>As with <code><a href="#polygon-Polygon">Polygon()</a></code>, you can call the module as
-			a shortcut to the above:</p>
-			<pre><code class="lua">hash = spatialhash(150)</code></pre>
+			<pre><code class="lua">Spatialhash = require 'hardoncollider.spatialhash'
+hash = Spatialhash(150)</code></pre>
 		</div>
 	</div>
 
@@ -1386,6 +1394,32 @@ end</code></pre>
 for _,other in pairs(others) do
     obj:pushAway(other)
 end</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:draw"></a>
+	<div id="Spatialhash:draw" class="ref-block">
+		<h4>function <span class="name">hash:draw</span><span class="arglist">(draw_mode, show_empty, print_key)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p>Draw hash cells on the screen, mostly for debug purposes</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>string <code>draw_mode</code></dt>
+				<dd>Either 'fill' or 'line'. See the <a href="https://love2d.org/wiki/DrawMode">L&Ouml;VE wiki</a>.</dd>
+				<dt>boolean <code>show_empty</code> (true)</dt>
+				<dd>Wether to draw empty cells.</dd>
+				<dt>boolean <code>print_key</code> (false)</dt>
+				<dd>Wether to print cell coordinates.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">love.graphics.setColor(160,140,100,100)
+hash:draw('line', true, true)
+hash:draw('fill', false)</code></pre>
 		</div>
 	</div>
 
