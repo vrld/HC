@@ -62,7 +62,7 @@ function HC:clear()
 	self._shape_ids      = setmetatable({}, {__mode = "k"}) -- reverse lookup
 	self.groups          = {}
 	self._colliding_last_frame = {}
-	self._hash           = common.instance(Spatialhash, self.hash.cell_size)
+	self._hash           = common.instance(Spatialhash, self._hash.cell_size)
 	return self
 end
 
