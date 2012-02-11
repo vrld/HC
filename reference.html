@@ -509,6 +509,8 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 			<dd>Get the shape's rotation.</dd>
 			<dt><a href="#shapes-shape:outcircle">shape:outcircle()</a></dt>
 			<dd>Get circumscribing circle.</dd>
+			<dt><a href="#shapes-shape:bbox">shape:bbox()</a></dt>
+			<dd>Get axis aligned bounding box.</dd>
 			<dt><a href="#shapes-shape:draw">shape:draw()</a></dt>
 			<dd>Draw the shape.</dd>
 			<dt><a href="#shapes-shape:collidesWith">shape:collidesWith()</a></dt>
@@ -791,6 +793,30 @@ end</code></pre>
     -- draw shield
     love.graphics.circle('line', player:outcircle())
 end</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:bbox"></a>
+	<div id="shape:bbox" class="ref-block">
+		<h4>function <span class="name">shape:bbox</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
+		<p>Get axis aligned bounding box.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>None</dt>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>numbers <code>x1, y1</code></dt>
+				<dd>Upper left edge of the bounding box.</dd>
+				<dt>number <code>x2, y2</code></dt>
+				<dd>Lower right edge of the bounding box.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">-- draw bounding box
+local x1,y1, x2,y2 = shape:bbox()
+love.graphics.rectangle('line', x1,y1, x2-x1,y2-y1)</code></pre>
 		</div>
 	</div>
 
