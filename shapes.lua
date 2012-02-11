@@ -322,6 +322,25 @@ function PointShape:outcircle()
 	return self._pos.x, self._pos.y, 0
 end
 
+function ConvexPolygonShape:bbox()
+	return self._polygon:getBBox()
+end
+
+function ConcavePolygonShape:bbox()
+	return self._polygon:getBBox()
+end
+
+function CircleShape:bbox()
+	local cx,cy = self._center:unpack()
+	local r = self._radius
+	return cx-r,cy-r, cx+r,cy+r
+end
+
+function PointShape:bbox()
+	local x,y = self._pos:unpack()
+	return x,y,x,y
+end
+
 
 function ConvexPolygonShape:move(x,y)
 	self._polygon:move(x,y)

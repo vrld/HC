@@ -87,113 +87,58 @@ function HC:setCallbacks(collide, stop)
 	return self
 end
 
-local function new_shape(self, shape, ul,lr)
+local function new_shape(self, shape)
+	local x1,y1,x2,y2 = shape:bbox()
+
 	self._current_shape_id = self._current_shape_id + 1
 	self._active_shapes[self._current_shape_id] = shape
 	self._shape_ids[shape] = self._current_shape_id
-	self._hash:insert(shape, ul,lr)
+	self._hash:insert(shape, {x=x1,y=y1}, {x=x2,y=y2})
 	shape._groups = {}
-	return shape
-end
 
--- create polygon shape and add it to internal structures
-function HC:addPolygon(...)
-	local shape = newPolygonShape(...)
 	local hash = self._hash
-
-	-- replace shape member function with a function that updates
-	-- the hash
-	local function hash_aware_member(oldfunc)
-		return function(self, ...)
-			local x1,y1, x2,y2 = self._polygon:getBBox()
-			oldfunc(self, ...)
-			local x3,y3, x4,y4 = self._polygon:getBBox()
-			hash:update(shape, vector(x1,y1), vector(x2,y2), vector(x3,y3), vector(x4,y4))
-		end
+	local move, rotate = shape.move, shape.rotate
+	function shape:move(...)
+		local x1,y1,x2,y2 = self:bbox()
+		move(self, ...)
+		local x3,y3,x4,y4 = self:bbox()
+		hash:update(self, {x=x1,y=y1}, {x=x2,y=y2}, {x=x3,y=y3}, {x=x4,y=y4})
 	end
 
-	shape.move = hash_aware_member(shape.move)
-	shape.rotate = hash_aware_member(shape.rotate)
+	function shape:rotate(...)
+		local x1,y1,x2,y2 = self:bbox()
+		rotate(self, ...)
+		local x3,y3,x4,y4 = self:bbox()
+		hash:update(self, {x=x1,y=y1}, {x=x2,y=y2}, {x=x3,y=y3}, {x=x4,y=y4})
+	end
 
 	function shape:_getNeighbors()
-		local x1,y1, x2,y2 = self._polygon:getBBox()
-		return hash:getNeighbors(self, vector(x1,y1), vector(x2,y2))
+		local x1,y1, x2,y2 = self:bbox()
+		return hash:getNeighbors(self, {x=x1,y=y1}, {x=x2,y=y2})
 	end
 
 	function shape:_removeFromHash()
-		local x1,y1, x2,y2 = self._polygon:getBBox()
-		hash:remove(shape) --, vector(x1,y1), vector(x2,y2))
+		local x1,y1, x2,y2 = self:bbox()
+		hash:remove(shape, {x=x1,y=y1}, {x=x2,y=y2})
 	end
 
-	local x1,y1, x2,y2 = shape._polygon:getBBox()
-	return new_shape(self, shape, vector(x1,y1), vector(x2,y2))
+	return shape
+end
+
+function HC:addPolygon(...)
+	return new_shape(self, newPolygonShape(...))
 end
 
 function HC:addRectangle(x,y,w,h)
 	return self:addPolygon(x,y, x+w,y, x+w,y+h, x,y+h)
 end
 
--- create new polygon approximation of a circle
 function HC:addCircle(cx, cy, radius)
-	local shape = newCircleShape(cx,cy, radius)
-	local hash = self._hash
-
-	local function hash_aware_member(oldfunc)
-		return function(self, ...)
-			local r = vector(self._radius, self._radius)
-			local c1 = self._center
-			oldfunc(self, ...)
-			local c2 = self._center
-			hash:update(self, c1-r, c1+r, c2-r, c2+r)
-		end
-	end
-
-	shape.move = hash_aware_member(shape.move)
-	shape.rotate = hash_aware_member(shape.rotate)
-
-	function shape:_getNeighbors()
-		local c,r = self._center, vector(self._radius, self._radius)
-		return hash:getNeighbors(self, c-r, c+r)
-	end
-
-	function shape:_removeFromHash()
-		local c,r = self._center, vector(self._radius, self._radius)
-		hash:remove(self, c-r, c+r)
-	end
-
-	local c,r = shape._center, vector(radius,radius)
-	return new_shape(self, shape, c-r, c+r)
+	return new_shape(self, newCircleShape(cx,cy, radius))
 end
 
 function HC:addPoint(x,y)
-	local shape = newPointShape(x,y)
-	local hash = self._hash
-
-	local function hash_aware_member(oldfunc)
-		return function(self, ...)
-			rawset(hash:cell(self._pos), self, nil)
-			oldfunc(self, ...)
-			rawset(hash:cell(self._pos), self, self)
-		end
-	end
-
-	shape.move = hash_aware_member(shape.move)
-	shape.rotate = hash_aware_member(shape.rotate)
-
-	function shape:_getNeighbors()
-		local set = {}
-		for _,other in pairs(hash:cell(self._pos)) do
-			rawset(set, other, other)
-		end
-		rawset(set, self, nil)
-		return set
-	end
-
-	function shape:_removeFromHash()
-		hash:remove(self, self._pos, self._pos)
-	end
-
-	return new_shape(self, shape, shape._pos, shape._pos)
+	return new_shape(self, newPointShape(x,y))
 end
 
 function HC:share_group(shape, other)
