@@ -177,7 +177,7 @@ end</code></pre>
     local px,py = paddle:center()
     local bx,by = ball:center()
     ball.velocity.x = -ball.velocity.x
-    ball.velocity.y = bx - py
+    ball.velocity.y = by - py
 
     -- keep the ball at the same speed as before
     local len = math.sqrt(ball.velocity.x^2 + ball.velocity.y^2)
