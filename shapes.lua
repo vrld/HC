@@ -261,19 +261,31 @@ function ConvexPolygonShape:intersectsRay(x,y, dx,dy)
 end
 
 -- circle intersection if distance of ray/center is smaller
--- than radius
+-- than radius.
+-- with r(s) = p + d*s = (x,y) + (dx,dy) * s defining the ray and
+-- (x - cx)^2 + (y - cy)^2 = r^2, this problem is eqivalent to
+-- solving [with c = (cx,cy)]:
+--
+--     d*d s^2 + 2 d*(p-c) s + (p-c)*(p-c)-r^2 = 0
 function CircleShape:intersectsRay(x,y, dx,dy)
 	local pc = vector(x,y) - self._center
 	local d = vector(dx,dy)
 
 	local a = d * d
-	local b = 4 * d * pc
+	local b = 2 * d * pc
 	local c = pc * pc - self._radius * self._radius
-	local discriminant = b*b - 4*a*c
-	if discriminant < 0 then return false end
+	local discr = b*b - 4*a*c
+	if discr < 0 then return false end
 
-	discriminant = math_sqrt(discriminant)
-	return true, math_min(-b + discriminant, -b - discriminant) / (2*a)
+	discr = math_sqrt(discr)
+	local s1,s2 = discr-b, -discr-b
+	if s1 < 0 then -- first solution is off the ray
+		return s2 >= 0, s2/(2*a)
+	elseif s2 < 0 then -- second solution is off the ray
+		return s1 >= 0, s1/(2*a)
+	end
+	-- both solutions on the ray
+	return true, math_min(s1,s2)/(2*a)
 end
 
 -- point shape intersects ray if it lies on the ray
@@ -408,8 +420,7 @@ function ConcavePolygonShape:draw(mode)
 end
 
 function CircleShape:draw(mode, segments)
-	local segments = segments or math_max(3, math_floor(math_pi * math_log(self._radius)))
-	love.graphics.circle(mode, self._center.x, self._center.y, self._radius, segments)
+	love.graphics.circle(mode or 'line', self._center.x, self._center.y, self._radius)
 end
 
 function PointShape:draw()

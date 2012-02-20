@@ -49,12 +49,12 @@ end
 -- remove vertices that lie on a line
 local function removeCollinear(vertices)
 	local ret = {}
-	for k=1,#vertices do
-		local i = k > 1 and k - 1 or #vertices
-		local l = k < #vertices and k + 1 or 1
+	local i,k = #vertices - 1, #vertices
+	for l=1,#vertices do
 		if not areCollinear(vertices[i], vertices[k], vertices[l]) then
 			ret[#ret+1] = vertices[k]
 		end
+		i,k = k,l
 	end
 	return ret
 end
@@ -127,7 +127,7 @@ function Polygon:init(...)
 	end
 	self.vertices = vertices
 	-- make vertices immutable
-	setmetatable(self.vertices, {__newindex = function() error("Thou shall not change a polygons vertices!") end})
+	setmetatable(self.vertices, {__newindex = function() error("Thou shall not change a polygon's vertices!") end})
 
 	-- compute polygon area and centroid
 	self.area = vertices[#vertices]:cross(vertices[1])
@@ -370,20 +370,26 @@ function Polygon:intersectsRay(x,y, dx,dy)
 	local p = vector(x,y)
 	local v = vector(dx,dy)
 	local n = v:perpendicular()
+	local w,det
 
-	local vertices = self.vertices
-	for i = 1, #vertices do
-		local q1, q2 = vertices[i], vertices[ (i % #vertices) + 1 ]
-		local w = q2 - q1
-		local det = v:cross(w)
+	local tmin = math.huge
+	local q1,q2 = nil, self.vertices[#self.vertices]
+	for i = 1, #self.vertices do
+		q1,q2 = q2,self.vertices[i]
+		w = q2 - q1
+		det = v:cross(w)
 
 		if det ~= 0 then
 			-- there is an intersection point. check if it lies on both
 			-- the ray and the segment.
 			local r = q2 - p
-			local l = r:cross(w)
-			local m = v:cross(r)
-			if l >= 0 and m >= 0 and m <= det then return true, l end
+			local l = r:cross(w)/det
+			local m = v:cross(r)/det
+			if l >= 0 and m >= 0 and m <= 1 then
+				-- we cannot jump out early here (i.e. when l > tmin) because
+				-- the polygon might be concave
+				tmin = math.min(tmin, l)
+			end
 		else
 			-- lines parralel or incident. get distance of line to
 			-- anchor point. if they are incident, check if an endpoint
@@ -391,12 +397,15 @@ function Polygon:intersectsRay(x,y, dx,dy)
 			local dist = (q1 - p) * n
 			if dist == 0 then
 				local l,m = v * (q1 - p), v * (q2 - p)
-				if l >= 0 and l >= m then return true, l end
-				if m >= 0 then return true, m end
+				if l >= 0 and l >= m then
+					tmin = math.min(tmin, l)
+				elseif m >= 0 then
+					tmin = math.min(tmin, m)
+				end
 			end
 		end
 	end
-	return false
+	return tmin ~= math.huge, tmin
 end
 
 Polygon = common.class('Polygon', Polygon)
