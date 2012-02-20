@@ -192,7 +192,8 @@ function HC:update(dt)
 end
 
 -- remove shape from internal tables and the hash
-function HC:remove(shape)
+function HC:remove(shape, ...)
+	if not shape then return end
 	local id = self._shape_ids[shape]
 	if id then
 		self._active_shapes[id] = nil
@@ -202,7 +203,7 @@ function HC:remove(shape)
 	self._shape_ids[shape] = nil
 	shape:_removeFromHash()
 
-	return shape
+	return self:remove(...)
 end
 
 -- group support
