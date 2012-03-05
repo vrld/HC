@@ -112,9 +112,9 @@ local function new_shape(self, shape)
 		hash:update(self, {x=x1,y=y1}, {x=x2,y=y2}, {x=x3,y=y3}, {x=x4,y=y4})
 	end
 
-	function shape:_getNeighbors()
+	function shape:neighbors()
 		local x1,y1, x2,y2 = self:bbox()
-		return hash:getNeighbors(self, {x=x1,y=y1}, {x=x2,y=y2})
+		return pairs(hash:getNeighbors(self, {x=x1,y=y1}, {x=x2,y=y2}))
 	end
 
 	function shape:_removeFromHash()
@@ -123,6 +123,14 @@ local function new_shape(self, shape)
 	end
 
 	return shape
+end
+
+function HC:activeShapes()
+	local next, t, k, v = next, self._active_shapes
+	return function()
+		k, v = next(t, k)
+		return v
+	end
 end
 
 function HC:addPolygon(...)
@@ -148,7 +156,6 @@ function HC:share_group(shape, other)
 	return false
 end
 
-
 -- get unique indentifier for an unordered pair of shapes, i.e.:
 -- collision_id(s,t) = collision_id(t,s)
 local function collision_id(self,s,t)
@@ -161,9 +168,8 @@ end
 function HC:update(dt)
 	-- collect colliding shapes
 	local tested, colliding = {}, {}
-	for _,shape in pairs(self._active_shapes) do
-		local neighbors = shape:_getNeighbors()
-		for _,other in pairs(neighbors) do
+	for shape in self:activeShapes() do
+		for other in shape:neighbors() do
 			local id = collision_id(self, shape,other)
 			if not tested[id] then
 				if not (self._ghost_shapes[other] or self:share_group(shape, other)) then
