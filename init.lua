@@ -197,6 +197,27 @@ function HC:update(dt)
 	self._colliding_last_frame = colliding
 end
 
+-- Test point for collisions with active objects
+function HC:testPoint(x, y)
+	-- collect colliding shapes
+	local point = newPointShape(x,y);
+	new_shape(self, point);
+
+	local colliding = {};
+	for _,shape in pairs(point:_getNeighbors()) do
+		if shape:collidesWith(point) then
+			table.insert(colliding, shape);
+		end
+	end
+
+	self:remove(point);
+	
+	if #colliding == 0 then
+		return false;
+	end
+	return colliding;
+end
+
 -- remove shape from internal tables and the hash
 function HC:remove(shape, ...)
 	if not shape then return end
