@@ -87,10 +87,14 @@
 			<dd>Flag a shape passive.</dd>
 			<dt><a href="#hardoncollider-setActive">HC:setActive()</a></dt>
 			<dd>Flag a shape active.</dd>
+			<dt><a href="#hardoncollider-activeShapes">HC:activeShapes()</a></dt>
+			<dd>Iterator over all active shapes.</dd>
 			<dt><a href="#hardoncollider-setGhost">HC:setGhost()</a></dt>
 			<dd>Stops shape from colliding.</dd>
 			<dt><a href="#hardoncollider-setSolid">HC:setSolid()</a></dt>
 			<dd>Make shape collidable.</dd>
+			<dt><a href="#hardoncollider-shapesAt">HC:shapesAt()</a></dt>
+			<dd>Get list of shapes covering a point.</dd>
 		</dl>
 	</div>
 
@@ -426,6 +430,29 @@ end</code></pre>
 		</div>
 	</div>
 
+	<a name="hardoncollider-activeShapes"></a>
+	<div id="activeShapes" class="ref-block">
+		<h4>function <span class="name">HC:activeShapes</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Iterator over all active shapes. Mostly for internal use.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>None</dt>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>iterator</dt>
+				<dd>Iterator over all active shapes.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">-- rotate all active shapes
+for shape in HC:activeShapes() do
+    shape:rotate(dt)
+end</code></pre>
+		</div>
+	</div>
+
 	<a name="hardoncollider-setGhost"></a>
 	<a name="hardoncollider-setSolid"></a>
 	<div id="setGhost" class="ref-block">
@@ -450,6 +477,33 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 		</div>
 	</div>
 
+	<a name="hardoncollider-shapesAt"></a>
+	<div id="shapesAt" class="ref-block">
+		<h4>function <span class="name">HC:shapesAt</span><span class="arglist">(x,y)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Retrieve a list of shapes covering the point <code>(x,y)</code>,
+		i.e. all shapes that contain <code>(x,y)</code>. This includes active,
+		passive, solid and ghost shapes.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
+				<dd>Coordinates of the point to query</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>table</dt>
+				<dd>List of shapes containing point <code>(x,y)</code>.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">-- select the units under the mouse cursor
+function love.mousereleased(x,y,btn)
+    for _, shape in ipairs(HC:shapesAt(x,y)) do
+        shape.object:select()
+    end
+end</code></pre>
+		</div>
+	</div>
 
 </div>
 
@@ -515,6 +569,8 @@ Timer.add(5, function() HC:setSolid(player) end)</code></pre>
 			<dd>Draw the shape.</dd>
 			<dt><a href="#shapes-shape:collidesWith">shape:collidesWith()</a></dt>
 			<dd>Test for collision.</dd>
+			<dt><a href="#shapes-shape:neighbors">shape:neighbors()</a></dt>
+			<dd>Iterator over neighboring shapes.</dd>
 		</dl>
 	</div>
 
@@ -861,6 +917,32 @@ love.graphics.rectangle('line', x1,y1, x2-x1,y2-y1)</code></pre>
 		<div class="example">Example:
 			<pre><code class="lua">if circle:collidesWith(rectangle) then
     print("collision detected!")
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:neighbors"></a>
+	<div id="shape:neighbors" class="ref-block">
+		<h4>function <span class="name">shape:neighbors</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
+		<p class="warning">Only available in shapes created with main module (i.e. HC:addRectangle(), &hellip;).</p>
+		<p>Iterator over neighboring shapes.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>None</dt>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>iterator</dt>
+				<dd>Iterator over neighboring shapes.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">-- check for collisions with neighboring shapes
+for other in shape:neighbors() do
+    if shape:collidesWith(other) then
+        print("collision detected!")
+    end
 end</code></pre>
 		</div>
 	</div>
