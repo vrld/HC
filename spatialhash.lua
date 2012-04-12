@@ -32,20 +32,33 @@ if not (common and common.class and common.instance) then
 	class_commons = true
 	require(_PACKAGE .. '.class')
 end
-local vector = require(_PACKAGE .. '.vector')
 
--- special cell accesor metamethods, so vectors are converted
--- to a string before using as keys
-local cell_meta = {}
-function cell_meta.__newindex(tbl, key, val)
-	return rawset(tbl, key.x..","..key.y, val)
+-- transparent cell accessor methods
+-- cells = {[0] = {[0] = <>, [1] = <>, ... }, [1] = {...}, ...}
+local cells_meta = {}
+function cells_meta.__newindex(tbl, key, val)
+	print('newindex')
+	local cell = rawget(tbl, key.x)
+	if not cell then
+		rawset(tbl, key.x, {[key.y] = val})
+	else
+		rawset(cell, key.y, val)
+	end
 end
-function cell_meta.__index(tbl, key)
-	local key = key.x..","..key.y
-	local ret = rawget(tbl, key)
+
+function cells_meta.__index(tbl, key)
+	local cell = rawget(tbl, key.x)
+	if not cell then
+		local ret = setmetatable({}, {__mode = "kv"})
+		cell = {[key.y] = ret}
+		rawset(tbl, key.x, cell)
+		return ret
+	end
+
+	local ret = rawget(cell, key.y)
 	if not ret then
 		ret = setmetatable({}, {__mode = "kv"})
-		rawset(tbl, key, ret)
+		rawset(cell, key.y, ret)
 	end
 	return ret
 end
@@ -53,7 +66,7 @@ end
 local Spatialhash = {}
 function Spatialhash:init(cell_size)
 	self.cell_size = cell_size or 100
-	self.cells = setmetatable({}, cell_meta)
+	self.cells = setmetatable({}, cells_meta)
 end
 
 function Spatialhash:cellCoords(v)
@@ -69,7 +82,7 @@ function Spatialhash:insert(obj, ul, lr)
 	local lr = self:cellCoords(lr)
 	for i = ul.x,lr.x do
 		for k = ul.y,lr.y do
-			rawset(self.cells[ {x=i,y=k} ], obj, obj)
+			
 		end
 	end
 end

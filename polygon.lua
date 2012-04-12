@@ -29,22 +29,22 @@ if not (common and common.class and common.instance) then
 	class_commons = true
 	require(_PACKAGE .. '.class')
 end
-local vector = require(_PACKAGE .. '.vector')
+local vector = require(_PACKAGE .. '.vector-light')
 
 ----------------------------
 -- Private helper functions
 --
 -- create vertex list of coordinate pairs
 local function toVertexList(vertices, x,y, ...)
-	if not x or not y then return vertices end -- no more arguments
+	if not (x and y) then return vertices end -- no more arguments
 
-	vertices[#vertices + 1] = vector(x, y)     -- set vertex
+	vertices[#vertices + 1] = {x = x, y = y}   -- set vertex
 	return toVertexList(vertices, ...)         -- recurse
 end
 
--- returns true if three points lie on a line
-local function areCollinear(p,q,r)
-	return (q - p):cross(r - p) == 0
+-- returns true if three vertices lie on a line
+local function areCollinear(p, q, r, eps)
+	return math.abs(vector.det(q.x-p.x, q.y-p.y,  r.x-p.x,r.y-p.y)) <= (eps or 1e-20)
 end
 -- remove vertices that lie on a line
 local function removeCollinear(vertices)
@@ -72,24 +72,20 @@ end
 
 -- returns true if three points make a counter clockwise turn
 local function ccw(p, q, r)
-	return (q - p):cross(r - p) >= 0
-end
-
--- unpack vertex coordinates, i.e. {x=p, y=q}, ... -> p,q, ...
-local function unpackHelper(v, ...)
-	if not v then return end
-	return v.x,v.y,unpackHelper(...)
+	return vector.det(q.x-p.x, q.y-p.y,  r.x-p.x, r.y-p.y) >= 0
 end
 
 -- test if a point lies inside of a triangle using cramers rule
 local function pointInTriangle(q, p1,p2,p3)
-	local v1,v2 = p2 - p1, p3 - p1
-	local qp = q - p1
-	local dv = v1:cross(v2)
-	local l = qp:cross(v2)
+	local v1x,v1y = p2.x-p1.x, p2.y-p1.y
+	local v2x,v2y = p3.x-p1.x, p3.y-p1.y
+	local qpx,qpy = q.x-p1.x,  q.y-p1.y
+	local l  = vector.det(qpx,qpy, v2x,v2y)
 	if l <= 0 then return false end
-	local m = v1:cross(qp)
+
+	local m = vector.det(v1x,v1y, qpx,qpy)
 	if m <= 0 then return false end
+	local dv = vector.det(v1x,v2y, v2x,v2y)
 	return (l+m)/dv < 1
 end
 
@@ -130,30 +126,41 @@ function Polygon:init(...)
 	setmetatable(self.vertices, {__newindex = function() error("Thou shall not change a polygon's vertices!") end})
 
 	-- compute polygon area and centroid
-	self.area = vertices[#vertices]:cross(vertices[1])
-	for i = 1,#vertices-1 do
-		self.area = self.area + vertices[i]:cross(vertices[i+1])
+	local p,q = vertices[#vertices], vertices[1]
+	local det = vector.det(p.x,p.y, q.x,q.y) -- also used below
+	self.area = det
+	for i = 2,#vertices do
+		p,q = q,vertices[i]
+		self.area = self.area + vector.det(p.x,p.y, q.x,q.y)
 	end
 	self.area = self.area / 2
 
-	local p,q = vertices[#vertices], vertices[1]
-	local det = p:cross(q)
-	self.centroid = vector((p.x+q.x) * det, (p.y+q.y) * det)
-	for i = 1,#vertices-1 do
-		p,q = vertices[i], vertices[i+1]
-		det = p:cross(q)
+	p,q = vertices[#vertices], vertices[1]
+	self.centroid = {x = (p.x+q.x)*det, y = (p.y+q.y)*det}
+	for i = 2,#vertices do
+		p,q = q,vertices[i]
+		det = vector.det(p.x,p.y, q.x,q.y)
 		self.centroid.x = self.centroid.x + (p.x+q.x) * det
 		self.centroid.y = self.centroid.y + (p.y+q.y) * det
 	end
-	self.centroid = self.centroid / (6 * self.area)
+	self.centroid.x = self.centroid.x / (6 * self.area)
+	self.centroid.y = self.centroid.y / (6 * self.area)
 
 	-- get outcircle
 	self._radius = 0
 	for i = 1,#vertices do
-		self._radius = math.max(vertices[i]:dist(self.centroid), self._radius)
+		self._radius = math.max(self._radius,
+			vector.dist(vertices[i].x,vertices[i].y, self.centroid.x,self.centroid.y))
 	end
 end
 local newPolygon
+
+
+-- unpack vertex coordinates, i.e. {x=p, y=q}, ... -> p,q, ...
+local function unpackHelper(v, ...)
+	if not v then return end
+	return v.x,v.y,unpackHelper(...)
+end
 
 -- return vertices as x1,y1,x2,y2, ..., xn,yn
 function Polygon:unpack()
@@ -167,18 +174,18 @@ end
 
 -- get bounding box
 function Polygon:getBBox()
-	local ul = self.vertices[1]:clone()
-	local lr = ul:clone()
+	local ulx,uly = self.vertices[1].x, self.vertices[1].y
+	local lrx,lry = ulx,uly
 	for i=2,#self.vertices do
 		local p = self.vertices[i]
-		if ul.x > p.x then ul.x = p.x end
-		if ul.y > p.y then ul.y = p.y end
+		if ulx > p.x then ulx = p.x end
+		if uly > p.y then uly = p.y end
 
-		if lr.x < p.x then lr.x = p.x end
-		if lr.y < p.y then lr.y = p.y end
+		if lrx < p.x then lrx = p.x end
+		if lry < p.y then lry = p.y end
 	end
 
-	return ul.x,ul.y, lr.x,lr.y
+	return ulx,uly, lrx,lry
 end
 
 -- a polygon is convex if all edges are oriented ccw
@@ -219,13 +226,16 @@ function Polygon:move(dx, dy)
 	self.centroid.y = self.centroid.y + dy
 end
 
-function Polygon:rotate(angle, center, cy)
-	local center = center or self.centroid
-	if cy then center = vector(center, cy) end
-	for i,v in ipairs(self.vertices) do
-		self.vertices[i] = (self.vertices[i] - center):rotate_inplace(angle) + center
+function Polygon:rotate(angle, cx, cy)
+	if not (cx and cy) then
+		cx,cy = self.centroid.x, self.centroid.y
 	end
-	self.centroid = (self.centroid - center):rotate_inplace(angle) + center
+	for i,v in ipairs(self.vertices) do
+		-- v = (v - center):rotate(angle) + center
+		v.x,v.y = vector.add(cx,cy, vector.rotate(angle, v.x-cx, v.y-cy))
+	end
+	local v = self.centroid
+	v.x,v.y = vector.add(cx,cy, vector.rotate(angle, v.x-cx, v.y-cy))
 end
 
 -- triangulation by the method of kong
@@ -297,7 +307,7 @@ end
 -- return merged polygon if possible or nil otherwise
 function Polygon:mergedWith(other)
 	local p,q = getSharedEdge(self.vertices, other.vertices)
-	if not (p and q) then return nil end
+	assert(p and q, "Polygons do not share an edge")
 
 	local ret = {}
 	for i = 1, p do ret[#ret+1] = self.vertices[i] end
@@ -325,8 +335,8 @@ function Polygon:splitConvex()
 		local p = convex[i]
 		local k = i + 1
 		while k <= #convex do
-			local _, merged = pcall(function() return p:mergedWith(convex[k]) end)
-			if merged and merged:isConvex() then
+			local success, merged = pcall(function() return p:mergedWith(convex[k]) end)
+			if success and merged:isConvex() then
 				convex[i] = merged
 				p = convex[i]
 				table.remove(convex, k)
@@ -357,8 +367,9 @@ function Polygon:contains(x,y)
 
 	local v = self.vertices
 	local in_polygon = false
+	local p,q = v[#v],v[#v]
 	for i = 1, #v do
-		local p, q = v[i], v[(i % #v) + 1]
+		p,q = q,v[i]
 		if cut_ray(p,q) or cross_boundary(p,q) then
 			in_polygon = not in_polygon
 		end
@@ -367,24 +378,24 @@ function Polygon:contains(x,y)
 end
 
 function Polygon:intersectsRay(x,y, dx,dy)
-	local p = vector(x,y)
-	local v = vector(dx,dy)
-	local n = v:perpendicular()
-	local w,det
+	--local p = vector(x,y)
+	--local v = vector(dx,dy)
+	local nx,ny = vector.perpendicular(dx,dy)
+	local wx,xy,det
 
 	local tmin = math.huge
 	local q1,q2 = nil, self.vertices[#self.vertices]
 	for i = 1, #self.vertices do
 		q1,q2 = q2,self.vertices[i]
-		w = q2 - q1
-		det = v:cross(w)
+		wx,wy = q2.x - q1.x, q2.y - q1.y
+		det = vector.det(dx,dy, wx,wy)
 
 		if det ~= 0 then
 			-- there is an intersection point. check if it lies on both
 			-- the ray and the segment.
-			local r = q2 - p
-			local l = r:cross(w)/det
-			local m = v:cross(r)/det
+			local rx,ry = q2.x - x, q2.y - y
+			local l = vector.det(rx,ry, wx,wy) / det
+			local m = vector.det(dx,dy, rx,ry) / det
 			if l >= 0 and m >= 0 and m <= 1 then
 				-- we cannot jump out early here (i.e. when l > tmin) because
 				-- the polygon might be concave
@@ -394,9 +405,10 @@ function Polygon:intersectsRay(x,y, dx,dy)
 			-- lines parralel or incident. get distance of line to
 			-- anchor point. if they are incident, check if an endpoint
 			-- lies on the ray
-			local dist = (q1 - p) * n
+			local dist = vector.dot(q1.x-x,q1.y-y, nx,ny)
 			if dist == 0 then
-				local l,m = v * (q1 - p), v * (q2 - p)
+				local l = vector.dot(dx,dy, q1.x-x,q1.y-y)
+				local m = vector.dot(dx,dy, q2.x-x,q2.y-y)
 				if l >= 0 and l >= m then
 					tmin = math.min(tmin, l)
 				elseif m >= 0 then

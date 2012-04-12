@@ -31,7 +31,6 @@ if not (common and common.class and common.instance) then
 end
 local Shapes      = require(_NAME .. '.shapes')
 local Spatialhash = require(_NAME .. '.spatialhash')
-local vector      = require(_NAME .. '.vector')
 
 local newPolygonShape = Shapes.newPolygonShape
 local newCircleShape  = Shapes.newCircleShape
@@ -173,9 +172,9 @@ function HC:update(dt)
 			local id = collision_id(self, shape,other)
 			if not tested[id] then
 				if not (self._ghost_shapes[other] or self:share_group(shape, other)) then
-					local collide, sep = shape:collidesWith(other)
+					local collide, sx,sy = shape:collidesWith(other)
 					if collide then
-						colliding[id] = {shape, other, sep.x, sep.y}
+						colliding[id] = {shape, other, sx, sy}
 					end
 					tested[id] = true
 				end
