@@ -37,7 +37,7 @@
 		<li><a href="#shapes">Shapes</a></li>
 		<li><a href="#polygon">Polygon</a></li>
 		<li><a href="#spatialhash">Spatial Hash</a></li>
-		<li><a href="#vector">Vector</a></li>
+		<li><a href="#vector-light">Vector</a></li>
 		<li><a href="#class">Class</a></li>
 	</ul>
 </div>
@@ -691,8 +691,8 @@ end</code></pre>
 		<div class="example">Example:
 			<pre><code class="lua">local intersecting, t = player:intersectsRay(x,y, dx,dy)
 if intersecting then -- laser pointer hits player
-    local intersectionPoint = vector(x,y) + t * vector(dx,dy)
-    player:addMark(intersectionPoint)
+    local vx,vy = vector.mul(t, x+dx, y+dy)
+    player:addMark(vx,vy)
 end</code></pre>
 		</div>
 	</div>
@@ -910,7 +910,7 @@ love.graphics.rectangle('line', x1,y1, x2-x1,y2-y1)</code></pre>
 			<dl>
 				<dt>boolean <code>collide</code></dt>
 				<dd><code>true</code> if the two shapes collide, <code>false</code> otherwise.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>mtv</code></dt>
+				<dt>numbers <code>dx, dy</code></dt>
 				<dd>The minimum translation vector, or <code>nil</code> if the two shapes don't collide.</dd>
 			</dl>
 		</div>
@@ -1114,14 +1114,11 @@ end</code></pre>
 	<a name="polygon-polygon:move"></a>
 	<div id="polygon:move" class="ref-block">
 		<h4>function <span class="name">polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#polygon">^ top</a></h4>
-		<h4>function <span class="name">polygon:move</span><span class="arglist">(direction)</span></h4>
-		<p>Move a polygon in a direction. You can either use coordinates <code>x,y</code> or a <a href="http://vrld.github.com/hump/#vector">hump vector</a>.</p>
+		<p>Move a polygon in a direction..</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>numbers <code>x, y</code></dt>
 				<dd>Coordinates of the direction to move.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>direction</code></dt>
-				<dd>Direction to move.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -1138,16 +1135,12 @@ end</code></pre>
 	<div id="polygon:rotate" class="ref-block">
 		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle)</span><a class="top" href="#polygon">^ top</a></h4>
 		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle, cx, cy)</span></h4>
-		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle, center)</span></h4>
 		<p>Rotate the polygon. You can define a rotation center. If it is omitted, the polygon will be rotated around it's centroid.</p>
-		<p>For defining a rotation center, you can either use coordinate form <code>cx,cy</code> or a <a href="http://vrld.github.com/hump/#vector">hump vector</a>.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>number <code>angle</code></dt>
 				<dd>The angle to rotate in radians.</dd>
 				<dt>numbers <code>cx, cy</code></dt>
-				<dd>The rotation center.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>center</code></dt>
 				<dd>The rotation center.</dd>
 			</dl>
 		</div>
@@ -1303,9 +1296,9 @@ end</code></pre>
 			<dt><a href="#spatialhash-Spatialhash">Spatialhash</a></dt>
 			<dd>Spatial hash class.</dd>
 			<dt><a href="#spatialhash-Spatialhash:cellCoords">hash:cellCoords()</a></dt>
-			<dd>Get cell coordinates of a given vector.</dd>
+			<dd>Get cell coordinates of a given position.</dd>
 			<dt><a href="#spatialhash-Spatialhash:cell">hash:cell()</a></dt>
-			<dd>Get cell for a given vector.</dd>
+			<dd>Get cell for a given position.</dd>
 			<dt><a href="#spatialhash-Spatialhash:insert">hash:insert()</a></dt>
 			<dd>Insert object.</dd>
 			<dt><a href="#spatialhash-Spatialhash:remove">hash:remove()</a></dt>
@@ -1346,32 +1339,31 @@ hash = Spatialhash(150)</code></pre>
 
 	<a name="spatialhash-Spatialhash:cellCoords"></a>
 	<div id="Spatialhash:cellCoords" class="ref-block">
-		<h4>function <span class="name">hash:cellCoords</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Get coordinates of a given value, i.e. the cell index in which a given
-		<a href="http://vrld.github.com/hump/#vector">vector</a> would be placed.</p>
+		<h4>function <span class="name">hash:cellCoords</span><span class="arglist">(p)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p>Get coordinates of a given value, i.e. the cell index in which a given point would be placed.</p>
 		</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>v</code></dt>
+				<dt>table <code>p = {x = x, y = y}</code></dt>
 				<dd>The position to query.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a></dt>
-				<dd>Coordinates of the cell which would contain <code>v</code>.</dd>
+				<dt>table</dt>
+				<dd>Coordinates of the cell which would contain <code>p</code>.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">coords = hash:cellCoords(vector(love.mouse.getPosition()))</code></pre>
+			<pre><code class="lua">local mx,my = love.mouse.getPosition()
+coords = hash:cellCoords{x = mx, y = my}</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:cell"></a>
 	<div id="Spatialhash:cell" class="ref-block">
-		<h4>function <span class="name">hash:cell</span><span class="arglist">(v)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Get the cell a given <a href="http://vrld.github.com/hump/#vector">vector</a> would be
-		placed in. This is an actual cell, not the index.</p>
+		<h4>function <span class="name">hash:cell</span><span class="arglist">(p)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p>Get the cell a given point would be placed. This is an actual cell, not the index.</p>
 		<p>A cell is a table which's keys and value are the objects stored in the cell, i.e.:
 		<pre><code class="lua">cell = {
     [obj1] = obj1,
@@ -1382,8 +1374,8 @@ hash = Spatialhash(150)</code></pre>
 		<pre><code class="lua">for object,_ in pairs(cell) do stuff(object) end</code></pre></p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>v</code></dt>
-				<dd>The position to query</dd>
+				<dt>table <code>p = {x = x, y = y}</code></dt>
+				<dd>The position to query.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
@@ -1393,7 +1385,8 @@ hash = Spatialhash(150)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">cell = hash:cell(vector(love.mouse.getPosition()))</code></pre>
+			<pre><code class="lua">local mx,my = love.mouse.getPosition()
+cell = hash:cell{x = mx, y = my}</code></pre>
 		</div>
 	</div>
 
@@ -1405,9 +1398,9 @@ hash = Spatialhash(150)</code></pre>
 			<dl>
 				<dt>mixed <code>obj</code></dt>
 				<dd>Object to place in the hash. It can be of any type except <code>nil</code>.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>ul</code></dt>
+				<dt>table <code>ul = {x = x, y = y}</code></dt>
 				<dd>Upper left corner of the bounding box.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>lr</code></dt>
+				<dt>table <code>lr = {x = x, y = y}</code></dt>
 				<dd>Lower right corner of the bounding box.</dd>
 			</dl>
 		</div>
@@ -1417,7 +1410,7 @@ hash = Spatialhash(150)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hash:insert(shape, vector(-100,-100), vector(0,-30))</code></pre>
+			<pre><code class="lua">hash:insert(shape, {x = -100, y = -100}, {x = 0, y = -30})</code></pre>
 		</div>
 	</div>
 
@@ -1431,9 +1424,9 @@ hash = Spatialhash(150)</code></pre>
 			<dl>
 				<dt>mixed <code>obj</code></dt>
 				<dd>The object to delete</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>ul</code></dt>
+				<dt>table <code>ul = {x = x, y = y}</code></dt>
 				<dd>Upper left corner of the bounding box.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>lr</code></dt>
+				<dt>table <code>lr = {x = x, y = y}</code></dt>
 				<dd>Lower right corner of the bounding box.</dd>
 			</dl>
 		</div>
@@ -1443,7 +1436,7 @@ hash = Spatialhash(150)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hash:remove(shape, vector(-100,-100), vector(0,-30))</code></pre>
+			<pre><code class="lua">hash:remove(shape, {x = -100, y = -100}, {x = 0, y = -30})</code></pre>
 			<pre><code class="lua">hash:remove(object_with_unknown_position)</code></pre>
 		</div>
 	</div>
@@ -1456,13 +1449,13 @@ hash = Spatialhash(150)</code></pre>
 			<dl>
 				<dt>mixed <code>obj</code></dt>
 				<dd>The object to be updated.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>ul_old</code></dt>
+				<dt>table <code>ul_old = {x = x, y = y}</code></dt>
 				<dd>Upper left corner of the bounding box before the object was moved.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>lr_old</code></dt>
+				<dt>table <code>lr_old = {x = x, y = y}</code></dt>
 				<dd>Lower right corner of the bounding box before the object was moved.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>ul_new</code></dt>
+				<dt>table <code>ul_new = {x = x, y = y}</code></dt>
 				<dd>Upper left corner of the bounding box after the object was moved.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>lr_new</code></dt>
+				<dt>table <code>lr_new = {x = x, y = y}</code></dt>
 				<dd>Lower right corner of the bounding box after the object was moved.</dd>
 			</dl>
 		</div>
@@ -1472,8 +1465,8 @@ hash = Spatialhash(150)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hash:update(shape, vector(-100,-100), vector(0,-30),
-                   vector(-100,-70), vector(0,0))</code></pre>
+			<pre><code class="lua">hash:update(shape, {x = -100, y = 100}, {x = 0, y = -30},
+                   {x = -100, y = -70}, {x = 0, y = 0})</code></pre>
 		</div>
 	</div>
 
@@ -1485,9 +1478,9 @@ hash = Spatialhash(150)</code></pre>
 			<dl>
 				<dt>mixed <code>obj</code></dt>
 				<dd>The object to query neighbors.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>ul</code></dt>
+				<dt>table <code>ul = {x = x, y = y}</code></dt>
 				<dd>Upper left corner of the object's bounding box.</dd>
-				<dt><a href="http://vrld.github.com/hump/#vector">vector</a> <code>lr</code></dt>
+				<dt>table <code>lr = {x = x, y = y}</code></dt>
 				<dd>Lower right corner of the object's bounding box.</dd>
 			</dl>
 		</div>
@@ -1498,7 +1491,7 @@ hash = Spatialhash(150)</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">local others = hash:getNeighbors(obj, vector(-100,-70), vector(0,0))
+			<pre><code class="lua">local others = hash:getNeighbors(obj, {x = -100, y = -70}, {x = 0, y = 0})
 for _,other in pairs(others) do
     obj:pushAway(other)
 end</code></pre>
@@ -1533,12 +1526,12 @@ hash:draw('fill', false)</code></pre>
 
 </div>
 
-<a name="vector"></a>
-<div id="vector" class="outer-block">
-	<h3>hardoncollider.vector<a class="top" href="#top">^ top</a></h3>
+<a name="vector-light"></a>
+<div id="vector-light" class="outer-block">
+	<h3>hardoncollider.vector-light<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
-		<pre><code class="lua">require "hardoncollider.vector"</code></pre>
-		<p>See <a href="http://vrld.github.com/hump/#vector">hump.vector</a></p>
+		<pre><code class="lua">require "hardoncollider.vector-light"</code></pre>
+		<p>See <a href="http://vrld.github.com/hump/#vector-light">hump.vector-light</a></p>
 	</div>
 </div>
 
