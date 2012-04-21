@@ -56,10 +56,8 @@ end
 local function SAT(shape_one, axes_one, shape_two, axes_two)
 	local collide, sx,sy, overlap = false, 0,0, math_huge
 	collide, sx,sy, overlap = test_axes(axes_one, shape_one, shape_two, sx,sy, overlap)
-	print('1', collide, sx,sy, overlap)
 	if not collide then return false end
 	collide, sx,sy, overlap = test_axes(axes_two, shape_one, shape_two, sx,sy, overlap)
-	print('2', collide, sx,sy, overlap)
 	return collide, sx,sy
 end
 
