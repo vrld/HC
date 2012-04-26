@@ -107,7 +107,6 @@ end
 
 -- update an objects position
 function Spatialhash:update(obj, ul_old, lr_old, ul_new, lr_new)
-	print('hash:update', obj)
 	local ul_old, lr_old = self:cellCoords(ul_old), self:cellCoords(lr_old)
 	local ul_new, lr_new = self:cellCoords(ul_new), self:cellCoords(lr_new)
 
