@@ -156,15 +156,14 @@ end
 local newPolygon
 
 
--- unpack vertex coordinates, i.e. {x=p, y=q}, ... -> p,q, ...
-local function unpackHelper(v, ...)
-	if not v then return end
-	return v.x,v.y,unpackHelper(...)
-end
-
 -- return vertices as x1,y1,x2,y2, ..., xn,yn
 function Polygon:unpack()
-	return unpackHelper( unpack(self.vertices) )
+	local v = {}
+	for i = 1,#self.vertices do
+		v[2*i-1] = self.vertices[i].x
+		v[2*i]   = self.vertices[i].y
+	end
+	return unpack(v)
 end
 
 -- deep copy of the polygon
