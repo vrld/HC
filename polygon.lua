@@ -273,7 +273,7 @@ function Polygon:triangulate()
 			-- all three points are on a line. In that case
 			-- the polygon constructor throws an error.
 			if not areCollinear(p.l, p.p, p.r) then
-				triangles[#triangles+1] = newPolygon(unpackHelper(p.l, p.p, p.r))
+				triangles[#triangles+1] = newPolygon(p.l.x,p.l.y, p.p.x,p.p.y, p.r.x,p.r.y)
 			end
 
 			if concave[p.l] and ccw(adj[p.l].l, p.l, p.r) then
@@ -297,7 +297,7 @@ function Polygon:triangulate()
 	end
 
 	if not areCollinear(p.l, p.p, p.r) then
-		triangles[#triangles+1] = newPolygon(unpackHelper(p.l, p.p, p.r))
+		triangles[#triangles+1] = newPolygon(p.l.x,p.l.y, p.p.x,p.p.y, p.r.x,p.r.y)
 	end
 
 	return triangles
@@ -309,14 +309,21 @@ function Polygon:mergedWith(other)
 	assert(p and q, "Polygons do not share an edge")
 
 	local ret = {}
-	for i = 1, p do ret[#ret+1] = self.vertices[i] end
+	for i = 1, p do
+		ret[#ret+1] = self.vertices[i].x
+		ret[#ret+2] = self.vertices[i].y
+	end
 	for i = 2, #other.vertices-1 do
 		local k = i + q - 1
 		if k > #other.vertices then k = k - #other.vertices end
-		ret[#ret+1] = other.vertices[k]
+		ret[#ret+1] = other.vertices[k].x
+		ret[#ret+2] = other.vertices[k].y
 	end
-	for i = p+1,#self.vertices do ret[#ret+1] = self.vertices[i] end
-	return newPolygon( unpackHelper( unpack(ret) ) )
+	for i = p+1,#self.vertices do
+		ret[#ret+1] = self.vertices[i].x
+		ret[#ret+2] = self.vertices[i].y
+	end
+	return newPolygon(unpack(ret))
 end
 
 -- split polygon into convex polygons.
