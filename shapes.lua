@@ -24,8 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local math_abs, math_floor, math_min, math_max = math.abs, math.floor, math.min, math.max
-local math_sqrt, math_log, math_pi, math_huge = math.sqrt, math.log, math.pi, math.huge
+local math_min, math_sqrt, math_huge = math.min, math.sqrt, math.huge
 
 local _PACKAGE = (...):match("^(.+)%.[^%.]+")
 if not common and common.class then
@@ -34,38 +33,7 @@ if not common and common.class then
 end
 local vector  = require(_PACKAGE .. '.vector-light')
 local Polygon = require(_PACKAGE .. '.polygon')
-
-local function math_absmin(a,b) return math_abs(a) < math_abs(b) and a or b end
-local function test_axes(axes, shape_one, shape_two, sx,sy, min_overlap)
-	for _,axis in ipairs(axes) do
-		local l1,r1 = shape_one:projectOn(axis)
-		local l2,r2 = shape_two:projectOn(axis)
-		-- do the intervals overlap?
-		if r1 < l2 or r2 < l1 then return false end
-
-		-- get the smallest absolute overlap
-		local overlap = math_absmin(l2-r1, r2-l1)
-		if math_abs(overlap) < min_overlap then
-			sx,sy = vector.mul(overlap, axis.x, axis.y)
-			min_overlap = math_abs(overlap)
-		end
-	end
-	return true, sx,sy, min_overlap
-end
-
-local function SAT(shape_one, axes_one, shape_two, axes_two)
-	local collide, sx,sy, overlap = false, 0,0, math_huge
-	collide, sx,sy, overlap = test_axes(axes_one, shape_one, shape_two, sx,sy, overlap)
-	if not collide then return false end
-	collide, sx,sy, overlap = test_axes(axes_two, shape_one, shape_two, sx,sy, overlap)
-	return collide, sx,sy
-end
-
-local function outcircles_intersect(shape_one, shape_two)
-	local x1,y1,r1 = shape_one:outcircle()
-	local x2,y2,r2 = shape_two:outcircle()
-	return vector.len2(x1-x2, y1-y2) <= (r1+r2)*(r1+r2)
-end
+local GJK     = require(_PACKAGE .. '.gjk') -- actual collision detection
 
 --
 -- base class
@@ -135,35 +103,21 @@ end
 --
 -- collision functions
 --
-function ConvexPolygonShape:getAxes()
-	local axes = {}
-	local vert = self._polygon.vertices
-	local p,q = vert[#vert], vert[#vert]
-	for i = 1,#vert do
-		p,q = q, vert[i]
-		local x,y = vector.normalize(vector.perpendicular(p.x-q.x, p.y-q.y))
-		axes[#axes+1] = {x = x, y = y}
-	end
-	return axes
-end
-
-function ConvexPolygonShape:projectOn(axis)
+function ConvexPolygonShape:support(dx,dy)
 	local v = self._polygon.vertices
-	local min,max = math_huge,-math_huge
+	local max, vmax = -math_huge
 	for i = 1,#v do
-		local p = vector.dot(v[i].x,v[i].y, axis.x,axis.y) -- = v[i]:projectOn(axis) * axis
-		min = math_min(p, min)
-		max = math_max(p, max)
+		local d = vector.dot(v[i].x,v[i].y, dx,dy)
+		if d > max then
+			max, vmax = d, v[i]
+		end
 	end
-	return min, max
+	return vmax.x, vmax.y
 end
 
-function CircleShape:projectOn(axis)
-	-- v:projectOn(a) * a = v * a (see ConvexPolygonShape)
-	-- therefore: (c +- a*r) * a = c*a +- |a|^2 * r
-	local center = vector.dot(self._center.x,self._center.y, axis.x,axis.y)
-	local shift  = self._radius * vector.len2(axis.x, axis.y)
-	return center - shift, center + shift
+function CircleShape:support(dx,dy)
+	return vector.add(self._center.x, self._center.y,
+		vector.mul(self._radius, vector.normalize(dx,dy)))
 end
 
 -- collision dispatching:
@@ -175,16 +129,13 @@ function ConvexPolygonShape:collidesWith(other)
 	end
 
 	-- else: type is POLYGON, use the SAT
-	if not outcircles_intersect(self, other) then return false end
-	return SAT(self, self:getAxes(), other, other:getAxes())
+	return GJK(self, other)
 end
 
 function ConcavePolygonShape:collidesWith(other)
 	if other._type == Shape.POINT then
 		return other:collidesWith(self)
 	end
-
-	if not outcircles_intersect(self, other) then return false end
 
 	-- TODO: better way of doing this. report all the separations?
 	local collide,dx,dy,count = false,0,0,0
@@ -219,21 +170,7 @@ function CircleShape:collidesWith(other)
 	end
 
 	-- else: other._type == POLYGON
-	if not outcircles_intersect(self, other) then return false end
-	-- retrieve closest edge to center
-	local vertices = other._polygon.vertices
-	local closest, dist = vertices[1], vector.len2(self._center.x-vertices[1].x, self._center.y-vertices[1].y)
-	for i = 2,#vertices do
-		local d = vector.len2(self._center.x-vertices[i].x, self._center.y-vertices[i].y)
-		if d < dist then
-			closest, dist = vertices[i], d
-		end
-	end
-	local axis = {x=0,y=1}
-	if dist ~= 0 then
-		axis.x,axis.y = vector.normalize(closest.x-self._center.x, closest.y-self._center.y)
-	end
-	return SAT(self, {axis}, other, other:getAxes())
+	return GJK(self, other)
 end
 
 function PointShape:collidesWith(other)
