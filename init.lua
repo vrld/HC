@@ -92,7 +92,7 @@ local function new_shape(self, shape)
 	self._current_shape_id = self._current_shape_id + 1
 	self._active_shapes[self._current_shape_id] = shape
 	self._shape_ids[shape] = self._current_shape_id
-	self._hash:insert(shape, {x=x1,y=y1}, {x=x2,y=y2})
+	self._hash:insert(shape, x1,y1, x2,y2)
 	shape._groups = {}
 
 	local hash = self._hash
@@ -101,24 +101,24 @@ local function new_shape(self, shape)
 		local x1,y1,x2,y2 = self:bbox()
 		move(self, ...)
 		local x3,y3,x4,y4 = self:bbox()
-		hash:update(self, {x=x1,y=y1}, {x=x2,y=y2}, {x=x3,y=y3}, {x=x4,y=y4})
+		hash:update(self, x1,y1, x2,y2, x3,y3, x4,y4)
 	end
 
 	function shape:rotate(...)
 		local x1,y1,x2,y2 = self:bbox()
 		rotate(self, ...)
 		local x3,y3,x4,y4 = self:bbox()
-		hash:update(self, {x=x1,y=y1}, {x=x2,y=y2}, {x=x3,y=y3}, {x=x4,y=y4})
+		hash:update(self, x1,y1, x2,y2, x3,y3, x4,y4)
 	end
 
 	function shape:neighbors()
 		local x1,y1, x2,y2 = self:bbox()
-		return pairs(hash:getNeighbors(self, {x=x1,y=y1}, {x=x2,y=y2}))
+		return pairs(hash:getNeighbors(self, x1,y1, x2,y2))
 	end
 
 	function shape:_removeFromHash()
 		local x1,y1, x2,y2 = self:bbox()
-		hash:remove(shape, {x=x1,y=y1}, {x=x2,y=y2})
+		hash:remove(shape, x1,y1, x2,y2)
 	end
 
 	return shape
@@ -199,7 +199,7 @@ end
 -- get list of shapes at point (x,y)
 function HC:shapesAt(x, y)
 	local shapes = {}
-	for s in pairs(self._hash:cell{x=x,y=y}) do
+	for s in pairs(self._hash:cellAt(x,y)) do
 		if s:contains(x,y) then
 			shapes[#shapes+1] = s
 		end
