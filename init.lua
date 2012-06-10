@@ -155,42 +155,46 @@ function HC:share_group(shape, other)
 	return false
 end
 
--- get unique indentifier for an unordered pair of shapes, i.e.:
--- collision_id(s,t) = collision_id(t,s)
-local function collision_id(self,s,t)
-	local i,k = self._shape_ids[s], self._shape_ids[t]
-	if i < k then i,k = k,i end
-	return string.format("%d,%d", i,k)
-end
-
 -- check for collisions
 function HC:update(dt)
-	-- collect colliding shapes
+	-- cache for tested/colliding shapes
 	local tested, colliding = {}, {}
+	local function may_skip_test(shape, other)
+		return (tested[other] and tested[other][shape])
+		    or self._ghost_shapes[other]
+		    or self:share_group(shape, other)
+	end
+
+	-- collect colliding shapes
 	for shape in self:activeShapes() do
+		tested[shape] = {}
 		for other in shape:neighbors() do
-			local id = collision_id(self, shape,other)
-			if not tested[id] then
-				if not (self._ghost_shapes[other] or self:share_group(shape, other)) then
-					local collide, sx,sy = shape:collidesWith(other)
-					if collide then
-						colliding[id] = {shape, other, sx, sy}
-					end
-					tested[id] = true
+			if not may_skip_test(shape, other) then
+				local collide, sx,sy = shape:collidesWith(other)
+				if collide then
+					if not colliding[shape] then colliding[shape] = {} end
+					colliding[shape][other] = {sx, sy}
 				end
+				tested[shape][other] = true
 			end
 		end
 	end
 
 	-- call colliding callbacks on colliding shapes
-	for id,info in pairs(colliding) do
-		self._colliding_last_frame[id] = nil
-		self.on_collide( dt, unpack(info) )
+	for a, reg in pairs(colliding) do
+		for b, info in pairs(reg) do
+			if self._colliding_last_frame[a] then
+				self._colliding_last_frame[a][b] = nil
+			end
+			self.on_collide(dt, a, b, info[1], info[2])
+		end
 	end
 
 	-- call stop callback on shapes that do not collide anymore
-	for _,info in pairs(self._colliding_last_frame) do
-		self.on_stop( dt, unpack(info) )
+	for a,reg in pairs(self._colliding_last_frame) do
+		for b, info in pairs(reg) do
+			self.on_stop(dt, a, b, info[1], info[2])
+		end
 	end
 
 	self._colliding_last_frame = colliding
