@@ -44,7 +44,7 @@ end
 
 -- returns true if three vertices lie on a line
 local function areCollinear(p, q, r, eps)
-	return math.abs(vector.det(q.x-p.x, q.y-p.y,  r.x-p.x,r.y-p.y)) <= (eps or 1e-20)
+	return math.abs(vector.det(q.x-p.x, q.y-p.y,  r.x-p.x,r.y-p.y)) <= (eps or 1e-32)
 end
 -- remove vertices that lie on a line
 local function removeCollinear(vertices)
@@ -75,18 +75,16 @@ local function ccw(p, q, r)
 	return vector.det(q.x-p.x, q.y-p.y,  r.x-p.x, r.y-p.y) >= 0
 end
 
--- test if a point lies inside of a triangle using cramers rule
-local function pointInTriangle(q, p1,p2,p3)
-	local v1x,v1y = p2.x-p1.x, p2.y-p1.y
-	local v2x,v2y = p3.x-p1.x, p3.y-p1.y
-	local qpx,qpy = q.x-p1.x,  q.y-p1.y
-	local l  = vector.det(qpx,qpy, v2x,v2y)
-	if l <= 0 then return false end
+-- test wether a and b lie on the same side of the line c->d
+local function onSameSide(a,b, c,d)
+	local px, py = d.x-c.x, d.y-c.y
+	local l = vector.det(px,py,  a.x-c.x, a.y-c.y)
+	local m = vector.det(px,py,  b.x-c.x, b.y-c.y)
+	return l*m >= 0
+end
 
-	local m = vector.det(v1x,v1y, qpx,qpy)
-	if m <= 0 then return false end
-	local dv = vector.det(v1x,v2y, v2x,v2y)
-	return (l+m)/dv < 1
+local function pointInTriangle(p, a,b,c)
+	return onSameSide(p,a, b,c) and onSameSide(p,b, a,c) and onSameSide(p,c, a,b)
 end
 
 -- returns starting indices of shared edge, i.e. if p and q share the
@@ -259,7 +257,9 @@ function Polygon:triangulate()
 	local function isEar(p1,p2,p3)
 		if not ccw(p1,p2,p3) then return false end
 		for q,_ in pairs(concave) do
-			if pointInTriangle(q, p1,p2,p3) then return false end
+			if q ~= p1 and q ~= p2 and q ~= p3 and pointInTriangle(q, p1,p2,p3) then
+				return false
+			end
 		end
 		return true
 	end
@@ -274,6 +274,7 @@ function Polygon:triangulate()
 			-- the polygon constructor throws an error.
 			if not areCollinear(p.l, p.p, p.r) then
 				triangles[#triangles+1] = newPolygon(p.l.x,p.l.y, p.p.x,p.p.y, p.r.x,p.r.y)
+				skipped = 0
 			end
 
 			if concave[p.l] and ccw(adj[p.l].l, p.l, p.r) then
