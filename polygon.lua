@@ -87,16 +87,30 @@ local function pointInTriangle(p, a,b,c)
 	return onSameSide(p,a, b,c) and onSameSide(p,b, a,c) and onSameSide(p,c, a,b)
 end
 
--- returns starting indices of shared edge, i.e. if p and q share the
--- edge with indices p1,p2 of p and q1,q2 of q, the return value is p1,q1
+-- returns starting/ending indices of shared edge, i.e. if p and q share the
+-- edge with indices p1,p2 of p and q1,q2 of q, the return value is p1,q2
 local function getSharedEdge(p,q)
-	local vertices = {}
-	for i,v in ipairs(q) do vertices[ tostring(v) ] = i end
-	for i,v in ipairs(p) do
-		local w = (i == #p) and p[1] or p[i+1]
-		if vertices[ tostring(v) ] and vertices[ tostring(w) ] then
-			return i, vertices[ tostring(v) ]
+	local pindex = setmetatable({}, {__index = function(t,k)
+		local s = {}
+		t[k] = s
+		return s
+	end})
+
+	-- record indices of vertices in p by their coordinates
+	for i = 1,#p do
+		pindex[p[i].x][p[i].y] = i
+	end
+
+	-- iterate over all edges in q. if both endpoints of that
+	-- edge are in p as well, return the indices of the starting
+	-- vertex
+	local i,k = #q,1
+	for k = 1,#q do
+		local v,w = q[i], q[k]
+		if pindex[v.x][v.y] and pindex[w.x][w.y] then
+			return pindex[w.x][w.y], k
 		end
+		i = k
 	end
 end
 
@@ -235,6 +249,16 @@ function Polygon:rotate(angle, cx, cy)
 	v.x,v.y = vector.add(cx,cy, vector.rotate(angle, v.x-cx, v.y-cy))
 end
 
+function Polygon:scale(s, cx,cy)
+	if not (cx and cy) then
+		cx,cy = self.centroid.x, self.centroid.y
+	end
+	for i,v in ipairs(self.vertices) do
+		-- v = (v - center) * s + center
+		v.x,v.y = vector.add(cx,cy, vector.mul(s, v.x-cx, v.y-cy))
+	end
+end
+
 -- triangulation by the method of kong
 function Polygon:triangulate()
 	if #self.vertices == 3 then return {self:clone()} end
@@ -310,20 +334,22 @@ function Polygon:mergedWith(other)
 	assert(p and q, "Polygons do not share an edge")
 
 	local ret = {}
-	for i = 1, p do
+	for i = 1,p-1 do
 		ret[#ret+1] = self.vertices[i].x
-		ret[#ret+2] = self.vertices[i].y
+		ret[#ret+1] = self.vertices[i].y
 	end
-	for i = 2, #other.vertices-1 do
-		local k = i + q - 1
-		if k > #other.vertices then k = k - #other.vertices end
-		ret[#ret+1] = other.vertices[k].x
-		ret[#ret+2] = other.vertices[k].y
+
+	for i = 0,#other.vertices-2 do
+		i = ((i-1 + q) % #other.vertices) + 1
+		ret[#ret+1] = other.vertices[i].x
+		ret[#ret+1] = other.vertices[i].y
 	end
+
 	for i = p+1,#self.vertices do
 		ret[#ret+1] = self.vertices[i].x
-		ret[#ret+2] = self.vertices[i].y
+		ret[#ret+1] = self.vertices[i].y
 	end
+
 	return newPolygon(unpack(ret))
 end
 
