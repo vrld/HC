@@ -96,19 +96,15 @@ local function new_shape(self, shape)
 	shape._groups = {}
 
 	local hash = self._hash
-	local move, rotate = shape.move, shape.rotate
-	function shape:move(...)
-		local x1,y1,x2,y2 = self:bbox()
-		move(self, ...)
-		local x3,y3,x4,y4 = self:bbox()
-		hash:update(self, x1,y1, x2,y2, x3,y3, x4,y4)
-	end
-
-	function shape:rotate(...)
-		local x1,y1,x2,y2 = self:bbox()
-		rotate(self, ...)
-		local x3,y3,x4,y4 = self:bbox()
-		hash:update(self, x1,y1, x2,y2, x3,y3, x4,y4)
+	local move, rotate,scale = shape.move, shape.rotate, shape.scale
+	for _, func in ipairs{'move', 'rotate', 'scale'} do
+		local old_func = shape[func]
+		shape[func] = function(self, ...)
+			local x1,y1,x2,y2 = self:bbox()
+			old_func(self, ...)
+			local x3,y3,x4,y4 = self:bbox()
+			hash:update(self, x1,y1, x2,y2, x3,y3, x4,y4)
+		end
 	end
 
 	function shape:neighbors()

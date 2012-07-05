@@ -351,19 +351,45 @@ function PointShape:rotate(angle, cx,cy)
 end
 
 
+function ConcavePolygonShape:scale(s)
+	assert(type(s) == "number" and s > 0, "Invalid argument. Scale must be greater than 0")
+	local cx,cy = self:center()
+	self._polygon:scale(s, cx,cy)
+	for _, p in ipairs(self._shapes) do
+		local dx,dy = vector.sub(cx,cy, p:center())
+		p:scale(s)
+		p:moveTo(cx-dx*s, cy-dy*s)
+	end
+end
+
+function ConvexPolygonShape:scale(s)
+	assert(type(s) == "number" and s > 0, "Invalid argument. Scale must be greater than 0")
+	self._polygon:scale(s, self:center())
+end
+
+function CircleShape:scale(s)
+	assert(type(s) == "number" and s > 0, "Invalid argument. Scale must be greater than 0")
+	self._radius = self._radius * s
+end
+
+function PointShape:scale()
+	-- nothing
+end
+
+
 function ConvexPolygonShape:draw(mode)
 	local mode = mode or 'line'
 	love.graphics.polygon(mode, self._polygon:unpack())
 end
 
-function ConcavePolygonShape:draw(mode)
+function ConcavePolygonShape:draw(mode, wireframe)
 	local mode = mode or 'line'
 	if mode == 'line' then
 		love.graphics.polygon('line', self._polygon:unpack())
-	else
-		for _,p in ipairs(self._shapes) do
-			love.graphics.polygon(mode, p._polygon:unpack())
-		end
+		if not wireframe then return end
+	end
+	for _,p in ipairs(self._shapes) do
+		love.graphics.polygon(mode, p._polygon:unpack())
 	end
 end
 
