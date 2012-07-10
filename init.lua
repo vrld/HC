@@ -86,13 +86,14 @@ function HC:setCallbacks(collide, stop)
 	return self
 end
 
-local function new_shape(self, shape)
-	local x1,y1,x2,y2 = shape:bbox()
+function HC:addShape(shape)
+	assert(shape.bbox and shape.collidesWith,
+		"Cannot add custom shape: Incompatible shape.")
 
 	self._current_shape_id = self._current_shape_id + 1
 	self._active_shapes[self._current_shape_id] = shape
 	self._shape_ids[shape] = self._current_shape_id
-	self._hash:insert(shape, x1,y1, x2,y2)
+	self._hash:insert(shape, shape:bbox())
 	shape._groups = {}
 
 	local hash = self._hash
@@ -129,7 +130,7 @@ function HC:activeShapes()
 end
 
 function HC:addPolygon(...)
-	return new_shape(self, newPolygonShape(...))
+	return self:addShape(newPolygonShape(...))
 end
 
 function HC:addRectangle(x,y,w,h)
@@ -137,11 +138,11 @@ function HC:addRectangle(x,y,w,h)
 end
 
 function HC:addCircle(cx, cy, radius)
-	return new_shape(self, newCircleShape(cx,cy, radius))
+	return self:addShape(newCircleShape(cx,cy, radius))
 end
 
 function HC:addPoint(x,y)
-	return new_shape(self, newPointShape(x,y))
+	return self:addShape(newPointShape(x,y))
 end
 
 function HC:share_group(shape, other)
@@ -165,7 +166,7 @@ function HC:update(dt)
 	-- collect colliding shapes
 	for shape in self:activeShapes() do
 		tested[shape] = {}
-		for other in hash:rangeIter(shape:bbox()) do
+		for other in self._hash:rangeIter(shape:bbox()) do
 			if not may_skip_test(shape, other) then
 				local collide, sx,sy = shape:collidesWith(other)
 				if collide then
