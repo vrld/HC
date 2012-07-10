@@ -156,7 +156,8 @@ function HC:update(dt)
 	-- cache for tested/colliding shapes
 	local tested, colliding = {}, {}
 	local function may_skip_test(shape, other)
-		return (tested[other] and tested[other][shape])
+		return (shape == other)
+		    or (tested[other] and tested[other][shape])
 		    or self._ghost_shapes[other]
 		    or self:share_group(shape, other)
 	end
@@ -164,7 +165,7 @@ function HC:update(dt)
 	-- collect colliding shapes
 	for shape in self:activeShapes() do
 		tested[shape] = {}
-		for other in shape:neighbors() do
+		for other in hash:rangeIter(shape:bbox()) do
 			if not may_skip_test(shape, other) then
 				local collide, sx,sy = shape:collidesWith(other)
 				if collide then
