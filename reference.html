@@ -77,6 +77,8 @@
 			<dd>Add circle to the scene.</dd>
 			<dt><a href="#hardoncollider-addPoint">HC:addPoint()</a></dt>
 			<dd>Add point to the scene.</dd>
+			<dt><a href="#hardoncollider-addShape">HC:addShape()</a></dt>
+			<dd>Add custom shape.</dd>
 			<dt><a href="#hardoncollider-remove">HC:remove()</a></dt>
 			<dd>Remove a shape from scene.</dd>
 			<dt><a href="#hardoncollider-addToGroup">HC:addToGroup()</a></dt>
@@ -95,6 +97,8 @@
 			<dd>Make shape collidable.</dd>
 			<dt><a href="#hardoncollider-shapesAt">HC:shapesAt()</a></dt>
 			<dd>Get list of shapes covering a point.</dd>
+			<dt><a href="#hardoncollider-shapesInRange">HC:shapesInRange()</a></dt>
+			<dd>Returns all shapes contained in a region.</dd>
 		</dl>
 	</div>
 
@@ -306,6 +310,46 @@ end</code></pre>
 		</div>
 	</div>
 
+	<a name="hardoncollider-addShape"></a>
+	<div id="addShape" class="ref-block">
+		<h4>function <span class="name">HC:addShape</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Add a custom shape to the collision detection system.</p>
+		<p>The shape <em>must</em> implement two functions for this to work:
+		<pre><code class="lua">function shape:bbox()
+    return <em>corners-of-axis-aligned-bounding-box</em>
+end</code></pre>
+		and
+		<pre><code class="lua">function shape:collidesWith(other)
+    local colliding = <em>...</em>
+	local sx,sy = <em>separating-vector(self, other)</em>
+    return colliding, sx,sy
+end</code></pre>
+		The shape will be augmented with the function <a href="#shapes-shape:neighbors">shape:neighbors()</a></p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>mixed <code>shape</code></dt>
+				<dd>Custom shape.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>mixed</dt>
+				<dd>The shape.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">
+AABB = {x = ..., y = ..., width = ..., height = ...}
+function AABB:bbox()
+    return self.x, self.y, self.x+self.width, self.y+self.height
+end
+function AABB:collidesWith(other)
+    return <em>magic</em>
+end
+AABB = HC:addShape(AABB)</code></pre>
+		</div>
+	</div>
+
 	<a name="hardoncollider-remove"></a>
 	<div id="remove" class="ref-block">
 		<h4>function <span class="name">HC:remove</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
@@ -505,6 +549,34 @@ end</code></pre>
 		</div>
 	</div>
 
+	<a name="hardoncollider-shapesInRange"></a>
+	<div id="shapesInRange" class="ref-block">
+		<h4>function <span class="name">HC:shapesInRange</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#hardoncollider">^ top</a></h4>
+		<p>Returns all shapes contained in the rectangle <code>(x1,y1)-(x2,y2)</code>.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x1, y1</code></dt>
+				<dd>Upper left corner of the bounding box.</dd>
+				<dt>numbers <code>x2, y2</code></dt>
+				<dd>Lower right corner of the bounding box.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Set</dt>
+				<dd>A set (i.e. table of <code>t[shape] = shape</code>) of shapes.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">-- draw only visible shapes
+local width = love.graphics.getWidth()
+local height = love.graphics.getHeight()
+for shape in pairs(HC:shapesInRange(0,0, width,height) do
+    shape.object:draw()
+end</code></pre>
+		</div>
+	</div>
+
 </div>
 
 
@@ -524,8 +596,6 @@ end</code></pre>
 		classes to test for colliding shapes.
 		They might also be useful for doing GUI stuff, e.g. when testing if the
 		mouse hovers a button.</p>
-		<p>Some functions (<code>getAxes</code> and <code>projectOn</code>) are left
-		undocumented, as they have little value outside the scope of collision detection.</p>
 	</div>
 
 	<div class="overview">
@@ -553,6 +623,8 @@ end</code></pre>
 			<dd>Move the shape.</dd>
 			<dt><a href="#shapes-shape:moveTo">shape:moveTo()</a></dt>
 			<dd>Set the shape's position.</dd>
+			<dt><a href="#shapes-shape:scale">shape:scale()</a></dt>
+			<dd>Scales a shape.</dd>
 			<dt><a href="#shapes-shape:rotate">shape:rotate()</a></dt>
 			<dd>Rotate the shape.</dd>
 			<dt><a href="#shapes-shape:setRotation">shape:setRotation()</a></dt>
@@ -567,6 +639,8 @@ end</code></pre>
 			<dd>Get axis aligned bounding box.</dd>
 			<dt><a href="#shapes-shape:draw">shape:draw()</a></dt>
 			<dd>Draw the shape.</dd>
+			<dt><a href="#shapes-shape:support">shape:support()</a></dt>
+			<dd>Get furthest vertex of the shape wrt. a direction.</dd>
 			<dt><a href="#shapes-shape:collidesWith">shape:collidesWith()</a></dt>
 			<dd>Test for collision.</dd>
 			<dt><a href="#shapes-shape:neighbors">shape:neighbors()</a></dt>
@@ -718,7 +792,7 @@ end</code></pre>
 	</div>
 
 	<a name="shapes-shape:moveTo"></a>
-	<div id="shape:move" class="ref-block">
+	<div id="shape:moveTo" class="ref-block">
 		<h4>function <span class="name">shape:moveTo</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Set the shape's position.</p>
 		<div class="arguments">Parameters:
@@ -734,6 +808,26 @@ end</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">circle:moveTo(400,300) -- move circle to screen center</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:scale"></a>
+	<div id="shape:scale" class="ref-block">
+		<h4>function <span class="name">shape:scale</span><span class="arglist">(s)</span><a class="top" href="#shapes">^ top</a></h4>
+		<p>Scale the shape relative to it's center.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>number <code>s</code></dt>
+				<dd>Scale factor. Must be <code>&gt; 0</code>.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>Nothing</dt>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">circle:scale(2) -- double the circle's size</code></pre>
 		</div>
 	</div>
 
@@ -893,6 +987,30 @@ love.graphics.rectangle('line', x1,y1, x2-x1,y2-y1)</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">circle:draw('fill')</code></pre>
+		</div>
+	</div>
+
+	<a name="shapes-shape:support"></a>
+	<div id="shape:support" class="ref-block">
+		<h4>function <span class="name">shape:support</span><span class="arglist">(dx,dy)</span><a class="top" href="#shapes">^ top</a></h4>
+		<p>Get furthest vertex of the shape with respect to the direction <code>dx, dy</code>.</p>
+		<p>Used in the collision detection algorithm, but may be useful for other things - e.g. lighting - too.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>dx, dy</code></dt>
+				<dd>Search direction.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>numbers</dt>
+				<dd>The furthest vertex in direction <code>dx, dy</code></dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">-- get vertices that produce a shadow volume
+local x1,y1 = circle:support(lx, ly)
+local x2,y2 = circle:support(-lx, -ly)</code></pre>
 		</div>
 	</div>
 
@@ -1298,15 +1416,19 @@ end</code></pre>
 			<dt><a href="#spatialhash-Spatialhash:cellCoords">hash:cellCoords()</a></dt>
 			<dd>Get cell coordinates of a given position.</dd>
 			<dt><a href="#spatialhash-Spatialhash:cell">hash:cell()</a></dt>
-			<dd>Get cell for a given position.</dd>
+			<dd>Get cell for a given index.</dd>
+			<dt><a href="#spatialhash-Spatialhash:cellAt">hash:cellAt()</a></dt>
+			<dd>Get cell at a given position.</dd>
 			<dt><a href="#spatialhash-Spatialhash:insert">hash:insert()</a></dt>
 			<dd>Insert object.</dd>
 			<dt><a href="#spatialhash-Spatialhash:remove">hash:remove()</a></dt>
 			<dd>Remove object.</dd>
 			<dt><a href="#spatialhash-Spatialhash:update">hash:update()</a></dt>
 			<dd>Update object's position.</dd>
-			<dt><a href="#spatialhash-Spatialhash:getNeighbors">hash:getNeighbors()</a></dt>
-			<dd>Query neighbors of an object.</dd>
+			<dt><a href="#spatialhash-Spatialhash:inRange">hash:inRange()</a></dt>
+			<dd>Query object in a range.</dd>
+			<dt><a href="#spatialhash-Spatialhash:rangeIter">hash:rangeIter()</a></dt>
+			<dd>Iterator to objects in a range.</dd>
 		</dl>
 	</div>
 
@@ -1339,31 +1461,31 @@ hash = Spatialhash(150)</code></pre>
 
 	<a name="spatialhash-Spatialhash:cellCoords"></a>
 	<div id="Spatialhash:cellCoords" class="ref-block">
-		<h4>function <span class="name">hash:cellCoords</span><span class="arglist">(p)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<h4>function <span class="name">hash:cellCoords</span><span class="arglist">(x,y)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Get coordinates of a given value, i.e. the cell index in which a given point would be placed.</p>
 		</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>table <code>p = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x, y</code></dt>
 				<dd>The position to query.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
-				<dt>table</dt>
-				<dd>Coordinates of the cell which would contain <code>p</code>.</dd>
+				<dt>numbers</dt>
+				<dd>Coordinates of the cell which would contain <code>x,y</code>.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">local mx,my = love.mouse.getPosition()
-coords = hash:cellCoords{x = mx, y = my}</code></pre>
+cx, cy = hash:cellCoords(mx, my)</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:cell"></a>
 	<div id="Spatialhash:cell" class="ref-block">
-		<h4>function <span class="name">hash:cell</span><span class="arglist">(p)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Get the cell a given point would be placed. This is an actual cell, not the index.</p>
+		<h4>function <span class="name">hash:cell</span><span class="arglist">(i,k)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p>Get the cell with given coordinates.</p>
 		<p>A cell is a table which's keys and value are the objects stored in the cell, i.e.:
 		<pre><code class="lua">cell = {
     [obj1] = obj1,
@@ -1371,10 +1493,34 @@ coords = hash:cellCoords{x = mx, y = my}</code></pre>
     ...
 }</code></pre>
 		You can iterate over the objects in a cell using <code>pairs()</code>:
-		<pre><code class="lua">for object,_ in pairs(cell) do stuff(object) end</code></pre></p>
+		<pre><code class="lua">for object in pairs(cell) do stuff(object) end</code></pre></p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>table <code>p = {x = x, y = y}</code></dt>
+				<dt>numbers <code>i, k</code></dt>
+				<dd>The cell index.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>table</dt>
+				<dd>Set of objects contained in the cell.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">local mx,my = love.mouse.getPosition()
+cx, cy = hash:cellCoords(mx, my)
+cell = hash:cell(cx, cy)</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:cellAt"></a>
+	<div id="Spatialhash:cell" class="ref-block">
+		<h4>function <span class="name">hash:cellAt</span><span class="arglist">(x,y)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p>Get the cell that contains point <code>x,y</code>.</p>
+		<p>Same as <code class="lua">hash:cell(hash:cellCoords(x,y))</code></p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x, y</code></dt>
 				<dd>The position to query.</dd>
 			</dl>
 		</div>
@@ -1386,21 +1532,21 @@ coords = hash:cellCoords{x = mx, y = my}</code></pre>
 		</div>
 		<div class="example">Example:
 			<pre><code class="lua">local mx,my = love.mouse.getPosition()
-cell = hash:cell{x = mx, y = my}</code></pre>
+cell = hash:cellAt(mx, my)</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:insert"></a>
 	<div id="Spatialhash:insert" class="ref-block">
-		<h4>function <span class="name">hash:insert</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<h4>function <span class="name">hash:insert</span><span class="arglist">(obj, x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Insert an object into the hash using a given bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>mixed <code>obj</code></dt>
 				<dd>Object to place in the hash. It can be of any type except <code>nil</code>.</dd>
-				<dt>table <code>ul = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x1,y1</code></dt>
 				<dd>Upper left corner of the bounding box.</dd>
-				<dt>table <code>lr = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x2,y2</code></dt>
 				<dd>Lower right corner of the bounding box.</dd>
 			</dl>
 		</div>
@@ -1410,13 +1556,13 @@ cell = hash:cell{x = mx, y = my}</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hash:insert(shape, {x = -100, y = -100}, {x = 0, y = -30})</code></pre>
+			<pre><code class="lua">hash:insert(shape, shape:bbox())</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:remove"></a>
 	<div id="Spatialhash:remove" class="ref-block">
-		<h4>function <span class="name">hash:remove</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<h4>function <span class="name">hash:remove</span><span class="arglist">(obj, x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<h4>function <span class="name">hash:remove</span><span class="arglist">(obj)</span></h4>
 		<p>Remove an object from the hash using a bounding box.</p>
 		<p>If no bounding box is given, search the whole hash to delete the object.</p>
@@ -1424,9 +1570,9 @@ cell = hash:cell{x = mx, y = my}</code></pre>
 			<dl>
 				<dt>mixed <code>obj</code></dt>
 				<dd>The object to delete</dd>
-				<dt>table <code>ul = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x1,y1</code></dt>
 				<dd>Upper left corner of the bounding box.</dd>
-				<dt>table <code>lr = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x2,y2</code></dt>
 				<dd>Lower right corner of the bounding box.</dd>
 			</dl>
 		</div>
@@ -1436,26 +1582,26 @@ cell = hash:cell{x = mx, y = my}</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hash:remove(shape, {x = -100, y = -100}, {x = 0, y = -30})</code></pre>
+			<pre><code class="lua">hash:remove(shape, shape:bbox())</code></pre>
 			<pre><code class="lua">hash:remove(object_with_unknown_position)</code></pre>
 		</div>
 	</div>
 
 	<a name="spatialhash-Spatialhash:update"></a>
 	<div id="Spatialhash:update" class="ref-block">
-		<h4>function <span class="name">hash:update</span><span class="arglist">(obj, ul_old, lr_old, ul_new, lr_new)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<h4>function <span class="name">hash:update</span><span class="arglist">(obj, x1,y1, x2,y2, x3,y3, x4,y4)</span><a class="top" href="#spatialhash">^ top</a></h4>
 		<p>Update an objects position given the old bounding box and the new bounding box.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>mixed <code>obj</code></dt>
 				<dd>The object to be updated.</dd>
-				<dt>table <code>ul_old = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x1,y1</code></dt>
 				<dd>Upper left corner of the bounding box before the object was moved.</dd>
-				<dt>table <code>lr_old = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x2,y2</code></dt>
 				<dd>Lower right corner of the bounding box before the object was moved.</dd>
-				<dt>table <code>ul_new = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x3,y3</code></dt>
 				<dd>Upper left corner of the bounding box after the object was moved.</dd>
-				<dt>table <code>lr_new = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x4,y4</code></dt>
 				<dd>Lower right corner of the bounding box after the object was moved.</dd>
 			</dl>
 		</div>
@@ -1465,35 +1611,58 @@ cell = hash:cell{x = mx, y = my}</code></pre>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">hash:update(shape, {x = -100, y = 100}, {x = 0, y = -30},
-                   {x = -100, y = -70}, {x = 0, y = 0})</code></pre>
+			<pre><code class="lua">hash:update(shape, -100,-30, 0,60, -100,-70, 0,20)</code></pre>
 		</div>
 	</div>
 
-	<a name="spatialhash-Spatialhash:getNeighbors"></a>
-	<div id="Spatialhash:getNeighbors" class="ref-block">
-		<h4>function <span class="name">hash:getNeighbors</span><span class="arglist">(obj, ul, lr)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Query for neighbors of an object given it's bounding box.</p>
+	<a name="spatialhash-Spatialhash:inRange"></a>
+	<div id="Spatialhash:inRange" class="ref-block">
+		<h4>function <span class="name">hash:inRange</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p>Query objects in the rectangle <code>(x1,y1) - (x2,y2)</code>.</p>
 		<div class="arguments">Parameters:
 			<dl>
-				<dt>mixed <code>obj</code></dt>
-				<dd>The object to query neighbors.</dd>
-				<dt>table <code>ul = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x1, y1</code></dt>
 				<dd>Upper left corner of the object's bounding box.</dd>
-				<dt>table <code>lr = {x = x, y = y}</code></dt>
+				<dt>numbers <code>x2, y2</code></dt>
 				<dd>Lower right corner of the object's bounding box.</dd>
 			</dl>
 		</div>
 		<div class="returns">Returns:
 			<dl>
 				<dt>Set</dt>
-				<dd>A set (i.e. table of <code>t[other] = other</code>) of neighboring objects.</dd>
+				<dd>A set (i.e. table of <code>t[obj] = obj</code>) of objects.</dd>
 			</dl>
 		</div>
 		<div class="example">Example:
-			<pre><code class="lua">local others = hash:getNeighbors(obj, {x = -100, y = -70}, {x = 0, y = 0})
-for _,other in pairs(others) do
-    obj:pushAway(other)
+			<pre><code class="lua">local objects = hash:inRange(0,0, 800,600)
+for obj in pairs(objects) do
+    obj:draw()
+end</code></pre>
+		</div>
+	</div>
+
+	<a name="spatialhash-Spatialhash:rangeIter"></a>
+	<div id="Spatialhash:rangeIter" class="ref-block">
+		<h4>function <span class="name">hash:rangeIter</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
+		<p>Iterator to objects in the rectangle <code>(x1,y1) - (x2,y2)</code>.</p>
+		<p>Alias to <code>pairs(hash:inRange(x1,y1, x2,y2))</code>.</p>
+		<div class="arguments">Parameters:
+			<dl>
+				<dt>numbers <code>x1, y1</code></dt>
+				<dd>Upper left corner of the object's bounding box.</dd>
+				<dt>numbers <code>x2, y2</code></dt>
+				<dd>Lower right corner of the object's bounding box.</dd>
+			</dl>
+		</div>
+		<div class="returns">Returns:
+			<dl>
+				<dt>iterator</dt>
+				<dd>An iterator to objects in the range.</dd>
+			</dl>
+		</div>
+		<div class="example">Example:
+			<pre><code class="lua">for obj in hash:rangeIter(0,0, 800,600) do
+    obj:draw()
 end</code></pre>
 		</div>
 	</div>
