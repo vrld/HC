@@ -129,6 +129,10 @@ function HC:activeShapes()
 	end
 end
 
+function HC:shapesInRange(x1,y1, x2,y2)
+	return self._hash:inRange(x1,y1, x2,y2)
+end
+
 function HC:addPolygon(...)
 	return self:addShape(newPolygonShape(...))
 end
