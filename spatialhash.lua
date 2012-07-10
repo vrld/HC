@@ -63,6 +63,24 @@ function Spatialhash:cellAt(x,y)
 	return self:cell(self:cellCoords(x,y))
 end
 
+function Spatialhash:inRange(x1,y1, x2,y2)
+	local set = {}
+	x1, y1 = self:cellCoords(x1, y1)
+	x2, y2 = self:cellCoords(x2, y2)
+	for i = x1,x2 do
+		for k = y1,y2 do
+			for obj in pairs(self:cell(i,k)) do
+				rawset(set, obj, obj)
+			end
+		end
+	end
+	return set
+end
+
+function Spatialhash:rangeIter(...)
+	return pairs(self:inRange(...))
+end
+
 function Spatialhash:insert(obj, x1, y1, x2, y2)
 	x1, y1 = self:cellCoords(x1, y1)
 	x2, y2 = self:cellCoords(x2, y2)
@@ -120,18 +138,7 @@ function Spatialhash:update(obj, old_x1,old_y1, old_x2,old_y2, new_x1,new_y1, ne
 end
 
 function Spatialhash:getNeighbors(obj, x1,y1, x2,y2)
-	x1,y1 = self:cellCoords(x1,y1)
-	x2,y2 = self:cellCoords(x2,y2)
-
-	local set = {}
-	for i = x1,x2 do
-		for k = y1,y2 do
-			local cell = self:cell(i,k)
-			for other in pairs(cell) do
-				rawset(set, other, other)
-			end
-		end
-	end
+	local set = self:inRange(x1,y1, x2,y2)
 	rawset(set, obj, nil)
 	return set
 end
