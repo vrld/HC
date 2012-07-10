@@ -123,6 +123,7 @@ end
 -- collision dispatching:
 -- let circle shape or compund shape handle the collision
 function ConvexPolygonShape:collidesWith(other)
+	if self == other then return false end
 	if other._type ~= Shape.POLYGON then
 		local collide, sx,sy = other:collidesWith(self)
 		return collide, sx and -sx, sy and -sy
@@ -133,6 +134,7 @@ function ConvexPolygonShape:collidesWith(other)
 end
 
 function ConcavePolygonShape:collidesWith(other)
+	if self == other then return false end
 	if other._type == Shape.POINT then
 		return other:collidesWith(self)
 	end
@@ -151,6 +153,7 @@ function ConcavePolygonShape:collidesWith(other)
 end
 
 function CircleShape:collidesWith(other)
+	if self == other then return false end
 	if other._type == Shape.CIRCLE then
 		local px,py = self._center.x-other._center.x, self._center.y-other._center.y
 		local d = vector.len2(px,py)
@@ -174,6 +177,7 @@ function CircleShape:collidesWith(other)
 end
 
 function PointShape:collidesWith(other)
+	if self == other then return false end
 	if other._type == Shape.POINT then
 		return (self._pos == other._pos), 0,0
 	end
