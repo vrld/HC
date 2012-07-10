@@ -108,13 +108,13 @@ local function new_shape(self, shape)
 	end
 
 	function shape:neighbors()
-		local x1,y1, x2,y2 = self:bbox()
-		return pairs(hash:getNeighbors(self, x1,y1, x2,y2))
+		local neighbors = hash:inRange(self:bbox())
+		rawset(neighbors, self, nil)
+		return neighbors
 	end
 
 	function shape:_removeFromHash()
-		local x1,y1, x2,y2 = self:bbox()
-		hash:remove(shape, x1,y1, x2,y2)
+		return hash:remove(shape, self:bbox())
 	end
 
 	return shape

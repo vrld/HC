@@ -137,12 +137,6 @@ function Spatialhash:update(obj, old_x1,old_y1, old_x2,old_y2, new_x1,new_y1, ne
 	end
 end
 
-function Spatialhash:getNeighbors(obj, x1,y1, x2,y2)
-	local set = self:inRange(x1,y1, x2,y2)
-	rawset(set, obj, nil)
-	return set
-end
-
 function Spatialhash:draw(how, show_empty, print_key)
 	if show_empty == nil then show_empty = true end
 	for k1,v in pairs(self.cells) do
