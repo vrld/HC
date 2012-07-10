@@ -61,25 +61,19 @@ function Shape:setRotation(angle, x,y)
 	return self:rotate(angle - self._rotation, x,y)
 end
 
--- supported shapes
-Shape.POLYGON  = setmetatable({}, {__tostring = function() return 'POLYGON'  end})
-Shape.COMPOUND = setmetatable({}, {__tostring = function() return 'COMPOUND' end})
-Shape.CIRCLE   = setmetatable({}, {__tostring = function() return 'CIRCLE' end})
-Shape.POINT    = setmetatable({}, {__tostring = function() return 'POINT' end})
-
 --
 -- class definitions
 --
 local ConvexPolygonShape = {}
 function ConvexPolygonShape:init(polygon)
-	Shape.init(self, Shape.POLYGON)
+	Shape.init(self, 'polygon')
 	assert(polygon:isConvex(), "Polygon is not convex.")
 	self._polygon = polygon
 end
 
 local ConcavePolygonShape = {}
 function ConcavePolygonShape:init(poly)
-	Shape.init(self, Shape.COMPOUND)
+	Shape.init(self, 'compound')
 	self._polygon = poly
 	self._shapes = poly:splitConvex()
 	for i,s in ipairs(self._shapes) do
@@ -89,14 +83,14 @@ end
 
 local CircleShape = {}
 function CircleShape:init(cx,cy, radius)
-	Shape.init(self, Shape.CIRCLE)
+	Shape.init(self, 'circle')
 	self._center = {x = cx, y = cy}
 	self._radius = radius
 end
 
 local PointShape = {}
 function PointShape:init(x,y)
-	Shape.init(self, Shape.POINT)
+	Shape.init(self, 'point')
 	self._pos = {x = x, y = y}
 end
 
@@ -124,18 +118,18 @@ end
 -- let circle shape or compund shape handle the collision
 function ConvexPolygonShape:collidesWith(other)
 	if self == other then return false end
-	if other._type ~= Shape.POLYGON then
+	if other._type ~= 'polygon' then
 		local collide, sx,sy = other:collidesWith(self)
 		return collide, sx and -sx, sy and -sy
 	end
 
-	-- else: type is POLYGON, use the SAT
+	-- else: type is POLYGON
 	return GJK(self, other)
 end
 
 function ConcavePolygonShape:collidesWith(other)
 	if self == other then return false end
-	if other._type == Shape.POINT then
+	if other._type == 'point' then
 		return other:collidesWith(self)
 	end
 
@@ -154,7 +148,7 @@ end
 
 function CircleShape:collidesWith(other)
 	if self == other then return false end
-	if other._type == Shape.CIRCLE then
+	if other._type == 'circle' then
 		local px,py = self._center.x-other._center.x, self._center.y-other._center.y
 		local d = vector.len2(px,py)
 		local radii = self._radius + other._radius
@@ -165,20 +159,18 @@ function CircleShape:collidesWith(other)
 			return true, vector.mul(radii - math_sqrt(d), vector.normalize(px,py))
 		end
 		return false
-	elseif other._type == Shape.COMPOUND then
-		local collide, sep = other:collidesWith(self)
-		return collide, sep and -sep
-	elseif other._type == Shape.POINT then
-		return other:collidesWith(self)
+	elseif other._type == 'polygon' then
+		return GJK(self, other)
 	end
 
-	-- else: other._type == POLYGON
-	return GJK(self, other)
+	-- else: let the other shape decide
+	local collide, sep = other:collidesWith(self)
+	return collide, sep and -sep
 end
 
 function PointShape:collidesWith(other)
 	if self == other then return false end
-	if other._type == Shape.POINT then
+	if other._type == 'point' then
 		return (self._pos == other._pos), 0,0
 	end
 	return other:contains(self._pos.x, self._pos.y), 0,0
