@@ -243,6 +243,7 @@ end</code></pre>
 	<div id="addRectangle" class="ref-block">
 		<h4>function <span class="name">HC:addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^ top</a></h4>
 		<p>Add a rectangle shape to the collision detection system.</p>
+		<p><span class="warning">Note:</span> Shape transformations, e.g. <code><a href="#shapes-shape:moveTo">shape:moveTo()</a></code> and <code><a href="#shapes-shape:rotate">shape:rotate()</a></code>, will be with respect to the rectangle <em>center</em>, not the upper left corner.</p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>numbers <code>x, y</code></dt>
@@ -795,6 +796,8 @@ end</code></pre>
 	<div id="shape:moveTo" class="ref-block">
 		<h4>function <span class="name">shape:moveTo</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
 		<p>Set the shape's position.</p>
+			<p><span class="warning">Important:</span> This function moves the shape's <em>center</em> to <code>(x,y)</code>. It is equivalent to: <pre><code class="lua">local cx,cy = shape:center()
+shape:move(x-cx, y-cy)</code></pre></p>
 		<div class="arguments">Parameters:
 			<dl>
 				<dt>numbers <code>x, y</code></dt>
