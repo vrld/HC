@@ -27,7 +27,7 @@ THE SOFTWARE.
 local math_min, math_sqrt, math_huge = math.min, math.sqrt, math.huge
 
 local _PACKAGE = (...):match("^(.+)%.[^%.]+")
-if not common and common.class then
+if not (common and common.class and common.instance) then
 	class_commons = true
 	require(_PACKAGE .. '.class')
 end
