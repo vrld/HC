@@ -257,6 +257,7 @@ function Polygon:scale(s, cx,cy)
 		-- v = (v - center) * s + center
 		v.x,v.y = vector.add(cx,cy, vector.mul(s, v.x-cx, v.y-cy))
 	end
+	self._radius = self._radius * s
 end
 
 -- triangulation by the method of kong
