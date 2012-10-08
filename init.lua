@@ -46,7 +46,7 @@ function HC:init(cell_size, callback_collide, callback_stop)
 	self._current_shape_id = 0
 	self._shape_ids      = setmetatable({}, {__mode = "k"}) -- reverse lookup
 	self.groups          = {}
-	self._colliding_last_frame = {}
+	self._colliding_only_last_frame = {}
 
 	self.on_collide = callback_collide or __NULL__
 	self.on_stop    = callback_stop    or __NULL__
@@ -60,7 +60,7 @@ function HC:clear()
 	self._current_shape_id = 0
 	self._shape_ids      = setmetatable({}, {__mode = "k"}) -- reverse lookup
 	self.groups          = {}
-	self._colliding_last_frame = {}
+	self._colliding_only_last_frame = {}
 	self._hash           = common.instance(Spatialhash, self._hash.cell_size)
 	return self
 end
@@ -167,39 +167,48 @@ function HC:update(dt)
 		    or self:share_group(shape, other)
 	end
 
-	-- collect colliding shapes
-	for shape in self:activeShapes() do
+	-- collect active shapes. necessary, because a callback might add shapes to
+	-- _active_shapes, which will lead to undefined behavior (=random crashes) in
+	-- next()
+	local active = {}
+	for id,shape in pairs(self._active_shapes) do
+		active[id] = shape
+	end
+
+	local only_last_frame = self._colliding_only_last_frame
+	for id,shape in pairs(active) do
 		tested[shape] = {}
 		for other in self._hash:rangeIter(shape:bbox()) do
+			if not self._active_shapes[id] then
+				-- break out of this loop is shape was removed in a callback
+				break
+			end
+
 			if not may_skip_test(shape, other) then
 				local collide, sx,sy = shape:collidesWith(other)
 				if collide then
 					if not colliding[shape] then colliding[shape] = {} end
 					colliding[shape][other] = {sx, sy}
+
+					-- flag shape colliding this frame and call collision callback
+					if only_last_frame[shape] then
+						only_last_frame[shape][other] = nil
+					end
+					self.on_collide(dt, shape, other, sx, sy)
 				end
 				tested[shape][other] = true
 			end
 		end
 	end
 
-	-- call colliding callbacks on colliding shapes
-	for a, reg in pairs(colliding) do
-		for b, info in pairs(reg) do
-			if self._colliding_last_frame[a] then
-				self._colliding_last_frame[a][b] = nil
-			end
-			self.on_collide(dt, a, b, info[1], info[2])
-		end
-	end
-
 	-- call stop callback on shapes that do not collide anymore
-	for a,reg in pairs(self._colliding_last_frame) do
+	for a,reg in pairs(only_last_frame) do
 		for b, info in pairs(reg) do
 			self.on_stop(dt, a, b, info[1], info[2])
 		end
 	end
 
-	self._colliding_last_frame = colliding
+	self._colliding_only_last_frame = colliding
 end
 
 -- get list of shapes at point (x,y)
