@@ -164,8 +164,7 @@ function CircleShape:collidesWith(other)
 	end
 
 	-- else: let the other shape decide
-	local collide, sep = other:collidesWith(self)
-	return collide, sep and -sep
+	return other:collidesWith(self)
 end
 
 function PointShape:collidesWith(other)
