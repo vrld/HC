@@ -134,16 +134,20 @@ function ConcavePolygonShape:collidesWith(other)
 	end
 
 	-- TODO: better way of doing this. report all the separations?
-	local collide,dx,dy,count = false,0,0,0
+	local collide,dx,dy = false,0,0
 	for _,s in ipairs(self._shapes) do
 		local status, sx,sy = s:collidesWith(other)
 		collide = collide or status
 		if status then
-			dx,dy = dx+sx, dy+sy
-			count = count + 1
+			if math.abs(dx) < math.abs(sx) then
+				dx = sx
+			end
+			if math.abs(dy) < math.abs(sy) then
+				dy = sy
+			end
 		end
 	end
-	return collide, dx/count, dy/count
+	return collide, dx, dy
 end
 
 function CircleShape:collidesWith(other)
@@ -415,6 +419,7 @@ local function newPolygonShape(polygon, ...)
 	if polygon:isConvex() then
 		return common.instance(ConvexPolygonShape, polygon)
 	end
+
 	return common.instance(ConcavePolygonShape, polygon)
 end
 
