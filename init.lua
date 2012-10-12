@@ -43,8 +43,6 @@ function HC:init(cell_size, callback_collide, callback_stop)
 	self._active_shapes  = {}
 	self._passive_shapes = {}
 	self._ghost_shapes   = {}
-	self._current_shape_id = 0
-	self._shape_ids      = setmetatable({}, {__mode = "k"}) -- reverse lookup
 	self.groups          = {}
 	self._colliding_only_last_frame = {}
 
@@ -57,8 +55,6 @@ function HC:clear()
 	self._active_shapes  = {}
 	self._passive_shapes = {}
 	self._ghost_shapes   = {}
-	self._current_shape_id = 0
-	self._shape_ids      = setmetatable({}, {__mode = "k"}) -- reverse lookup
 	self.groups          = {}
 	self._colliding_only_last_frame = {}
 	self._hash           = common.instance(Spatialhash, self._hash.cell_size)
@@ -90,9 +86,7 @@ function HC:addShape(shape)
 	assert(shape.bbox and shape.collidesWith,
 		"Cannot add custom shape: Incompatible shape.")
 
-	self._current_shape_id = self._current_shape_id + 1
-	self._active_shapes[self._current_shape_id] = shape
-	self._shape_ids[shape] = self._current_shape_id
+	self._active_shapes[shape] = shape
 	self._hash:insert(shape, shape:bbox())
 	shape._groups = {}
 
@@ -122,11 +116,7 @@ function HC:addShape(shape)
 end
 
 function HC:activeShapes()
-	local next, t, k, v = next, self._active_shapes
-	return function()
-		k, v = next(t, k)
-		return v
-	end
+	return pairs(self._active_shapes)
 end
 
 function HC:shapesInRange(x1,y1, x2,y2)
@@ -171,15 +161,15 @@ function HC:update(dt)
 	-- _active_shapes, which will lead to undefined behavior (=random crashes) in
 	-- next()
 	local active = {}
-	for id,shape in pairs(self._active_shapes) do
-		active[id] = shape
+	for shape in self:activeShapes() do
+		active[shape] = shape
 	end
 
 	local only_last_frame = self._colliding_only_last_frame
-	for id,shape in pairs(active) do
+	for shape in pairs(active) do
 		tested[shape] = {}
 		for other in self._hash:rangeIter(shape:bbox()) do
-			if not self._active_shapes[id] then
+			if not self._active_shapes[shape] then
 				-- break out of this loop is shape was removed in a callback
 				break
 			end
@@ -225,13 +215,9 @@ end
 -- remove shape from internal tables and the hash
 function HC:remove(shape, ...)
 	if not shape then return end
-	local id = self._shape_ids[shape]
-	if id then
-		self._active_shapes[id] = nil
-		self._passive_shapes[id] = nil
-	end
-	self._ghost_shapes[shape] = nil
-	self._shape_ids[shape] = nil
+	self._active_shapes[shape]  = nil
+	self._passive_shapes[shape] = nil
+	self._ghost_shapes[shape]   = nil
 	shape:_removeFromHash()
 
 	return self:remove(...)
@@ -240,55 +226,50 @@ end
 -- group support
 function HC:addToGroup(group, shape, ...)
 	if not shape then return end
-	assert(self._shape_ids[shape], "Shape not registered!")
-
+	assert(self._active_shapes[shape] or self._passive_shapes[shape],
+		"Shape is not registered with HC")
 	if not self.groups[group] then self.groups[group] = {} end
 	self.groups[group][shape] = true
-	shape._groups[group] = self.groups[group]
+	shape._groups[group]      = self.groups[group]
 	return self:addToGroup(group, ...)
 end
 
 function HC:removeFromGroup(group, shape, ...)
 	if not shape or not self.groups[group] then return end
-	assert(self._shape_ids[shape], "Shape not registered!")
-
+	assert(self._active_shapes[shape] or self._passive_shapes[shape],
+		"Shape is not registered with HC")
 	self.groups[group][shape] = nil
-	shape._groups[group] = nil
+	shape._groups[group]      = nil
 	return self:removeFromGroup(group, ...)
 end
 
 function HC:setPassive(shape, ...)
 	if not shape then return end
-	assert(self._shape_ids[shape], "Shape not registered!")
-
-	local id = self._shape_ids[shape]
-	if not id or self._ghost_shapes[shape] then return end
-
-	self._active_shapes[id] = nil
-	self._passive_shapes[id] = shape
-
+	if not self._ghost_shapes[shape] then
+		assert(self._active_shapes[shape], "Shape is not active")
+		self._active_shapes[shape] = nil
+		self._passive_shapes[shape] = shape
+	end
 	return self:setPassive(...)
 end
 
 function HC:setActive(shape, ...)
 	if not shape then return end
-	assert(self._shape_ids[shape], "Shape not registered!")
-
-	local id = self._shape_ids[shape]
-	if not id or self._ghost_shapes[shape] then return end
-
-	self._active_shapes[id] = shape
-	self._passive_shapes[id] = nil
+	if not self._ghost_shapes[shape] then
+		assert(self._passive_shapes[shape], "Shape is not passive")
+		self._active_shapes[shape]  = shape
+		self._passive_shapes[shape] = nil
+	end
 
 	return self:setActive(...)
 end
 
 function HC:setGhost(shape, ...)
 	if not shape then return end
-	local id = self._shape_ids[shape]
-	assert(id, "Shape not registered!")
+	assert(self._active_shapes[shape] or self._passive_shapes[shape],
+		"Shape is not registered with HC")
 
-	self._active_shapes[id] = nil
+	self._active_shapes[shape] = nil
 	-- dont remove from passive shapes, see below
 	self._ghost_shapes[shape] = shape
 	return self:setGhost(...)
@@ -296,13 +277,12 @@ end
 
 function HC:setSolid(shape, ...)
 	if not shape then return end
-	local id = self._shape_ids[shape]
-	assert(id, "Shape not registered!")
+	assert(self._ghost_shapes[shape], "Shape not a ghost")
 
 	-- re-register shape. passive shapes were not unregistered above, so if a shape
 	-- is not passive, it must be registered as active again.
-	if not self._passive_shapes[id] then
-		self._active_shapes[id] = shape
+	if not self._passive_shapes[shape] then
+		self._active_shapes[shape] = shape
 	end
 	self._ghost_shapes[shape] = nil
 	return self:setSolid(...)
