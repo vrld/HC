@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -9,11 +9,11 @@
 <link rel="stylesheet" type="text/css" href="highlight.css" />
 <script type="text/javascript" src="highlight.pack.js"></script>
 <script type="text/javascript">
-	window.onload = function() {
-		var examples = document.getElementsByTagName("code");
-		for (i = 0; i < examples.length; ++i) {
-			if (examples[i].className == "lua")
-				hljs.highlightBlock(examples[i], "    ");
+window.onload = function() {
+	var examples = document.getElementsByTagName("code");
+	for (i = 0; i < examples.length; ++i) 		{
+		if (examples[i].className == "lua")
+			hljs.highlightBlock(Examplees[i], "    ");
 		}
 	};
 </script>
@@ -22,7 +22,7 @@
 <body><a name="top"></a>
 
 <div id="header">
-	<h1>Hardon Collider <span class="small">Collision detection for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
+	<h1>Hardon Collider <span class="small">Collision detectionction for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
 	<ul id="main-nav">
 		<li><a href="index.html">Home</a></li>
 		<li><a href="tutorial.html">Tutorial</a></li>
@@ -30,153 +30,91 @@
 	</ul>
 	<h2>Reference pages</h2>
 </div>
-
 <div id="nav">
 	<ul>
 		<li><a href="#hardoncollider">Main Module</a></li>
-		<li><a href="#shapes">Shapes</a></li>
-		<li><a href="#polygon">Polygon</a></li>
-		<li><a href="#spatialhash">Spatial Hash</a></li>
-		<li><a href="#vector-light">Vector</a></li>
-		<li><a href="#class">Class</a></li>
+		<li><a href="#hardoncollider.shapes">Shapes</a></li>
+		<li><a href="#hardoncollider.polygon">Polygon</a></li>
+		<li><a href="#hardoncollider.spatialhash">Spatial Hash</a></li>
+		<li><a href="#hardoncollider.vector-light">Vector</a></li>
+		<li><a href="#hardoncollider.class">Class</a></li>
 	</ul>
 </div>
+	<div class="outer-block" id="hardoncollider"><h3>hardoncollider<a class="top" href="#top">^top</a></h3><div class="preamble"><pre><code class="lua">Collider = require "hardoncollider"
+</code></pre>
 
-<a name="hardoncollider"></a>
-<div id="hardoncollider" class="outer-block">
-	<h3>hardoncollider<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		<pre><code class="lua">Collider = require "hardoncollider"</code></pre>
-		<p>The main module.</p>
-		<p>HardonCollider will automatically handle - but not resolve - collisions.
-		It uses search data structure - a spatial hash - to quickly find colliding shapes.</p>
-		<p>A spatial hash is a grid that is laid over the whole scene in which a shape can occupy
-		several cells. To find shapes that may be colliding, you simply need to look which shapes occupy
-		the same cell. You can specify the cell size in the <a href="#hardoncollider-new"><code>new()</code></a> function.</p>
-		<p>To get a less boring explanation on how to use this, see the tutorial.</p>
-	</div>
+<p>The main module.</p>
 
-	<div class="overview">
-		<h4>Module overview</h4>
-		<dl>
-			<dt><a href="#hardoncollider-new">HardonCollider</a></dt>
-			<dd>The collider class.</dd>
-			<dt><a href="#hardoncollider-new">new()</a></dt>
-			<dd>Create a new collider instance.</dd>
-			<dt><a href="#hardoncollider-clear">HC:clear()</a></dt>
-			<dd>Clears collider data.</dd>
-			<dt><a href="#hardoncollider-setCallbacks">HC:setCallbacks()</a></dt>
-			<dd>Set callback functions.</dd>
-			<dt><a href="#hardoncollider-update">HC:update()</a></dt>
-			<dd>Update collision detection.</dd>
-			<dt><a href="#hardoncollider-addPolygon">HC:addPolygon()</a></dt>
-			<dd>Add polygon to the scene.</dd>
-			<dt><a href="#hardoncollider-addRectangle">HC:addRectangle()</a></dt>
-			<dd>Add rectangle to the scene.</dd>
-			<dt><a href="#hardoncollider-addCircle">HC:addCircle()</a></dt>
-			<dd>Add circle to the scene.</dd>
-			<dt><a href="#hardoncollider-addPoint">HC:addPoint()</a></dt>
-			<dd>Add point to the scene.</dd>
-			<dt><a href="#hardoncollider-addShape">HC:addShape()</a></dt>
-			<dd>Add custom shape.</dd>
-			<dt><a href="#hardoncollider-remove">HC:remove()</a></dt>
-			<dd>Remove a shape from scene.</dd>
-			<dt><a href="#hardoncollider-addToGroup">HC:addToGroup()</a></dt>
-			<dd>Group shapes that should not collide.</dd>
-			<dt><a href="#hardoncollider-removeFromGroup">HC:removeFromGroup()</a></dt>
-			<dd>Remove shape from a group.</dd>
-			<dt><a href="#hardoncollider-setPassive">HC:setPassive()</a></dt>
-			<dd>Flag a shape passive.</dd>
-			<dt><a href="#hardoncollider-setActive">HC:setActive()</a></dt>
-			<dd>Flag a shape active.</dd>
-			<dt><a href="#hardoncollider-activeShapes">HC:activeShapes()</a></dt>
-			<dd>Iterator over all active shapes.</dd>
-			<dt><a href="#hardoncollider-setGhost">HC:setGhost()</a></dt>
-			<dd>Stops shape from colliding.</dd>
-			<dt><a href="#hardoncollider-setSolid">HC:setSolid()</a></dt>
-			<dd>Make shape collidable.</dd>
-			<dt><a href="#hardoncollider-shapesAt">HC:shapesAt()</a></dt>
-			<dd>Get list of shapes covering a point.</dd>
-			<dt><a href="#hardoncollider-shapesInRange">HC:shapesInRange()</a></dt>
-			<dd>Returns all shapes contained in a region.</dd>
-		</dl>
-	</div>
+<p>HardonCollider will automatically detect - but not resolve - collisions. It
+uses an efficient search data structure (a <a href="#hardoncollider.spatialhash">spatial
+hash</a>) to quickly find colliding shapes.</p>
 
-	<a name="hardoncollider-new"></a>
-	<div id="hardoncollider-new" class="ref-block">
-		<h4>function <span class="name">new</span><span class="arglist">(cell_size, callback_collide, callback_stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Initializes the library. Call this in <code>love.load()</code>. All the parameters can be omitted.</p>
-		<p><u>Note:</u> The cell size does not determine the granularity of the collision detection, but is an
-		optimization device. Values that are too small or too big will have a negative impact on the detection
-		speed. The meaning of <em>too small</em> and <em>too big</em> depends on the size of the shapes in the
-		collision detection.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>cell_size</code> (100)</dt>
-				<dd>Cell size for internal search structure.</dd>
-				<dt>function <code>callback_collide</code> (empty function)</dt>
-				<dd>Called when two shapes are colliding.</dd>
-				<dt>function <code>callback_stop</code> (empty function)</dt>
-				<dd>Called when two shapes were colliding in the last frame, but aren't now.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">Collider = require 'hardoncollider'
+<p>A spatial hash is basically a grid that is laid over the whole scene in which a
+shape can occupy several cells. To find shapes that may be colliding, you
+simply need to look which shapes occupy the same cell. You can specify the cell
+size in the <a href="#hardoncollidernew"><code class="lua">new()</code></a> function.</p>
+
+<p>To get a less boring explanation on how to use this, see the
+<a href="tutorial.html">tutorial</a>.</p>
+</div><div class="overview"><h4>Module overview</h4><dl><dt><a href="#hardoncollidernew">new()</a></dt><dd>Creates a new collider instance.</dd><dt><a href="#hardoncolliderHC:clear">HC:clear()</a></dt><dd>Clears collision data.</dd><dt><a href="#hardoncolliderHC:setCallbacks">HC:setCallbacks()</a></dt><dd>Set callback functions.</dd><dt><a href="#hardoncolliderHC:update">HC:update()</a></dt><dd>Update collision detection.</dd><dt><a href="#hardoncolliderHC:addPolygon">HC:addPolygon()</a></dt><dd>Add polygon to the scene.</dd><dt><a href="#hardoncolliderHC:addRectangle">HC:addRectangle()</a></dt><dd>Add rectangle to the scene.</dd><dt><a href="#hardoncolliderHC:addCircle">HC:addCircle()</a></dt><dd>Add circle to the scene.</dd><dt><a href="#hardoncolliderHC:addPoint">HC:addPoint()</a></dt><dd>Add point to the scene.</dd><dt><a href="#hardoncolliderHC:addShape">HC:addShape()</a></dt><dd>Add custom shape to the scene.</dd><dt><a href="#hardoncolliderHC:remove">HC:remove()</a></dt><dd>Remove shapes from the scene.</dd><dt><a href="#hardoncolliderHC:addToGroup">HC:addToGroup()</a></dt><dd>Group shapes that should not collide.</dd><dt><a href="#hardoncolliderHC:removeFromGroup">HC:removeFromGroup()</a></dt><dd>Remove shapes from group.</dd><dt><a href="#hardoncolliderHC:setPassive">HC:setPassive()</a></dt><dd>Flag shapes as passive.</dd><dt><a href="#hardoncolliderHC:setActive">HC:setActive()</a></dt><dd>Flag shapes as active.</dd><dt><a href="#hardoncolliderHC:activeShapes">HC:activeShapes()</a></dt><dd>Iterator over all active shapes.</dd><dt><a href="#hardoncolliderHC:setGhost">HC:setGhost()</a></dt><dd>Stop shapes from colliding.</dd><dt><a href="#hardoncolliderHC:setSolid">HC:setSolid()</a></dt><dd>Make shapes collidable again.</dd><dt><a href="#hardoncolliderHC:shapesAt">HC:shapesAt()</a></dt><dd>Get list of shapes covering a point.</dd><dt><a href="#hardoncolliderHC:shapesInRange">HC:shapesInRange()</a></dt><dd>Get list of shapes covering a rectangle.</dd></dl></div><div class="ref-block" id="hardoncollidernew"><h4>function <span class="name">new</span><span class="arglist">(cell_size, callback_collide, callback_stop)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Initializes the library. Call this in <code class="lua">love.load()</code>. All parameters may be
+omitted.</p>
+
+<p><strong>Note:</strong> The cell size does not determine the granularity of the collision
+detection, but is an <em>optimization parameter</em>. Values that are too small or too
+big will have a negative impact on the detection speed. The meaning of too
+small and too big depends on the size of the shapes in the collision detection.</p>
+<div class="arguments">Parameters:<dl>
+<dt>number <code class="lua">cell_size</code> (100)</dt>
+<dd>Cell size for internal search structure.</dd><dt>function <code class="lua">callback_collide</code> (empty function)</dt>
+<dd>Called when two shapes are colliding.</dd><dt>function <code class="lua">callback_stop</code> (empty function)</dt>
+<dd>Called when two shapes were colliding in the last frame, but are not in this frame.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">Collider = require 'hardoncollider'
 function love.load()
     HC = Collider.new(150)
     -- or: HC = Collider(150)
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:clear"><h4>function <span class="name">HC:clear</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^top</a></h4><p>Remove all shapes from the collider instance.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">function game:leave()
+    HC:clear()
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:setCallbacks"><h4>function <span class="name">HC:setCallbacks</span><span class="arglist">(collide, stop)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Sets the collision callbacks.</p>
 
-	<a name="hardoncollider-setCallbacks"></a>
-	<div id="setCallbacks" class="ref-block">
-		<h4>function <span class="name">setCallbacks</span><span class="arglist">(collide,stop)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<h4>function <span class="name">setCallbacks</span><span class="arglist">{collide = collide,stop = stop}</span></h4>
-		<p>Sets the collision callbacks. The second calling style let's you specify the callbacks by name, see the example.</p>
-		<p>If <code>nil</code> is passed as any callback, the callback will not be changed.</p>
-		<p>The callbacks must have the following function prototype:
-		<pre><code class="lua">function callback(dt, shape_one, shape_two, mtv_x, mtv_y)</code></pre>
-		<code>shape_one</code> and <code>shape_two</code> are the colliding shapes. <code>mtv_x</code> and <code>mtv_y</code>
-		define the <em>minimum translation vector</em>, i.e. the direction and magnitude shape_one has to be moved so that
-		the collision will be resolved. Note that if one of the shapes is a <a href="#hardoncollider-addPoint">point shape</a>, the
-		translation vector will be invalid.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>function <code>collide</code></dt>
-				<dd>Called when two shapes are colliding.</dd>
-				<dt>function <code>stop</code></dt>
-				<dd>Called when two shapes were colliding in the last frame, but aren't now.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">Collider = require 'hardoncollider'
+<p>If nil is passed for either argument, the corresponding callback will not be
+changed.</p>
 
-function collide(dt, shape_one, shape_two, mtv_x, mtv_y)
+<p>The callbacks must have the following function prototype:</p>
+
+<pre><code class="lua">function callback(dt, shape_one, shape_two, dx, dy)
+</code></pre>
+
+<p><code class="lua">shape_one</code> and <code class="lua">shape_two</code> are the colliding shapes and <code class="lua">dx</code> and <code class="lua">dy</code> define
+the separating vector, i.e. the direction and magnitude <code class="lua">shape_one</code> has to be
+moved so that the collision will be resolved. Note that if one of the shapes is
+a point shape, the translation vector will be invalid.</p>
+<div class="arguments">Parameters:<dl>
+<dt>function <code class="lua">collide</code></dt>
+<dd>Called when two shapes are colliding.</dd><dt>function <code class="lua">stop</code></dt>
+<dd>Called when two shapes were colliding in the last frame, but are not in this frame.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">Collider = require 'hardoncollider'
+
+function collide(dt, shape_one, shape_two, dx, dy)
     print('colliding:', shape_one, shape_two)
-    print('mtv:', mtv_x, mtv_y)
+    print('mtv:', dx, dy)
     -- move both shape_one and shape_two to resolve the collision
-    shape_one:move(mtv_x/2, mtv_y/2)
-    shape_two:move(-mtv_x/2, -mtv_y/2)
+    shape_one:move(dx/2, dy/2)
+    shape_two:move(-dx/2, -dy/2)
 end
 
-function colliding_two(dt, shape_one, shape_two, mtv_x, mtv_y)
+function colliding_two(dt, shape_one, shape_two, dx, dy)
     print('colliding:', shape_one, shape_two)
     -- move only shape_one to resolve the collision
-    shape_one:move(mtv_x, mtv_y)
+    shape_one:move(dx, dy)
 end
 
 -- ignore the translation vector
+
 function stop(dt, shape_one, shape_two)
     print('collision resolved')
 end
@@ -184,1537 +122,719 @@ end
 function love.load()
     HC = Collider()
     -- set initial callbacks
-    HC:setCallbacks(collide, stop)
+    HC:setCallbacks(collide)
+    -- add stop callback
+    HC:setCallbacks(nil, stop)
     -- change collide callback
-    HC:setCallbacks{collide = collide_two}
-end</code></pre>
-		</div>
-	</div>
+    HC:setCallbacks(collide_two)
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:update"><h4>function <span class="name">HC:update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Checks for collisions and call callbacks. Use this in <code class="lua">love.update(dt)</code>.</p>
 
-	<a name="hardoncollider-update"></a>
-	<div id="update" class="ref-block">
-		<h4>function <span class="name">HC:update</span><span class="arglist">(dt)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Checks for collisions and call callbacks. Use this in <code>love.update(dt)</code>.</p>
-		<p>Note that the delta time has no effect on the collision detection itself, but
-		will be passed to the callback functions.</p>
-		
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>dt</code></dt>
-				<dd>The time since the last update.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">function love.update(dt)
+<p><strong>Note:</strong> <code class="lua">dt</code> has no effect on the collision detection itself, but will be
+passed to the callback functions.</p>
+<div class="arguments">Parameters:<dl>
+<dt>number <code class="lua">dt</code></dt>
+<dd>The time since the last update.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">function love.update(dt)
     HC:update(dt)
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:addPolygon"><h4>function <span class="name">HC:addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Add a polygon to the collision detection system. Any non-intersection polygon
+will work, even convex polygons.</p>
 
-	<a name="hardoncollider-addPolygon"></a>
-	<div id="addPolygon" class="ref-block">
-		<h4>function <span class="name">HC:addPolygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Add a polygon to the collision detection system. Any non-intersection polygon will work, even convex polygons.</p>
-		<p>Note that if three consecutive points lie on a line, the middle point will be discarded. This means
-		you cannot construct polygon shapes out of lines.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
-				<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#shapes">Shape</a></dt>
-				<dd>The polygon shape added to the scene.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">shape = HC:addPolygon(10,10, 40,50, 70,10, 40,30)</code></pre>
-		</div>
-	</div>
+<p><strong>Note:</strong> If three consecutive points lie on a line, the middle point will be
+discarded. This means you cannot construct polygon shapes out of lines.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x1,y1, ..., xn,yn</code></dt>
+<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Shape</dt>
+<dd>The polygon shape added to the scene.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">shape = HC:addPolygon(10,10, 40,50, 70,10, 40,30)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:addRectangle"><h4>function <span class="name">HC:addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Add a rectangle shape to the collision detection system.</p>
 
-	<a name="hardoncollider-addRectangle"></a>
-	<div id="addRectangle" class="ref-block">
-		<h4>function <span class="name">HC:addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Add a rectangle shape to the collision detection system.</p>
-		<p><span class="warning">Note:</span> Shape transformations, e.g. <code><a href="#shapes-shape:moveTo">shape:moveTo()</a></code> and <code><a href="#shapes-shape:rotate">shape:rotate()</a></code>, will be with respect to the rectangle <em>center</em>, not the upper left corner.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>The upper left corner of the rectangle.</dd>
-				<dt>numbers <code>w, h</code></dt>
-				<dd>The width and height of the rectangle.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#shapes">Shape</a></dt>
-				<dd>The rectangle added to the scene.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">rect = HC:addRectangle(100,120, 200,40)</code></pre>
-		</div>
-	</div>
+<p><strong>Note:</strong> Shape transformations, e.g.
+<a href="#hardoncollider.shapesmoveTo"><code class="lua">shape:moveTo()</code></a> and
+<a href="#hardoncollider.shapesrotate"><code class="lua">shape:rotate()</code></a>, will be with respect to the
+rectangle center, <em>not</em> to the upper left corner.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>The upper left corner of the rectangle.</dd><dt>numbers <code class="lua">w, h</code></dt>
+<dd>The width and height of the rectangle.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Shape</dt>
+<dd>The rectangle added to the scene.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">rect = HC:addRectangle(100,120, 200,40)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:addCircle"><h4>function <span class="name">HC:addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Add a circle shape to the collision detection system.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">cx, cy</code></dt>
+<dd>The circle center.</dd><dt>number <code class="lua">radius</code></dt>
+<dd>The circle radius.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Shape</dt>
+<dd>The circle added to the scene.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">circle = HC:addCircle(400,300, 100)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:addPoint"><h4>function <span class="name">HC:addPoint</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Add a point shape to the collision detection system.</p>
 
-	<a name="hardoncollider-addCircle"></a>
-	<div id="addCircle" class="ref-block">
-		<h4>function <span class="name">HC:addCircle</span><span class="arglist">(cx, cy, radius)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Add a circle shape to the collision detection system.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>cx, cy</code></dt>
-				<dd>The circle center.</dd>
-				<dt>number <code>radius</code></dt>
-				<dd>The circle radius.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#shapes">Shape</a></dt>
-				<dd>The circle added to the scene.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">circle = HC:addCircle(400,300, 100)</code></pre>
-		</div>
-	</div>
+<p>Point shapes are most useful for bullets and such, because detecting collisions
+between a point and any other shape is a little faster than detecting collision
+between two non-point shapes. In case of a collision, the callback will not
+receive a valid minimum translation vector.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>The point's position.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Shape</dt>
+<dd>The point added to the scene.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">bullets[#bulltes+1] = HC:addPoint(player.pos.x,player.pos.y)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:addShape"><h4>function <span class="name">HC:addShape</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Add a custom shape to the collision detection system.</p>
 
-	<a name="hardoncollider-addPoint"></a>
-	<div id="addPoint" class="ref-block">
-		<h4>function <span class="name">HC:addPoint</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Add a point shape to the collision detection system.</p>
-		<p>Point shapes are most useful for bullets or suchs, because
-		detecting collisions between a point and any other shape is a little faster than
-		detecting collision between two non-point shapes. In case of a collision, the callback
-		will not receive a valid minimum translation vector.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>The point's position.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#shapes">Shape</a></dt>
-				<dd>The point added to the scene.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">bullets[#bulltes+1] = HC:addPoint(player.pos.x,player.pos.y)</code></pre>
-		</div>
-	</div>
+<p>The shape must implement two functions for this to work:</p>
 
-	<a name="hardoncollider-addShape"></a>
-	<div id="addShape" class="ref-block">
-		<h4>function <span class="name">HC:addShape</span><span class="arglist">(shape)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Add a custom shape to the collision detection system.</p>
-		<p>The shape <em>must</em> implement two functions for this to work:
-		<pre><code class="lua">function shape:bbox()
-    return <em>corners-of-axis-aligned-bounding-box</em>
-end</code></pre>
-		and
-		<pre><code class="lua">function shape:collidesWith(other)
-    local colliding = <em>...</em>
-	local sx,sy = <em>separating-vector(self, other)</em>
+<pre><code class="lua">function shape:bbox()
+    return corners-of-axis-aligned-bounding-box
+end
+</code></pre>
+
+<p>and</p>
+
+<pre><code class="lua">function shape:collidesWith(other)
+    local colliding = ...
+    local sx,sy = separating-vector(self, other)
     return colliding, sx,sy
-end</code></pre>
-		The shape will be augmented with the function <a href="#shapes-shape:neighbors">shape:neighbors()</a></p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>mixed <code>shape</code></dt>
-				<dd>Custom shape.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>mixed</dt>
-				<dd>The shape.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">
-AABB = {x = ..., y = ..., width = ..., height = ...}
+end
+</code></pre>
+
+<p>The shape will be augmented with the function
+<a href="#hardoncollider.shapesneighbors"><code class="lua">shape:neighbors()</code></a>.</p>
+<div class="arguments">Parameters:<dl>
+<dt>mixed <code class="lua">shape</code></dt>
+<dd>Custom shape.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>mixed</dt>
+<dd>The shape.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">AABB = {x = ..., y = ..., width = ..., height = ...}
+
 function AABB:bbox()
     return self.x, self.y, self.x+self.width, self.y+self.height
 end
+
 function AABB:collidesWith(other)
-    return <em>magic</em>
+    return magic
 end
-AABB = HC:addShape(AABB)</code></pre>
-		</div>
-	</div>
 
-	<a name="hardoncollider-remove"></a>
-	<div id="remove" class="ref-block">
-		<h4>function <span class="name">HC:remove</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Remove a shape from the collision detection system. Note that if you remove a shape in
-		the <code>collide()</code> callback, other shapes might still have collided with it, so the
-		shape will be argument to the other calls of <code>collide()</code>.
-		In any case, the <code>stop()</code> callback will be called in the next call to
-		<code>update</code> for each shape which the removed shape collided with.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#shapes">Shape(s)</a> <code>shape, ...</code></dt>
-				<dd>The shape(s) to be removed.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">HC:remove(circle)</code></pre>
-			<pre><code class="lua">HC:remove(enemy1, enemy2)</code></pre>
-		</div>
-	</div>
+AABB = HC:addShape(AABB)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:remove"><h4>function <span class="name">HC:remove</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Remove a shape from the collision detection system. Note that if you remove a
+shape in the <code class="lua">collide()</code> callback, it will still be an argument to the <code class="lua">stop()</code>
+callback in the next frame.</p>
+<div class="arguments">Parameters:<dl>
+<dt>Shape(s) <code class="lua">shape, ...</code></dt>
+<dd>The shape(s) to be removed.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">HC:remove(circle)
+HC:remove(enemy1, enemy2)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:addToGroup"><h4>function <span class="name">HC:addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Add shapes to a group. Shapes in the same group will not emit collision
+callbacks when colliding with each other.</p>
+<div class="arguments">Parameters:<dl>
+<dt>string <code class="lua">group</code></dt>
+<dd>The name of the group.</dd><dt>Shapes <code class="lua">shape, ...</code></dt>
+<dd>The shapes to be added or removed to the group.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">HC:addToGroup("platforms", platform1, platform2, platform3)
+HC:removeFromGroup("platforms", platform1)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:removeFromGroup"><h4>function <span class="name">HC:removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Remove shapes from a group.</p>
+<div class="arguments">Parameters:<dl>
+<dt>string <code class="lua">group</code></dt>
+<dd>The name of the group.</dd><dt>Shapes <code class="lua">shape, ...</code></dt>
+<dd>The shapes to be added or removed to the group.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">HC:addToGroup("platforms", platform1, platform2, platform3)
+HC:removeFromGroup("platforms", platform1)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:setPassive"><h4>function <span class="name">HC:setPassive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Sets shape to be passive. Passive shapes will be subject to collision
+detection, but will not actively search for collision candidates. This means
+that if two passive shapes collide, no collision callback will be invoked (in
+fact, the collision won't even be detected).</p>
 
-	<a name="hardoncollider-addToGroup"></a>
-	<a name="hardoncollider-removeFromGroup"></a>
-	<div id="addToGroup" class="ref-block">
-		<h4>function <span class="name">HC:addToGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<h4>function <span class="name">HC:removeFromGroup</span><span class="arglist">(group, shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Add or remove shapes to/from a group. <a href="#shapes">Shapes</a> in the same group will not emit collision callbacks when colliding with each other.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>string <code>group</code></dt>
-				<dd>The name of the group.</dd>
-			</dl>
-			<dl>
-				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to be added or removed to the group.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">HC:addToGroup("platforms", platform1, platform2, platform3)</code></pre>
-			<pre><code class="lua">HC:removeFromGroup("platforms", platform1)</code></pre>
-		</div>
-	</div>
+<p>This enables you to significantly speed up the collision detection. Typical
+candidates for passive shapes are those which are numerous, but don't act in
+themselves, e.g. the level geometry.</p>
 
-	<a name="hardoncollider-setPassive"></a>
-	<a name="hardoncollider-setActive"></a>
-	<div id="setGhost" class="ref-block">
-		<h4>function <span class="name">HC:setPassive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<h4>function <span class="name">HC:setActive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Flags a shape active or passive. Only active shapes will search for colliding shapes, i.e.
-		there will be no collision reported when two passive shapes collide.</p>
-		<p>This enables you to significantly speed up the collision detection. Typical candidates for
-		passive shapes are those which are numerous, but don't act in themselves, e.g. the level geometry.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to be flagged as passive/active.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">HC:setPassive(platform1, platform2, platform3)</code></pre>
-		</div>
-	</div>
+<p><strong>Note</strong>: Added shapes are active by default.</p>
+<div class="arguments">Parameters:<dl>
+<dt>Shapes <code class="lua">shape, ...</code></dt>
+<dd>The shapes to be flagged as passive.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">hardoncollider.setPassive(ground, bridge, spikes)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:setActive"><h4>function <span class="name">HC:setActive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Flags a shape active.</p>
 
-	<a name="hardoncollider-setPassive"></a>
-	<div id="setPassive" class="ref-block">
-		<h4>function <span class="name">setPassive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Sets shape to be passive. Passive shapes will be subject to collision detection,
-		but will not actively search for collision candidates. This means that if two
-		passive shapes collide, no collision callback will be invoked (in fact, the
-		collision won't even be detected).</p>
-		<p>This function exists purely for performance optimisation. Use it wisely.
-		Good candidates for passive shapes are traps and terrain.</p>
-		<p><em>Note:</em> Shapes are active by default</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to become passive.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">hardoncollider.setPassive(ground, bridge, spikes)</code></pre>
-		</div>
-	</div>
-
-	<a name="hardoncollider-setActive"></a>
-	<div id="setActive" class="ref-block">
-		<h4>function <span class="name">setActive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Makes shapes active again.</p>
-		<p><em>Note:</em> Shapes are active by default</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to become active.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">hardoncollider.setActive(collapsing_bridge)</code></pre>
-		</div>
-	</div>
-
-	<a name="hardoncollider-activeShapes"></a>
-	<div id="activeShapes" class="ref-block">
-		<h4>function <span class="name">HC:activeShapes</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Iterator over all active shapes. Mostly for internal use.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>iterator</dt>
-				<dd>Iterator over all active shapes.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- rotate all active shapes
+<p><strong>Note</strong>: Added shapes are active by default.</p>
+<div class="arguments">Parameters:<dl>
+<dt>Shapes <code class="lua">shape, ...</code></dt>
+<dd>The shapes to be flagged as active.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">hardoncollider.setActive(collapsing_bridge)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:activeShapes"><h4>function <span class="name">HC:activeShapes</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^top</a></h4><p>Iterator over all active shapes. Mostly for internal use.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>iterator</dt>
+<dd>Iterator over all active shapes.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">-- rotate all active shapes
 for shape in HC:activeShapes() do
     shape:rotate(dt)
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="hardoncollider-setGhost"></a>
-	<a name="hardoncollider-setSolid"></a>
-	<div id="setGhost" class="ref-block">
-		<h4>function <span class="name">HC:setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<h4>function <span class="name">HC:setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Makes a shape permeable or solid. Ghost shapes will not collide with any other shape.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#shapes">Shapes</a> <code>shape, ...</code></dt>
-				<dd>The shapes to become permeable/solid.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- make player invincible for 5 seconds
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:setGhost"><h4>function <span class="name">HC:setGhost</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Makes a shape permeable: Ghost shapes will not collide with any other shape.</p>
+<div class="arguments">Parameters:<dl>
+<dt>Shapes <code class="lua">shape, ...</code></dt>
+<dd>The shapes to become permeable.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">-- make player invincible for 5 seconds
 HC:setGhost(player)
-Timer.add(5, function() HC:setSolid(player) end)</code></pre>
-		</div>
-	</div>
-
-	<a name="hardoncollider-shapesAt"></a>
-	<div id="shapesAt" class="ref-block">
-		<h4>function <span class="name">HC:shapesAt</span><span class="arglist">(x,y)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Retrieve a list of shapes covering the point <code>(x,y)</code>,
-		i.e. all shapes that contain <code>(x,y)</code>. This includes active,
-		passive, solid and ghost shapes.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Coordinates of the point to query</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>table</dt>
-				<dd>List of shapes containing point <code>(x,y)</code>.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- select the units under the mouse cursor
+Timer.add(5, function() HC:setSolid(player) end)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:setSolid"><h4>function <span class="name">HC:setSolid</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Makes a permeable shape solid again.</p>
+<div class="arguments">Parameters:<dl>
+<dt>Shapes <code class="lua">shape, ...</code></dt>
+<dd>The shapes to become solid.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">-- make player invincible for 5 seconds
+HC:setGhost(player)
+Timer.add(5, function() HC:setSolid(player) end)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:shapesAt"><h4>function <span class="name">HC:shapesAt</span><span class="arglist">(x,y)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Retrieve a list of shapes covering the point <code class="lua">(x,y)</code>, i.e. all shapes that
+contain <code class="lua">(x,y)</code>. This includes active, passive, solid and ghost shapes.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>Coordinates of the point to query.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>table</dt>
+<dd>List of shapes containing point <code class="lua">(x,y)</code>.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">-- select the units under the mouse cursor
 function love.mousereleased(x,y,btn)
     for _, shape in ipairs(HC:shapesAt(x,y)) do
         shape.object:select()
     end
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="hardoncollider-shapesInRange"></a>
-	<div id="shapesInRange" class="ref-block">
-		<h4>function <span class="name">HC:shapesInRange</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#hardoncollider">^ top</a></h4>
-		<p>Returns all shapes contained in the rectangle <code>(x1,y1)-(x2,y2)</code>.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x1, y1</code></dt>
-				<dd>Upper left corner of the bounding box.</dd>
-				<dt>numbers <code>x2, y2</code></dt>
-				<dd>Lower right corner of the bounding box.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Set</dt>
-				<dd>A set (i.e. table of <code>t[shape] = shape</code>) of shapes.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- draw only visible shapes
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncolliderHC:shapesInRange"><h4>function <span class="name">HC:shapesInRange</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Returns all shapes contained in the rectangle <code class="lua">(x1,y1)-(x2,y2)</code>.
+Useful for RTS-style unit selection to select shapes to draw (see example).</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x1, y1</code></dt>
+<dd>Upper left corner of the bounding box.</dd><dt>numbers <code class="lua">x2, y2</code></dt>
+<dd>Lower right corner of the bounding box.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Set</dt>
+<dd>A set (i.e. table of <code class="lua">t[shape] = shape</code>) of shapes.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">-- draw only visible shapes
 local width = love.graphics.getWidth()
 local height = love.graphics.getHeight()
 for shape in pairs(HC:shapesInRange(0,0, width,height) do
     shape.object:draw()
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div></div><div class="outer-block" id="hardoncollider.shapes"><h3>hardoncollider.shapes<a class="top" href="#top">^top</a></h3><div class="preamble"><pre><code class="lua">shapes = require "hardoncollider.shapes"
+</code></pre>
 
-</div>
+<p>Shape classes with collision detection methods.</p>
 
+<p>This module defines methods to move, rotate and draw shapes created with
+<code class="lua">hardoncollider.add*</code>.</p>
 
-<a name="shapes"></a>
-<div id="shapes" class="outer-block">
-	<h3>hardoncollider.shapes<a class="top" href="#top">^ top</a></h3>
+<p>As each shape is at it's core a Lua table, you can attach values and add
+functions to it. Be careful though not to use keys that name a function or
+start with an underscore, e.g. <code class="lua">move</code> or <code class="lua">_groups</code>, since these are used
+internally. Everything else is fine.</p>
 
-	<div class="preamble">
-		<pre><code class="lua">shapes = require "hardoncollider.shapes"</code></pre>
-		<p>Shape classes with collision detection methods.</p>
-		<p>This defines methods to move, rotate and draw shapes created with <code>hardoncollider.add*</code>.</p>
-		<p>As each shape is at it's core a Lua table, you can attach values and add functions
-		to it. Be careful though not to use keys that name a function or start with an underscore,
-		e.g. <code>move</code> or <code>_groups</code>, since these are used internally. Everything
-		else is fine.</p>
-		<p>If you don't want to use the full blown module, you can still use these
-		classes to test for colliding shapes.
-		They might also be useful for doing GUI stuff, e.g. when testing if the
-		mouse hovers a button.</p>
-	</div>
+<p>If you don't want to use the full blown module, you can still use these classes
+to test for colliding shapes. Doing so might be useful for a highly customized
+collision detection loop exploiting some prior knowledge of the scene.</p>
+</div><div class="overview"><h4>Module overview</h4><dl><dt><a href="#hardoncollider.shapesnewPolygonShape">newPolygonShape()</a></dt><dd>Create new polygon shape.</dd><dt><a href="#hardoncollider.shapesnewCircleShape">newCircleShape()</a></dt><dd>Create new circle shape.</dd><dt><a href="#hardoncollider.shapesnewPointShape">newPointShape()</a></dt><dd>Create new point shape.</dd><dt><a href="#hardoncollider.shapesshape:contains">shape:contains()</a></dt><dd>Test if shape contains a point.</dd><dt><a href="#hardoncollider.shapesshape:intersectsRay">shape:intersectsRay()</a></dt><dd>Test if shape intersects a ray.</dd><dt><a href="#hardoncollider.shapesshape:move">shape:move()</a></dt><dd>Move shape by some amount.</dd><dt><a href="#hardoncollider.shapesshape:moveTo">shape:moveTo()</a></dt><dd>Move shape to a position.</dd><dt><a href="#hardoncollider.shapesshape:scale">shape:scale()</a></dt><dd>Scale shape.</dd><dt><a href="#hardoncollider.shapesshape:rotate">shape:rotate()</a></dt><dd>Rotate shape by some amount.</dd><dt><a href="#hardoncollider.shapesshape:setRotation">shape:setRotation()</a></dt><dd>Set shape rotation.</dd><dt><a href="#hardoncollider.shapesshape:center">shape:center()</a></dt><dd>Get the shape's center.</dd><dt><a href="#hardoncollider.shapesshape:rotation">shape:rotation()</a></dt><dd>Get the shape's rotation.</dd><dt><a href="#hardoncollider.shapesshape:outcircle">shape:outcircle()</a></dt><dd>Get circle containing the shape.</dd><dt><a href="#hardoncollider.shapesshape:bbox">shape:bbox()</a></dt><dd>Get axis aligned bounding box.</dd><dt><a href="#hardoncollider.shapesshape:draw">shape:draw()</a></dt><dd>Draw the shape.</dd><dt><a href="#hardoncollider.shapesshape:support">shape:support()</a></dt><dd>Get furthest vertex of the shape wrt. a direction.</dd><dt><a href="#hardoncollider.shapesshape:collidesWith">shape:collidesWith()</a></dt><dd>Test for collision.</dd><dt><a href="#hardoncollider.shapesshape:neighbors">shape:neighbors()</a></dt><dd>Iterator over neighboring shapes.</dd></dl></div><div class="ref-block" id="hardoncollider.shapesnewPolygonShape"><h4>function <span class="name">newPolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Construct a shape using a non-self-intersecting ploygon.</p>
 
-	<div class="overview">
-	<h4>Module overview</h4>
-		<dl>
-			<dt><a href="#shapes-newPolygonShape">shapes.ConvexPolygonShape</a></dt>
-			<dd>Convex polygon shape class.</dd>
-			<dt><a href="#shapes-newPolygonShape">shapes.ConcavePolygonShape</a></dt>
-			<dd>Concave polygon shape class.</dd>
-			<dt><a href="#shapes-newCircleShape">shapes.CircleShape</a></dt>
-			<dd>Circle shape class.</dd>
-			<dt><a href="#shapes-newPointShape">shapes.PointShape</a></dt>
-			<dd>Point shape class.</dd>
-			<dt><a href="#shapes-newPolygonShape">shapes.newPolygonShape()</a></dt>
-			<dd>Creates a polygon shape.</dd>
-			<dt><a href="#shapes-newCircleShape">shapes.newCircleShape()</a></dt>
-			<dd>Creates a circle shape.</dd>
-			<dt><a href="#shapes-newPointShape">shapes.newPointShape()</a></dt>
-			<dd>Creates a point shape.</dd>
-			<dt><a href="#shapes-shape:contains">shape:contains()</a></dt>
-			<dd>Test if shape contains a point.</dd>
-			<dt><a href="#shapes-shape:intersectsRay">shape:intersectsRay()</a></dt>
-			<dd>Test if shape intersects a ray.</dd>
-			<dt><a href="#shapes-shape:move">shape:move()</a></dt>
-			<dd>Move the shape.</dd>
-			<dt><a href="#shapes-shape:moveTo">shape:moveTo()</a></dt>
-			<dd>Set the shape's position.</dd>
-			<dt><a href="#shapes-shape:scale">shape:scale()</a></dt>
-			<dd>Scales a shape.</dd>
-			<dt><a href="#shapes-shape:rotate">shape:rotate()</a></dt>
-			<dd>Rotate the shape.</dd>
-			<dt><a href="#shapes-shape:setRotation">shape:setRotation()</a></dt>
-			<dd>Set the shape's rotation.</dd>
-			<dt><a href="#shapes-shape:center">shape:center()</a></dt>
-			<dd>Get the shape's center.</dd>
-			<dt><a href="#shapes-shape:rotation()">shape:rotation()</a></dt>
-			<dd>Get the shape's rotation.</dd>
-			<dt><a href="#shapes-shape:outcircle">shape:outcircle()</a></dt>
-			<dd>Get circle containing the shape.</dd>
-			<dt><a href="#shapes-shape:bbox">shape:bbox()</a></dt>
-			<dd>Get axis aligned bounding box.</dd>
-			<dt><a href="#shapes-shape:draw">shape:draw()</a></dt>
-			<dd>Draw the shape.</dd>
-			<dt><a href="#shapes-shape:support">shape:support()</a></dt>
-			<dd>Get furthest vertex of the shape wrt. a direction.</dd>
-			<dt><a href="#shapes-shape:collidesWith">shape:collidesWith()</a></dt>
-			<dd>Test for collision.</dd>
-			<dt><a href="#shapes-shape:neighbors">shape:neighbors()</a></dt>
-			<dd>Iterator over neighboring shapes.</dd>
-		</dl>
-	</div>
+<p>The corresponding classes are available as <code class="lua">shapes.ConvexPolygonShape</code> and
+<code class="lua">shapes.ConcavePolygonShape</code>.</p>
 
-	<a name="shapes-newPolygonShape"></a>
-	<div id="newPolygonShape" class="ref-block">
-		<h4>function <span class="name">newPolygonShape</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#shapes">^ top</a></h4>
-		<h4>function <span class="name">newPolygonShape</span><span class="arglist">(polygon)</span></h4>
-		<p>Construct a shape using a non-intersecting ploygon.</p>
-		<p>You can either specify the coordinates as with <code>hardoncollider.addPolygon()</code> or use an instance of the <a href="#polygon"><code>Polygon</code></a> class.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
-				<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd>
-				<dt><a href="#polygon">Polygon</a> <code>polygon</code></dt>
-				<dd>Construct the shape from this polygon.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#shapes">Shape</a></dt>
-				<dd>The constructed shape.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">shape = shapes.newPolygonShape(100,100, 200,200, 300,100)</code></pre>
-		</div>
-	</div>
+<p>You can either specify the coordinates as with
+<a href="#hardoncollideraddPolygon"><code class="lua">hardoncollider.addPolygon()</code></a> or use an instance
+of the Polygon class.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x1,y1, ..., xn,yn</code></dt>
+<dd>The corners of the polygon. At least three corners (that do not lie on a line) are needed.</dd><dt>Polygon <code class="lua">polygon</code></dt>
+<dd>Construct the shape from this polygon.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Shape</dt>
+<dd>The constructed shape.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">shape = shapes.newPolygonShape(100,100, 200,200, 300,100)
+shape2 = shapes.newPolygonShape(shape)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesnewCircleShape"><h4>function <span class="name">newCircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Construct a circular shape.</p>
 
-	<a name="shapes-newCircleShape"></a>
-	<div id="newCircleShape" class="ref-block">
-		<h4>function <span class="name">newCircleShape</span><span class="arglist">(cx,cy, radius)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Construct a circular shape.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>cx, cy</code></dt>
-				<dd>The circle center.</dd>
-				<dt>number <code>radius</code></dt>
-				<dd>The circle radius.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#shapes">Shape</a></dt>
-				<dd>The constructed circle shape.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">shape = shapes.newCircleShape(400,300, 100)</code></pre>
-		</div>
-	</div>
+<p>The corresponding class is available as <code class="lua">shapes.CircleShape</code>.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">cx, cy</code></dt>
+<dd>The circle center.</dd><dt>number <code class="lua">radius</code></dt>
+<dd>The circle radius.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Shape</dt>
+<dd>The constructed circle shape.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">shape = shapes.newCircleShape(400,300, 100)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesnewPointShape"><h4>function <span class="name">newPointShape</span><span class="arglist">(x,y)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Construct a point shape.</p>
 
-	<a name="shapes-newPointShape"></a>
-	<div id="newPointShape" class="ref-block">
-		<h4>function <span class="name">newPointShape</span><span class="arglist">(x,y)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Construct a point shape.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>The point's position.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#shapes">Shape</a></dt>
-				<dd>The constructed point shape.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">shape = shapes.newPointShape(400,300)</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:contains"></a>
-	<div id="shape:contains" class="ref-block">
-		<h4>function <span class="name">shape:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Test if the shape contains a given point.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Point to test.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>boolean</dt>
-				<dd><code>true</code> if <code>x,y</code> lies in the interior of the shape.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">if unit.shape:contains(love.mouse.getPosition) then
+<p>The corresponding class is available as <code class="lua">shapes.PointShape</code>.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>The point's position.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Shape</dt>
+<dd>The constructed point shape.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">shape = shapes.newPointShape(400,300)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:contains"><h4>function <span class="name">shape:contains</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Test if the shape contains a given point.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>Point to test.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>boolean</dt>
+<dd><code class="lua">true</code> if <code class="lua">x,y</code> lies in the interior of the shape.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">if unit.shape:contains(love.mouse.getPosition) then
     unit:setHovered(true)
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:intersectsRay"></a>
-	<div id="shape:intersectsRay" class="ref-block">
-		<h4>function <span class="name">shape:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Test if the shape intersects a ray.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Starting point of the ray.</dd>
-			</dl>
-			<dl>
-				<dt>numbers <code>dx, dy</code></dt>
-				<dd>Direction of the ray.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>boolean <code>intersection</code></dt>
-				<dd><code>true</code> if the given ray intersects the shape.</dd>
-				<dt>number <code>t</code> (only if intersecting)</dt>
-				<dd>Ray parameter of the intersection.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">local intersecting, t = player:intersectsRay(x,y, dx,dy)
-if intersecting then -- laser pointer hits player
-    local vx,vy = vector.mul(t, x+dx, y+dy)
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:intersectsRay"><h4>function <span class="name">shape:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Test if the shape intersects a ray.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>Starting point of the ray.</dd><dt>numbers <code class="lua">dx, dy</code></dt>
+<dd>Direction of the ray.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>boolean</dt>
+<dd><code class="lua">true</code> if the given ray intersects the shape.</dd><dt>number</dt>
+<dd>Ray parameter of the intersection, if <code class="lua">shape</code> intersects the ray.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">local intersecting, t = player:intersectsRay(x,y, dx,dy)
+if intersecting then
+    -- find point of intersection
+    local vx,vy = vector.add(x, y, vector.mul(t, dx, dy))
     player:addMark(vx,vy)
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:move"><h4>function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Move the shape.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>The direction to move the shape in.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">circle:move(10,15) -- move the circle 10 units right and 15 units down
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:moveTo"><h4>function <span class="name">shape:moveTo</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Set the shape's position.</p>
 
-	<a name="shapes-shape:move"></a>
-	<div id="shape:move" class="ref-block">
-		<h4>function <span class="name">shape:move</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Move the shape.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>The direction to move the shape in.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">circle:move(10,15) -- move the circle 10 units right and 15 units down</code></pre>
-		</div>
-	</div>
+<p><strong>Important:</strong> This function moves the shape's center to <code class="lua">(x,y)</code>. It is
+equivalent to:</p>
 
-	<a name="shapes-shape:moveTo"></a>
-	<div id="shape:moveTo" class="ref-block">
-		<h4>function <span class="name">shape:moveTo</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Set the shape's position.</p>
-			<p><span class="warning">Important:</span> This function moves the shape's <em>center</em> to <code>(x,y)</code>. It is equivalent to: <pre><code class="lua">local cx,cy = shape:center()
-shape:move(x-cx, y-cy)</code></pre></p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Point to place the shape.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">circle:moveTo(400,300) -- move circle to screen center</code></pre>
-		</div>
-	</div>
+<pre><code class="lua">local cx,cy = shape:center()
+shape:move(x-cx, y-cy)
+</code></pre>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>Point to place the shape.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">circle:moveTo(400,300) -- move circle to screen center
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:scale"><h4>function <span class="name">shape:scale</span><span class="arglist">(s)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Scale the shape relative to it's center.</p>
+<div class="arguments">Parameters:<dl>
+<dt>number <code class="lua">s</code></dt>
+<dd>Scale factor. Must be > 0.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">circle:scale(2) -- double the circle's size
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:rotate"><h4>function <span class="name">shape:rotate</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Rotate the shape. A rotation center can be specified. If no center is given,
+the shape's center is used.</p>
+<div class="arguments">Parameters:<dl>
+<dt>number <code class="lua">angle</code></dt>
+<dd>Amount to rotate the shape (in radians).</dd><dt>numbers <code class="lua">cx, cy</code> (optional)</dt>
+<dd>Rotation center. Defaults to the shape's center if omitted.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">rectangle:rotate(math.pi/4)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:setRotation"><h4>function <span class="name">shape:setRotation</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Set the rotation of a shape. A rotation center can be specified. If no center
+is given, the shape's center is used.</p>
 
-	<a name="shapes-shape:scale"></a>
-	<div id="shape:scale" class="ref-block">
-		<h4>function <span class="name">shape:scale</span><span class="arglist">(s)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Scale the shape relative to it's center.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>s</code></dt>
-				<dd>Scale factor. Must be <code>&gt; 0</code>.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">circle:scale(2) -- double the circle's size</code></pre>
-		</div>
-	</div>
+<p>Equivalent to:</p>
 
-	<a name="shapes-shape:rotate"></a>
-	<div id="shape:rotate" class="ref-block">
-		<h4>function <span class="name">shape:rotate</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Rotate the shape. A rotation center can be specified. If no center is given, the
-		shape's center is used.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>angle</code></dt>
-				<dd>Amount to rotate the shape (in radians).</dd>
-				<dt>numbers <code>cx, cy</code> (optional)</dt>
-				<dd>Rotation center. Defaults to the shape's center if omitted.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">rectangle:rotate(math.pi/4)</code></pre>
-		</div>
-	</div>
+<pre><code class="lua">shape:rotate(angle - shape.rotation, cx,cy)
+</code></pre>
+<div class="arguments">Parameters:<dl>
+<dt>number <code class="lua">angle</code></dt>
+<dd>Rotation angle (in radians).</dd><dt>numbers <code class="lua">cx, cy</code> (optional)</dt>
+<dd>Rotation center. Defaults to the shape's center if omitted.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">rectangle:setRotation(math.pi, 100,100)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:center"><h4>function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Get the shape's center.</p>
 
-	<a name="shapes-shape:setRotation"></a>
-	<div id="shape:setRotation" class="ref-block">
-		<h4>function <span class="name">shape:setRotation</span><span class="arglist">(angle, cx,cy)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Set the rotation of a shape. A rotation center can be specified. If no center is given, the
-		shape's center is used.</p>
-		<p>Equivalent to:</p>
-		<pre><code class="lua">shape:rotate(angle - shape.rotation, cx,cy)</code></pre>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>angle</code></dt>
-				<dd>Rotation angle (in radians).</dd>
-				<dt>numbers <code>cx, cy</code> (optional)</dt>
-				<dd>Rotation center. Defaults to the shape's center if omitted.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">rectangle:setRotation(math.pi, 100,100)</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:center"></a>
-	<div id="shape:center" class="ref-block">
-		<h4>function <span class="name">shape:center</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Get the center of the shape.</p>
-		<p>If the shape is a CircleShape, returns the circle center. In case of a point shape, returns the position.
-		Else returns the polygon's centroid.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>The center of the shape.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">print("Circle at:", circle:center())</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:rotation"></a>
-	<div id="shape:rotation" class="ref-block">
-		<h4>function <span class="name">shape:rotation</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Get the shape's rotation angle in radians.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>number <code>angle</code></dt>
-				<dd>The rotation angle in radians.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">print("Box rotation:", box:rotation())</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:outcircle"></a>
-	<div id="shape:outcircle" class="ref-block">
-		<h4>function <span class="name">shape:outcircle</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Get circle that fully contains the shape.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Center of the circle.</dd>
-				<dt>number <code>r</code></dt>
-				<dd>Radius of the circle.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">if player:hasShield() then
+<p>If the shape is a CircleShape, returns the circle center. In case of a point
+shape, returns the position. Else returns the polygon's centroid.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>numbers x, y</dt>
+<dd>The center of the shape.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">print("Circle at:", circle:center())
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:rotation"><h4>function <span class="name">shape:rotation</span><span class="arglist">()</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Get the shape's rotation angle in radians.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>number angle</dt>
+<dd>The rotation angle in radians.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">print("Box rotation:", box:rotation())
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:outcircle"><h4>function <span class="name">shape:outcircle</span><span class="arglist">()</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Get circle that fully contains the shape.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>numbers x, y</dt>
+<dd>Center of the circle.</dd><dt>number r</dt>
+<dd>Radius of the circle.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">if player:hasShield() then
     -- draw shield
     love.graphics.circle('line', player:outcircle())
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:bbox"></a>
-	<div id="shape:bbox" class="ref-block">
-		<h4>function <span class="name">shape:bbox</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Get axis aligned bounding box.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>numbers <code>x1, y1</code></dt>
-				<dd>Upper left edge of the bounding box.</dd>
-				<dt>number <code>x2, y2</code></dt>
-				<dd>Lower right edge of the bounding box.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- draw bounding box
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:bbox"><h4>function <span class="name">shape:bbox</span><span class="arglist">()</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Get axis aligned bounding box.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>numbers x1, y1</dt>
+<dd>Upper left edge of the bounding box.</dd><dt>number x2, y2</dt>
+<dd>Lower right edge of the bounding box.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">-- draw bounding box
 local x1,y1, x2,y2 = shape:bbox()
-love.graphics.rectangle('line', x1,y1, x2-x1,y2-y1)</code></pre>
-		</div>
-	</div>
+love.graphics.rectangle('line', x1,y1, x2-x1,y2-y1)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:draw"><h4>function <span class="name">shape:draw</span><span class="arglist">(mode)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Draw the shape either filled or as outline.</p>
+<div class="arguments">Parameters:<dl>
+<dt>DrawMode <code class="lua">mode</code></dt>
+<dd>How to draw the shape. Either 'line' or 'fill'.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">circle:draw('fill')
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:support"><h4>function <span class="name">shape:support</span><span class="arglist">(dx,dy)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Get furthest vertex of the shape with respect to the direction <code class="lua">dx, dy</code>.</p>
 
-	<a name="shapes-shape:draw"></a>
-	<div id="shape:draw" class="ref-block">
-		<h4>function <span class="name">shape:draw</span><span class="arglist">(mode)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Draw the shape either filled or as outline.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>DrawMode <code>mode</code></dt>
-				<dd>How to draw the shape. Either <code>'line'</code> or <code>'fill'</code>.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">circle:draw('fill')</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:support"></a>
-	<div id="shape:support" class="ref-block">
-		<h4>function <span class="name">shape:support</span><span class="arglist">(dx,dy)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Get furthest vertex of the shape with respect to the direction <code>dx, dy</code>.</p>
-		<p>Used in the collision detection algorithm, but may be useful for other things - e.g. lighting - too.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>dx, dy</code></dt>
-				<dd>Search direction.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>numbers</dt>
-				<dd>The furthest vertex in direction <code>dx, dy</code></dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- get vertices that produce a shadow volume
+<p>Used in the collision detection algorithm, but may be useful for other things -
+e.g. lighting - too.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">dx, dy</code></dt>
+<dd>Search direction.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>numbers</dt>
+<dd>The furthest vertex in direction <code class="lua">dx, dy</code>.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">-- get vertices that produce a shadow volume
 local x1,y1 = circle:support(lx, ly)
-local x2,y2 = circle:support(-lx, -ly)</code></pre>
-		</div>
-	</div>
-
-	<a name="shapes-shape:collidesWith"></a>
-	<div id="shape:collidesWith" class="ref-block">
-		<h4>function <span class="name">shape:collidesWith</span><span class="arglist">(other)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Test if two shapes collide.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#shapes">Shape</a> <code>other</code></dt>
-				<dd>Test for collision with this shape.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>boolean <code>collide</code></dt>
-				<dd><code>true</code> if the two shapes collide, <code>false</code> otherwise.</dd>
-				<dt>numbers <code>dx, dy</code></dt>
-				<dd>The minimum translation vector, or <code>nil</code> if the two shapes don't collide.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">if circle:collidesWith(rectangle) then
+local x2,y2 = circle:support(-lx, -ly)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:collidesWith"><h4>function <span class="name">shape:collidesWith</span><span class="arglist">(other)</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p>Test if two shapes collide.</p>
+<div class="arguments">Parameters:<dl>
+<dt>Shape <code class="lua">other</code></dt>
+<dd>Test for collision with this shape.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>boolean collide</dt>
+<dd><code class="lua">true</code> if the two shapes collide, <code class="lua">false</code> otherwise.</dd><dt>numbers dx, dy</dt>
+<dd>The separating vector, or nil if the two shapes do not collide.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">if circle:collidesWith(rectangle) then
     print("collision detected!")
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.shapesshape:neighbors"><h4>function <span class="name">shape:neighbors</span><span class="arglist">()</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p><strong>Only available in shapes created with main module (i.e.
+<a href="#hardoncollideraddRectangle"><code class="lua">HC:addRectangle()</code></a>, ...).</strong></p>
 
-	<a name="shapes-shape:neighbors"></a>
-	<div id="shape:neighbors" class="ref-block">
-		<h4>function <span class="name">shape:neighbors</span><span class="arglist">()</span><a class="top" href="#shapes">^ top</a></h4>
-		<p class="warning">Only available in shapes created with main module (i.e. HC:addRectangle(), &hellip;).</p>
-		<p>Iterator over neighboring shapes.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>iterator</dt>
-				<dd>Iterator over neighboring shapes.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- check for collisions with neighboring shapes
+<p>Iterator over neighboring shapes.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>iterator</dt>
+<dd>Iterator over neighboring shapes.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">-- check for collisions with neighboring shapes
 for other in shape:neighbors() do
     if shape:collidesWith(other) then
         print("collision detected!")
     end
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div></div><div class="outer-block" id="hardoncollider.polygon"><h3>hardoncollider.polygon<a class="top" href="#top">^top</a></h3><div class="preamble"><pre><code class="lua">polygon = require "hardoncollider.polygon"
+</code></pre>
 
-</div>
+<p>Definition of a Polygon class and implementation of some handy algorithms.</p>
 
+<p>On it's own, this class does not offer any collision detection. If you want
+that, use a <a href="#hardoncollider.shapesnewPolygonShape"><code class="lua">PolygonShape</code></a> instead.</p>
+</div><div class="overview"><h4>Module overview</h4><dl><dt><a href="#hardoncollider.polygonPolygon">Polygon</a></dt><dd>x1,y1, ..., xn,yn</dd><dt><a href="#hardoncollider.polygonpolygon:unpack">polygon:unpack()</a></dt><dd>Get coordinates.</dd><dt><a href="#hardoncollider.polygonpolygon:clone">polygon:clone()</a></dt><dd>Copy polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:getBBox">polygon:getBBox()</a></dt><dd>Get axis aligned bounding box.</dd><dt><a href="#hardoncollider.polygonpolygon:isConvex">polygon:isConvex()</a></dt><dd>Test if polygon is convex.</dd><dt><a href="#hardoncollider.polygonpolygon:move">polygon:move()</a></dt><dd>Move polygon by some amount.</dd><dt><a href="#hardoncollider.polygonpolygon:rotate">polygon:rotate()</a></dt><dd>Rotate polygon by some amount.</dd><dt><a href="#hardoncollider.polygonpolygon:triangulate">polygon:triangulate()</a></dt><dd>Triangulate polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:splitConvex">polygon:splitConvex()</a></dt><dd>Decompose polygon in convex polygons.</dd><dt><a href="#hardoncollider.polygonpolygon:mergedWith">polygon:mergedWith()</a></dt><dd>Merge with other polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:contains">polygon:contains()</a></dt><dd>Test if polygon contains a point.</dd><dt><a href="#hardoncollider.polygonpolygon:intersectsRay">polygon:intersectsRay()</a></dt><dd>Test if polygon intersects a ray.</dd></dl></div><div class="ref-block" id="hardoncollider.polygonPolygon"><h4>class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p><strong>Syntax depends on used class system. Shown syntax works for bundled
+<a href="http://vrld.github.com/hump/#hump.class">hump.class</a> and
+<a href="https://bitbucket.org/bartbes/slither">slither</a>.</strong></p>
 
-<a name="polygon"></a>
-<div id="polygon" class="outer-block">
-	<h3>hardoncollider.polygon<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		<pre><code class="lua">polygon = require "hardoncollider.polygon"</code></pre>
-		<p>Definition of a Polygon class and implementation of some handy algorithms.</p>
-		<p>On it's own, this class does not offer any collision detection. If you want that, use a PolygonShape instead.</p>
-	</div>
+<p>Construct a polygon.</p>
 
-	<div class="overview">
-	<h4>Module overview</h4>
-		<dl>
-			<dt><a href="#polygon-Polygon">Polygon</a></dt>
-			<dd>The polygon class.</dd>
-			<dt><a href="#polygon-polygon:unpack">polygon:unpack()</a></dt>
-			<dd>Get coordinates.</dd>
-			<dt><a href="#polygon-polygon:clone">polygon:clone()</a></dt>
-			<dd>Copy polygon.</dd>
-			<dt><a href="#polygon-polygon:getBBox">polygon:getBBox()</a></dt>
-			<dd>Get bounding box.</dd>
-			<dt><a href="#polygon-polygon:isConvex">polygon:isConvex()</a></dt>
-			<dd>Test if polygon is convex.</dd>
-			<dt><a href="#polygon-polygon:move">polygon:move()</a></dt>
-			<dd>Move polygon.</dd>
-			<dt><a href="#polygon-polygon:rotate">polygon:rotate()</a></dt>
-			<dd>Rotate polygon.</dd>
-			<dt><a href="#polygon-polygon:triangulate">polygon:triangulate()</a></dt>
-			<dd>Split polygon in triangles.</dd>
-			<dt><a href="#polygon-polygon:splitConvex">polygon:splitConvex()</a></dt>
-			<dd>Split polygon into convex polygons.</dd>
-			<dt><a href="#polygon-polygon:mergedWith">polygon:mergedWith()</a></dt>
-			<dd>Merge polygon with other polygon.</dd>
-			<dt><a href="#polygon-polygon:contains">polygon:contains()</a></dt>
-			<dd>Test if polygon contains a point.</dd>
-			<dt><a href="#polygon-polygon:intersectsRay">polygon:intersectsRay()</a></dt>
-			<dd>Test if polygon intersects a ray.</dd>
-		</dl>
-	</div>
+<p>At least three points that are not collinear (i.e. lying on a straight line)
+are needed to construct the polygon. If there are collinear points, these
+points will be removed so that the overall shape of the polygon is not changed.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x1,y1, ..., xn,yn</code></dt>
+<dd>The corners of the polygon. At least three corners are needed.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Polygon</dt>
+<dd>The polygon object.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">Polygon = require 'hardoncollider.polygon'
+poly = Polygon(10,10, 40,50, 70,10, 40,30)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:unpack"><h4>function <span class="name">polygon:unpack</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Get the polygon's vertices. Useful for drawing with <code class="lua">love.graphics.polygon()</code>.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>numbers x1,y1, ..., xn,yn</dt>
+<dd>The vertices of the polygon.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">love.graphics.draw('line', poly:unpack())
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:clone"><h4>function <span class="name">polygon:clone</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Get a copy of the polygon.</p>
 
-	<a name="polygon-Polygon"></a>
-	<div id="name" class="ref-block">
-		<h4>class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#polygon">^ top</a></h4>
-		<p><span class="warning">Syntax depends on used class system.</span> Shown syntax works for bundled <a href="http://vrld.github.com/hump/#Class">hump.class</a> and <a href="https://bitbucket.org/bartbes/slither">slither</a>.</p>
-		<p>Construct a polygon.</p>
-		<p>At least three points that are not collinear (being on a straight line) are needed to construct the polygon.
-		If there are collinear points, these points will be removed so that the overall shape of the polygon is not changed.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
-				<dd>The corners of the polygon. At least three corners are needed.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#polygon">Polygon</a></dt>
-				<dd>The polygon object.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">Polygon = require 'hardoncollider.polygon'
-poly = Polygon(10,10, 40,50, 70,10, 40,30)</code></pre>
-		</div>
-	</div>
+<p>Since Lua uses references when simply assigning an existing polygon to a
+variable, unexpected things can happen when operating on the variable. Consider
+this code:</p>
 
-	<a name="polygon-polygon:unpack"></a>
-	<div id="polygon:unpack" class="ref-block">
-		<h4>function <span class="name">polygon:unpack</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Get the polygon's vertices. Useful for drawing with <code>love.graphics.polygon()</code>.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>numbers <code>x1,y1, ..., xn,yn</code></dt>
-				<dd>The vertices of the polygon.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">love.graphics.draw('line', poly:unpack())</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:clone"></a>
-	<div id="polygon:clone" class="ref-block">
-		<h4>function <span class="name">polygon:clone</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Get a copy of the polygon.</p>
-		<p>Since Lua uses references when simply assigning an existing polygon to a variable, unexpected things can happen when
-		operating on the variable. Consider this code:</p>
-		<pre><code class="lua">p1 = Polygon(10,10, 40,50, 70,10, 40,30)
+<pre><code class="lua">p1 = Polygon(10,10, 40,50, 70,10, 40,30)
 p2 = p1
 p3 = p1:clone()
 p2:rotate(math.pi) -- p1 will be rotated, too!
-p3:rotate(-math.pi) -- only p3 will be rotated</code></pre>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#polygon">Polygon</a> <code>polygon</code></dt>
-				<dd>A copy of the polygon.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">copy = poly:clone()
-copy:move(10,20)</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:getBBox"></a>
-	<div id="polygon:getBBox" class="ref-block">
-		<h4>function <span class="name">polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Get axis aligned bounding box.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>numbers <code>x1, y1</code></dt>
-				<dd>Upper left corner of the bounding box.</dd>
-				<dt>numbers <code>x2, y2</code></dt>
-				<dd>Lower right corner of the bounding box.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">x1,y1,x2,y2 = poly:getBBox()
+p3:rotate(-math.pi) -- only p3 will be rotated
+</code></pre>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>Polygon polygon</dt>
+<dd>A copy of the polygon.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">copy = poly:clone()
+copy:move(10,20)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:getBBox"><h4>function <span class="name">polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Get axis aligned bounding box.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>numbers x1, y1</dt>
+<dd>Upper left corner of the bounding box.</dd><dt>numbers x2, y2</dt>
+<dd>Lower right corner of the bounding box.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">x1,y1,x2,y2 = poly:getBBox()
 -- draw bounding box
-love.graphics.rectangle('line', x1,y2, x2-x1, y2-y1)</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:isConvex"></a>
-	<div id="polygon:isConvex" class="ref-block">
-		<h4>function <span class="name">polygon:isConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Test if a polygon is convex, i.e. a line line between any two points inside the polygon will lie in the interior of the polygon.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>boolean <code>convex</code></dt>
-				<dd><code>true</code> if the polygon is convex, <code>false</code> otherwise.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">-- split into convex sub polygons
+love.graphics.rectangle('line', x1,y2, x2-x1, y2-y1)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:isConvex"><h4>function <span class="name">polygon:isConvex</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Test if a polygon is convex, i.e. a line line between any two points inside the
+polygon will lie in the interior of the polygon.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>boolean convex</dt>
+<dd>true if the polygon is convex, false otherwise.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">-- split into convex sub polygons
 if not poly:isConvex() then
     list = poly:splitConvex()
 else
     list = {poly:clone()}
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:move"></a>
-	<div id="polygon:move" class="ref-block">
-		<h4>function <span class="name">polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Move a polygon in a direction..</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Coordinates of the direction to move.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">poly:move(10,-5) -- move 10 units right and 5 units up</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:rotate"></a>
-	<div id="polygon:rotate" class="ref-block">
-		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle)</span><a class="top" href="#polygon">^ top</a></h4>
-		<h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle, cx, cy)</span></h4>
-		<p>Rotate the polygon. You can define a rotation center. If it is omitted, the polygon will be rotated around it's centroid.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>angle</code></dt>
-				<dd>The angle to rotate in radians.</dd>
-				<dt>numbers <code>cx, cy</code></dt>
-				<dd>The rotation center.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">p1:rotate(math.pi/2)          -- rotate p1 by 90&deg; around it's center
-p2:rotate(math.pi/4, 100,100) -- rotate p2 by 45&deg; around the point 100,100</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:triangulate"></a>
-	<div id="polygon:triangulate" class="ref-block">
-		<h4>function <span class="name">polygon:triangulate</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Split the polygon into triangles.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Array of <a href="#polygon">Polygon</a> <code>triangles</code></dt>
-				<dd>Triangles that the polygon is composed of.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">triangles = poly:triangulate()
-for i,triangle in ipairs(triangles) do
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:move"><h4>function <span class="name">polygon:move</span><span class="arglist">(x,y)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Move a polygon in a direction..</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>Coordinates of the direction to move.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">poly:move(10,-5) -- move 10 units right and 5 units up
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:rotate"><h4>function <span class="name">polygon:rotate</span><span class="arglist">(angle, cx, cy)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Rotate the polygon. You can define a rotation center. If it is omitted, the
+polygon will be rotated around it's centroid.</p>
+<div class="arguments">Parameters:<dl>
+<dt>number <code class="lua">angle</code></dt>
+<dd>The angle to rotate in radians.</dd><dt>numbers <code class="lua">cx, cy</code> (optional)</dt>
+<dd>The rotation center.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">p1:rotate(math.pi/2)          -- rotate p1 by 90° around it's center
+p2:rotate(math.pi/4, 100,100) -- rotate p2 by 45° around the point 100,100
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:triangulate"><h4>function <span class="name">polygon:triangulate</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Split the polygon into triangles.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>table of Polygons</dt>
+<dd>Triangles that the polygon is composed of.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">triangles = poly:triangulate()
+for i,triangle in ipairs(triangles) do 
     triangles.move(math.random(5,10), math.random(5,10))
-end	</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:splitConvex"></a>
-	<div id="polygon:splitConvex" class="ref-block">
-		<h4>function <span class="name">polygon:splitConvex</span><span class="arglist">()</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Split the polygon into convex sub polygons.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>None</dt>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Array of <a href="#polygon">Polygon</a> <code>convex_polygons</code></dt>
-				<dd>Convex polygons that form the original polygon.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">convex = concave_polygon:splitConvex()
+end 
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:splitConvex"><h4>function <span class="name">polygon:splitConvex</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Split the polygon into convex sub polygons.</p>
+<div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
+<dt>table of Polygons</dt>
+<dd>Convex polygons that form the original polygon.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">convex = concave_polygon:splitConvex()
 function love.draw()
     for i,poly in ipairs(convex) do
         love.graphics.polygon('fill', poly:unpack())
     end
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:mergedWith"><h4>function <span class="name">polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Create a merged polygon of two polygons if, and only if the two polygons share
+one complete edge. If the polygons share more than one edge, the result may be
+erroneous.</p>
 
-	<a name="polygon-polygon:mergedWith"></a>
-	<div id="polygon:mergedWith" class="ref-block">
-		<h4>function <span class="name">polygon:mergedWith</span><span class="arglist">(other)</span><a class="top" href="#polygon">^ top</a></h4>
-		<p>Create a merged polygon of two polygons if, and only if the two polygons share one complete edge. If the polygons share more than one edge, the result may be erroneous.</p>
-		<p>This function does not change either polygon, but rather create a new one.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt><a href="#polygon">Polygon</a> <code>other</code></dt>
-				<dd>The polygon to merge with.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt><a href="#polygon">Polygon</a> <code>merged</code></dt>
-				<dd>The merged polygon, or <code>nil</code> if the two polygons don't share an edge.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">merged = p1:mergedWith(p2)</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:contains"></a>
-	<div id="polygon:contains" class="ref-block">
-		<h4>function <span class="name">polygon:contains</span><span class="arglist">(x, y)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Test if the polygon contains a given point.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Point to test.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>boolean</dt>
-				<dd><code>true</code> if <code>x,y</code> lies in the interior of the polygon.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">if button:contains(love.mouse.getPosition) then
+<p>This function does not change either polygon, but rather create a new one.</p>
+<div class="arguments">Parameters:<dl>
+<dt>Polygon <code class="lua">other</code></dt>
+<dd>The polygon to merge with.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Polygon merged</dt>
+<dd>The merged polygon, or nil if the two polygons don't share an edge.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">merged = p1:mergedWith(p2)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:contains"><h4>function <span class="name">polygon:contains</span><span class="arglist">(x, y)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Test if the polygon contains a given point.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>Point to test.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>boolean</dt>
+<dd><code class="lua">true</code> if <code class="lua">x,y</code> lies in the interior of the polygon.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">if button:contains(love.mouse.getPosition()) then
     button:setHovered(true)
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="polygon-polygon:intersectsRay"></a>
-	<div id="polygon:intersectsRay" class="ref-block">
-		<h4>function <span class="name">polygon:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#shapes">^ top</a></h4>
-		<p>Test if the polygon intersects a ray.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>Starting point of the ray.</dd>
-			</dl>
-			<dl>
-				<dt>numbers <code>dx, dy</code></dt>
-				<dd>Direction of the ray.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>boolean <code>intersection</code></dt>
-				<dd><code>true</code> if the given ray intersects the shape.</dd>
-				<dt>number <code>t</code> (only if intersecting)</dt>
-				<dd>Ray parameter of the intersection.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">if poly:intersectsRay(400,300, dx,dy) then
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:intersectsRay"><h4>function <span class="name">polygon:intersectsRay</span><span class="arglist">(x, y, dx, dy)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Test if the polygon intersects a ray.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>Starting point of the ray.</dd><dt>numbers <code class="lua">dx, dy</code></dt>
+<dd>Direction of the ray.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>boolean</dt>
+<dd><code class="lua">true</code> if the ray intersects the shape.</dd><dt>number</dt>
+<dd>Ray parameter of the intersection or <code class="lua">nil</code> if there was no intersection.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">if poly:intersectsRay(400,300, dx,dy) then
     love.graphics.setLine(2) -- highlight polygon
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div></div><div class="outer-block" id="hardoncollider.spatialhash"><h3>hardoncollider.spatialhash<a class="top" href="#top">^top</a></h3><div class="preamble"><pre><code class="lua">spatialhash = require "hardoncollider.spatialhash"
+</code></pre>
 
-</div>
+<p>A spatial hash implementation that supports scenes of arbitrary size. The hash
+is sparse, which means that cells will only be created when needed.</p>
+</div><div class="overview"><h4>Module overview</h4><dl><dt><a href="#hardoncollider.spatialhashSpatialhash">Spatialhash</a></dt><dd>cellsize</dd><dt><a href="#hardoncollider.spatialhashhash:cellCoords">hash:cellCoords()</a></dt><dd>Get cell coordinates of a point.</dd><dt><a href="#hardoncollider.spatialhashhash:cell">hash:cell()</a></dt><dd>Get cell of a given index.</dd><dt><a href="#hardoncollider.spatialhashhash:cellAt">hash:cellAt()</a></dt><dd>Get cell for a given point.</dd><dt><a href="#hardoncollider.spatialhashhash:insert">hash:insert()</a></dt><dd>Insert object.</dd><dt><a href="#hardoncollider.spatialhashhash:remove">hash:remove()</a></dt><dd>Remove object.</dd><dt><a href="#hardoncollider.spatialhashhash:update">hash:update()</a></dt><dd>Update object's position.</dd><dt><a href="#hardoncollider.spatialhashhash:inRange">hash:inRange()</a></dt><dd>Query objects in a rectangle.</dd><dt><a href="#hardoncollider.spatialhashhash:rangeIter">hash:rangeIter()</a></dt><dd>Iterator over objects in a rectangle.</dd><dt><a href="#hardoncollider.spatialhashhash:draw">hash:draw()</a></dt><dd>Draw the grid.</dd></dl></div><div class="ref-block" id="hardoncollider.spatialhashSpatialhash"><h4>class <span class="name">Spatialhash</span><span class="arglist">(cellsize)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p><strong>Syntax depends on used class system. Shown syntax works for bundled
+<a href="http://vrld.github.com/hump/#hump.class">hump.class</a> and
+<a href="https://bitbucket.org/bartbes/slither">slither</a>.</strong></p>
 
+<p>Create a new spatial hash with a given cell size.</p>
 
-<a name="spatialhash"></a>
-<div id="spatialhash" class="outer-block">
-	<h3>hardoncollider.spatialhash<a class="top" href="#top">^ top</a></h3>
+<p>Choosing a good cell size depends on your application. To get a decent speedup,
+the average cell should not contain too many objects, nor should a single
+object occupy too many cells. A good rule of thumb is to choose the cell size
+so that the average object will occupy only one cell.</p>
+<div class="arguments">Parameters:<dl>
+<dt>number <code class="lua">cellsize</code> (100)</dt>
+<dd>Width and height of a cell.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Spatialhash</dt>
+<dd>A fresh object instance.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">Spatialhash = require 'hardoncollider.spatialhash'
+hash = Spatialhash(150)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:cellCoords"><h4>function <span class="name">hash:cellCoords</span><span class="arglist">(x,y)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Get coordinates of a given value, i.e. the cell index in which a given point
+would be placed.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>The position to query.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>numbers</dt>
+<dd>Coordinates of the cell which would contain <code class="lua">x,y</code>.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">local mx,my = love.mouse.getPosition()
+cx, cy = hash:cellCoords(mx, my)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:cell"><h4>function <span class="name">hash:cell</span><span class="arglist">(i,k)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Get the cell with given coordinates.</p>
 
-	<div class="preamble">
-		<pre><code class="lua">spatialhash = require "hardoncollider.spatialhash"</code></pre>
-		<p>A spatial hash implementation that supports scenes of arbitrary size.
-		The hash is sparse, which means that cells will only be created when needed.</p>
-	</div>
+<p>A cell is a table which's keys and value are the objects stored in the cell, i.e.:</p>
 
-	<div class="overview">
-	<h4>Module overview</h4>
-		<dl>
-			<dt><a href="#spatialhash-Spatialhash">Spatialhash</a></dt>
-			<dd>Spatial hash class.</dd>
-			<dt><a href="#spatialhash-Spatialhash:cellCoords">hash:cellCoords()</a></dt>
-			<dd>Get cell coordinates of a given position.</dd>
-			<dt><a href="#spatialhash-Spatialhash:cell">hash:cell()</a></dt>
-			<dd>Get cell for a given index.</dd>
-			<dt><a href="#spatialhash-Spatialhash:cellAt">hash:cellAt()</a></dt>
-			<dd>Get cell at a given position.</dd>
-			<dt><a href="#spatialhash-Spatialhash:insert">hash:insert()</a></dt>
-			<dd>Insert object.</dd>
-			<dt><a href="#spatialhash-Spatialhash:remove">hash:remove()</a></dt>
-			<dd>Remove object.</dd>
-			<dt><a href="#spatialhash-Spatialhash:update">hash:update()</a></dt>
-			<dd>Update object's position.</dd>
-			<dt><a href="#spatialhash-Spatialhash:inRange">hash:inRange()</a></dt>
-			<dd>Query object in a range.</dd>
-			<dt><a href="#spatialhash-Spatialhash:rangeIter">hash:rangeIter()</a></dt>
-			<dd>Iterator to objects in a range.</dd>
-		</dl>
-	</div>
-
-	<a name="spatialhash-Spatialhash"></a>
-	<div id="Spatialhash" class="ref-block">
-		<h4><span class="name">Spatialhash</span><span class="arglist">(cell_size)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p><span class="warning">Syntax depends on used class system.</span> Shown syntax works for bundled <a href="http://vrld.github.com/hump/#Class">hump.class</a> and <a href="https://bitbucket.org/bartbes/slither">slither</a>.</p>
-		<p>Create a new spatial hash given a cell size.</p>
-		<p>Choosing a good cell size depends on your application. To get a decent speedup,
-		the average cell should not contain too many objects, nor should a single object
-		occupy too many cells. A good rule of thumb is to choose the cell size so that
-		the average object will occupy one cell only.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>number <code>cell_size</code> (100)</dt>
-				<dd>Width and height of a cell.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Spatialhash</dt>
-				<dd>A fresh object instance.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">Spatialhash = require 'hardoncollider.spatialhash'
-hash = Spatialhash(150)</code></pre>
-		</div>
-	</div>
-
-	<a name="spatialhash-Spatialhash:cellCoords"></a>
-	<div id="Spatialhash:cellCoords" class="ref-block">
-		<h4>function <span class="name">hash:cellCoords</span><span class="arglist">(x,y)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Get coordinates of a given value, i.e. the cell index in which a given point would be placed.</p>
-		</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>The position to query.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>numbers</dt>
-				<dd>Coordinates of the cell which would contain <code>x,y</code>.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">local mx,my = love.mouse.getPosition()
-cx, cy = hash:cellCoords(mx, my)</code></pre>
-		</div>
-	</div>
-
-	<a name="spatialhash-Spatialhash:cell"></a>
-	<div id="Spatialhash:cell" class="ref-block">
-		<h4>function <span class="name">hash:cell</span><span class="arglist">(i,k)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Get the cell with given coordinates.</p>
-		<p>A cell is a table which's keys and value are the objects stored in the cell, i.e.:
-		<pre><code class="lua">cell = {
+<pre><code class="lua">cell = {
     [obj1] = obj1,
     [obj2] = obj2,
     ...
-}</code></pre>
-		You can iterate over the objects in a cell using <code>pairs()</code>:
-		<pre><code class="lua">for object in pairs(cell) do stuff(object) end</code></pre></p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>i, k</code></dt>
-				<dd>The cell index.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>table</dt>
-				<dd>Set of objects contained in the cell.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">local mx,my = love.mouse.getPosition()
+}
+</code></pre>
+
+<p>You can iterate over the objects in a cell using <code class="lua">pairs()</code>:</p>
+
+<pre><code class="lua">for object in pairs(cell) do stuff(object) end
+</code></pre>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">i, k</code></dt>
+<dd>The cell index.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>table</dt>
+<dd>Set of objects contained in the cell.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">local mx,my = love.mouse.getPosition()
 cx, cy = hash:cellCoords(mx, my)
-cell = hash:cell(cx, cy)</code></pre>
-		</div>
-	</div>
+cell = hash:cell(cx, cy)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:cellAt"><h4>function <span class="name">hash:cellAt</span><span class="arglist">(x,y)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Get the cell that contains point x,y.</p>
 
-	<a name="spatialhash-Spatialhash:cellAt"></a>
-	<div id="Spatialhash:cell" class="ref-block">
-		<h4>function <span class="name">hash:cellAt</span><span class="arglist">(x,y)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Get the cell that contains point <code>x,y</code>.</p>
-		<p>Same as <code class="lua">hash:cell(hash:cellCoords(x,y))</code></p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x, y</code></dt>
-				<dd>The position to query.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>table</dt>
-				<dd>Set of objects contained in the cell.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">local mx,my = love.mouse.getPosition()
-cell = hash:cellAt(mx, my)</code></pre>
-		</div>
-	</div>
+<p>Same as <code class="lua">hash:cell(hash:cellCoords(x,y))</code></p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x, y</code></dt>
+<dd>The position to query.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>table</dt>
+<dd>Set of objects contained in the cell.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">local mx,my = love.mouse.getPosition()
+cell = hash:cellAt(mx, my)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:insert"><h4>function <span class="name">hash:insert</span><span class="arglist">(obj, x1,y1, x2,y2)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Insert an object into the hash using a given bounding box.</p>
+<div class="arguments">Parameters:<dl>
+<dt>mixed <code class="lua">obj</code></dt>
+<dd>Object to place in the hash. It can be of any type except <code class="lua">nil</code>.</dd><dt>numbers <code class="lua">x1,y1</code></dt>
+<dd>Upper left corner of the bounding box.</dd><dt>numbers <code class="lua">x2,y2</code></dt>
+<dd>Lower right corner of the bounding box.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">hash:insert(shape, shape:bbox())
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:remove"><h4>function <span class="name">hash:remove</span><span class="arglist">(obj, x1,y1, x2,y2)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Remove an object from the hash using a bounding box.</p>
 
-	<a name="spatialhash-Spatialhash:insert"></a>
-	<div id="Spatialhash:insert" class="ref-block">
-		<h4>function <span class="name">hash:insert</span><span class="arglist">(obj, x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Insert an object into the hash using a given bounding box.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>mixed <code>obj</code></dt>
-				<dd>Object to place in the hash. It can be of any type except <code>nil</code>.</dd>
-				<dt>numbers <code>x1,y1</code></dt>
-				<dd>Upper left corner of the bounding box.</dd>
-				<dt>numbers <code>x2,y2</code></dt>
-				<dd>Lower right corner of the bounding box.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">hash:insert(shape, shape:bbox())</code></pre>
-		</div>
-	</div>
-
-	<a name="spatialhash-Spatialhash:remove"></a>
-	<div id="Spatialhash:remove" class="ref-block">
-		<h4>function <span class="name">hash:remove</span><span class="arglist">(obj, x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<h4>function <span class="name">hash:remove</span><span class="arglist">(obj)</span></h4>
-		<p>Remove an object from the hash using a bounding box.</p>
-		<p>If no bounding box is given, search the whole hash to delete the object.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>mixed <code>obj</code></dt>
-				<dd>The object to delete</dd>
-				<dt>numbers <code>x1,y1</code></dt>
-				<dd>Upper left corner of the bounding box.</dd>
-				<dt>numbers <code>x2,y2</code></dt>
-				<dd>Lower right corner of the bounding box.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">hash:remove(shape, shape:bbox())</code></pre>
-			<pre><code class="lua">hash:remove(object_with_unknown_position)</code></pre>
-		</div>
-	</div>
-
-	<a name="spatialhash-Spatialhash:update"></a>
-	<div id="Spatialhash:update" class="ref-block">
-		<h4>function <span class="name">hash:update</span><span class="arglist">(obj, x1,y1, x2,y2, x3,y3, x4,y4)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Update an objects position given the old bounding box and the new bounding box.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>mixed <code>obj</code></dt>
-				<dd>The object to be updated.</dd>
-				<dt>numbers <code>x1,y1</code></dt>
-				<dd>Upper left corner of the bounding box before the object was moved.</dd>
-				<dt>numbers <code>x2,y2</code></dt>
-				<dd>Lower right corner of the bounding box before the object was moved.</dd>
-				<dt>numbers <code>x3,y3</code></dt>
-				<dd>Upper left corner of the bounding box after the object was moved.</dd>
-				<dt>numbers <code>x4,y4</code></dt>
-				<dd>Lower right corner of the bounding box after the object was moved.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">hash:update(shape, -100,-30, 0,60, -100,-70, 0,20)</code></pre>
-		</div>
-	</div>
-
-	<a name="spatialhash-Spatialhash:inRange"></a>
-	<div id="Spatialhash:inRange" class="ref-block">
-		<h4>function <span class="name">hash:inRange</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Query objects in the rectangle <code>(x1,y1) - (x2,y2)</code>.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x1, y1</code></dt>
-				<dd>Upper left corner of the object's bounding box.</dd>
-				<dt>numbers <code>x2, y2</code></dt>
-				<dd>Lower right corner of the object's bounding box.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Set</dt>
-				<dd>A set (i.e. table of <code>t[obj] = obj</code>) of objects.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">local objects = hash:inRange(0,0, 800,600)
+<p>If no bounding box is given, search the whole hash to delete the object.</p>
+<div class="arguments">Parameters:<dl>
+<dt>mixed <code class="lua">obj</code></dt>
+<dd>The object to delete</dd><dt>numbers <code class="lua">x1,y1</code> (optional)</dt>
+<dd>Upper left corner of the bounding box.</dd><dt>numbers <code class="lua">x2,y2</code> (optional)</dt>
+<dd>Lower right corner of the bounding box.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">hash:remove(shape, shape:bbox())
+hash:remove(object_with_unknown_position)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:update"><h4>function <span class="name">hash:update</span><span class="arglist">(obj, x1,y1, x2,y2, x3,y3, x4,y4)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Update an objects position given the old bounding box and the new bounding box.</p>
+<div class="arguments">Parameters:<dl>
+<dt>mixed <code class="lua">obj</code></dt>
+<dd>The object to be updated.</dd><dt>numbers <code class="lua">x1,y1</code></dt>
+<dd>Upper left corner of the bounding box before the object was moved.</dd><dt>numbers <code class="lua">x2,y2</code></dt>
+<dd>Lower right corner of the bounding box before the object was moved.</dd><dt>numbers <code class="lua">x3,y3</code></dt>
+<dd>Upper left corner of the bounding box after the object was moved.</dd><dt>numbers <code class="lua">x4,y4</code></dt>
+<dd>Lower right corner of the bounding box after the object was moved.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">hash:update(shape, -100,-30, 0,60, -100,-70, 0,20)
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:inRange"><h4>function <span class="name">hash:inRange</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Query objects in the rectangle <code class="lua">(x1,y1) - (x2,y2)</code>.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x1, y1</code></dt>
+<dd>Upper left corner of the object's bounding box.</dd><dt>numbers <code class="lua">x2, y2</code></dt>
+<dd>Lower right corner of the object's bounding box.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>Set</dt>
+<dd>A set (i.e. table of <code class="lua">t[obj] = obj</code>) of objects.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">local objects = hash:inRange(0,0, 800,600)
 for obj in pairs(objects) do
     obj:draw()
-end</code></pre>
-		</div>
-	</div>
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:rangeIter"><h4>function <span class="name">hash:rangeIter</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Iterator to objects in the rectangle <code class="lua">(x1,y1) - (x2,y2)</code>.</p>
 
-	<a name="spatialhash-Spatialhash:rangeIter"></a>
-	<div id="Spatialhash:rangeIter" class="ref-block">
-		<h4>function <span class="name">hash:rangeIter</span><span class="arglist">(x1,y1, x2,y2)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Iterator to objects in the rectangle <code>(x1,y1) - (x2,y2)</code>.</p>
-		<p>Alias to <code>pairs(hash:inRange(x1,y1, x2,y2))</code>.</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>numbers <code>x1, y1</code></dt>
-				<dd>Upper left corner of the object's bounding box.</dd>
-				<dt>numbers <code>x2, y2</code></dt>
-				<dd>Lower right corner of the object's bounding box.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>iterator</dt>
-				<dd>An iterator to objects in the range.</dd>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">for obj in hash:rangeIter(0,0, 800,600) do
+<p>Alias to <code class="lua">pairs(hash:inRange(x1,y1, x2,y2))</code>.</p>
+<div class="arguments">Parameters:<dl>
+<dt>numbers <code class="lua">x1, y1</code></dt>
+<dd>Upper left corner of the object's bounding box.</dd><dt>numbers <code class="lua">x2, y2</code></dt>
+<dd>Lower right corner of the object's bounding box.</dd></dl>
+</div><div class="returns">Returns:<dl>
+<dt>iterator</dt>
+<dd>An iterator to objects in the range.</dd></dl>
+</div><div class="example">Example:<pre><code class="lua">for obj in hash:rangeIter(0,0, 800,600) do
     obj:draw()
-end</code></pre>
-		</div>
-	</div>
-
-	<a name="spatialhash-Spatialhash:draw"></a>
-	<div id="Spatialhash:draw" class="ref-block">
-		<h4>function <span class="name">hash:draw</span><span class="arglist">(draw_mode, show_empty, print_key)</span><a class="top" href="#spatialhash">^ top</a></h4>
-		<p>Draw hash cells on the screen, mostly for debug purposes</p>
-		<div class="arguments">Parameters:
-			<dl>
-				<dt>string <code>draw_mode</code></dt>
-				<dd>Either 'fill' or 'line'. See the <a href="https://love2d.org/wiki/DrawMode">L&Ouml;VE wiki</a>.</dd>
-				<dt>boolean <code>show_empty</code> (true)</dt>
-				<dd>Wether to draw empty cells.</dd>
-				<dt>boolean <code>print_key</code> (false)</dt>
-				<dd>Wether to print cell coordinates.</dd>
-			</dl>
-		</div>
-		<div class="returns">Returns:
-			<dl>
-				<dt>Nothing</dt>
-			</dl>
-		</div>
-		<div class="example">Example:
-			<pre><code class="lua">love.graphics.setColor(160,140,100,100)
+end
+</code></pre>
+</div></div><div class="ref-block" id="hardoncollider.spatialhashhash:draw"><h4>function <span class="name">hash:draw</span><span class="arglist">(draw_mode, show_empty, print_key)</span><a class="top" href="#hardoncollider.spatialhash">^top</a></h4><p>Draw hash cells on the screen, mostly for debug purposes</p>
+<div class="arguments">Parameters:<dl>
+<dt>string <code class="lua">draw_mode</code></dt>
+<dd>Either 'fill' or 'line'. See the LÖVE wiki.</dd><dt>boolean <code class="lua">show_empty</code> (true)</dt>
+<dd>Wether to draw empty cells.</dd><dt>boolean <code class="lua">print_key</code> (false)</dt>
+<dd>Wether to print cell coordinates.</dd></dl>
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">love.graphics.setColor(160,140,100,100)
 hash:draw('line', true, true)
-hash:draw('fill', false)</code></pre>
-		</div>
-	</div>
+hash:draw('fill', false)
+</code></pre>
+</div></div></div><div class="outer-block" id="hardoncollider.vector-light "><h3>hardoncollider.vector-light <a class="top" href="#top">^top</a></h3><div class="preamble"><pre><code class="lua">require "hardoncollider.vector-light"
+</code></pre>
 
-</div>
+<p>See <a href="http://vrld.github.com/hump/#hump.vector-light">hump.vector-light</a>.</p>
+</div></div><div class="outer-block" id="hardoncollider.class "><h3>hardoncollider.class <a class="top" href="#top">^top</a></h3><div class="preamble"><pre><code class="lua">require "hardoncollider.class"
+</code></pre>
 
-<a name="vector-light"></a>
-<div id="vector-light" class="outer-block">
-	<h3>hardoncollider.vector-light<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		<pre><code class="lua">require "hardoncollider.vector-light"</code></pre>
-		<p>See <a href="http://vrld.github.com/hump/#vector-light">hump.vector-light</a></p>
-	</div>
-</div>
+<p>See <a href="http://vrld.github.com/hump/#hump.class">hump.class</a>.</p>
 
-<a name="class"></a>
-<div id="class" class="outer-block">
-	<h3>hardoncollider.class<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		<pre><code class="lua">require "hardoncollider.class"</code></pre>
-		<p>See <a href="http://vrld.github.com/hump/#class">hump.class</a></p>
-	</div>
-</div>
-
-</body>
-</html>
+<p><strong>Note:</strong> HardonCollider uses <a href="https://github.com/bartbes/Class-Commons">class
+commons</a> to be even more awesome.
+This module will only be used if you don't supply another CC implementation.</p>
+</div></div></body></html>
