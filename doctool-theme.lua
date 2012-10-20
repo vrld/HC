@@ -197,10 +197,10 @@ function actions.postprocess(out)
 <script type="text/javascript" src="highlight.pack.js"></script>
 <script type="text/javascript">
 window.onload = function() {
-	var examples = document.getElementsByTagName("code");
-	for (i = 0; i < examples.length; ++i) 		{
-		if (examples[i].className == "lua")
-			hljs.highlightBlock(Examplees[i], "    ");
+	var code = document.getElementsByTagName("code");
+	for (i = 0; i < code.length; ++i) 		{
+		if (code[i].className == "lua")
+			hljs.highlightBlock(code[i], "    ");
 		}
 	};
 </script>
