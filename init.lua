@@ -112,6 +112,10 @@ function HC:addShape(shape)
 		return hash:remove(shape, self:bbox())
 	end
 
+	function shape:inGroup(group)
+		return self._groups[group]
+	end
+
 	return shape
 end
 
