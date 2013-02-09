@@ -222,6 +222,9 @@ function HC:remove(shape, ...)
 	self._active_shapes[shape]  = nil
 	self._passive_shapes[shape] = nil
 	self._ghost_shapes[shape]   = nil
+	for name, group in pairs(shape._groups) do
+		group[shape] = nil
+	end
 	shape:_removeFromHash()
 
 	return self:remove(...)
