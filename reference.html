@@ -156,8 +156,8 @@ discarded. This means you cannot construct polygon shapes out of lines.</p>
 </div></div><div class="ref-block" id="hardoncolliderHC:addRectangle"><h4>function <span class="name">HC:addRectangle</span><span class="arglist">(x, y, w, h)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Add a rectangle shape to the collision detection system.</p>
 
 <p><strong>Note:</strong> Shape transformations, e.g.
-<a href="#hardoncollider.shapesmoveTo"><code class="lua">shape:moveTo()</code></a> and
-<a href="#hardoncollider.shapesrotate"><code class="lua">shape:rotate()</code></a>, will be with respect to the
+<a href="#hardoncollider.shapesshape:moveTo"><code class="lua">shape:moveTo()</code></a> and
+<a href="#hardoncollider.shapesshape:rotate"><code class="lua">shape:rotate()</code></a>, will be with respect to the
 rectangle center, <em>not</em> to the upper left corner.</p>
 <div class="arguments">Parameters:<dl>
 <dt>numbers <code class="lua">x, y</code></dt>
@@ -211,7 +211,7 @@ end
 </code></pre>
 
 <p>The shape will be augmented with the function
-<a href="#hardoncollider.shapesneighbors"><code class="lua">shape:neighbors()</code></a>.</p>
+<a href="#hardoncollider.shapesshape:neighbors"><code class="lua">shape:neighbors()</code></a>.</p>
 <div class="arguments">Parameters:<dl>
 <dt>mixed <code class="lua">shape</code></dt>
 <dd>Custom shape.</dd></dl>
@@ -269,7 +269,7 @@ themselves, e.g. the level geometry.</p>
 <div class="arguments">Parameters:<dl>
 <dt>Shapes <code class="lua">shape, ...</code></dt>
 <dd>The shapes to be flagged as passive.</dd></dl>
-</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">hardoncollider.setPassive(ground, bridge, spikes)
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">HC:setPassive(ground, bridge, spikes)
 </code></pre>
 </div></div><div class="ref-block" id="hardoncolliderHC:setActive"><h4>function <span class="name">HC:setActive</span><span class="arglist">(shape, ...)</span><a class="top" href="#hardoncollider">^top</a></h4><p>Flags a shape active.</p>
 
@@ -277,7 +277,7 @@ themselves, e.g. the level geometry.</p>
 <div class="arguments">Parameters:<dl>
 <dt>Shapes <code class="lua">shape, ...</code></dt>
 <dd>The shapes to be flagged as active.</dd></dl>
-</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">hardoncollider.setActive(collapsing_bridge)
+</div><div class="returns">Returns:<dl><dt>Nothing</dt></dl></div><div class="example">Example:<pre><code class="lua">HC:setActive(collapsing_bridge)
 </code></pre>
 </div></div><div class="ref-block" id="hardoncolliderHC:activeShapes"><h4>function <span class="name">HC:activeShapes</span><span class="arglist">()</span><a class="top" href="#hardoncollider">^top</a></h4><p>Iterator over all active shapes. Mostly for internal use.</p>
 <div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
@@ -341,7 +341,7 @@ end
 <p>Shape classes with collision detection methods.</p>
 
 <p>This module defines methods to move, rotate and draw shapes created with
-<code class="lua">hardoncollider.add*</code>.</p>
+<code class="lua">HC:add*</code>.</p>
 
 <p>As each shape is at it's core a Lua table, you can attach values and add
 functions to it. Be careful though not to use keys that name a function or
@@ -357,7 +357,7 @@ collision detection loop exploiting some prior knowledge of the scene.</p>
 <code class="lua">shapes.ConcavePolygonShape</code>.</p>
 
 <p>You can either specify the coordinates as with
-<a href="#hardoncollideraddPolygon"><code class="lua">hardoncollider.addPolygon()</code></a> or use an instance
+<a href="#hardoncolliderHC:addPolygon"><code class="lua">HC:addPolygon()</code></a> or use an instance
 of the Polygon class.</p>
 <div class="arguments">Parameters:<dl>
 <dt>numbers <code class="lua">x1,y1, ..., xn,yn</code></dt>
@@ -532,7 +532,7 @@ local x2,y2 = circle:support(-lx, -ly)
 end
 </code></pre>
 </div></div><div class="ref-block" id="hardoncollider.shapesshape:neighbors"><h4>function <span class="name">shape:neighbors</span><span class="arglist">()</span><a class="top" href="#hardoncollider.shapes">^top</a></h4><p><strong>Only available in shapes created with main module (i.e.
-<a href="#hardoncollideraddRectangle"><code class="lua">HC:addRectangle()</code></a>, ...).</strong></p>
+<a href="#hardoncolliderHC:addRectangle"><code class="lua">HC:addRectangle()</code></a>, ...).</strong></p>
 
 <p>Iterator over neighboring shapes.</p>
 <div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
@@ -552,7 +552,7 @@ end
 
 <p>On it's own, this class does not offer any collision detection. If you want
 that, use a <a href="#hardoncollider.shapesnewPolygonShape"><code class="lua">PolygonShape</code></a> instead.</p>
-</div><div class="overview"><h4>Module overview</h4><dl><dt><a href="#hardoncollider.polygonPolygon">Polygon</a></dt><dd>x1,y1, ..., xn,yn</dd><dt><a href="#hardoncollider.polygonpolygon:unpack">polygon:unpack()</a></dt><dd>Get coordinates.</dd><dt><a href="#hardoncollider.polygonpolygon:clone">polygon:clone()</a></dt><dd>Copy polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:getBBox">polygon:getBBox()</a></dt><dd>Get axis aligned bounding box.</dd><dt><a href="#hardoncollider.polygonpolygon:isConvex">polygon:isConvex()</a></dt><dd>Test if polygon is convex.</dd><dt><a href="#hardoncollider.polygonpolygon:move">polygon:move()</a></dt><dd>Move polygon by some amount.</dd><dt><a href="#hardoncollider.polygonpolygon:rotate">polygon:rotate()</a></dt><dd>Rotate polygon by some amount.</dd><dt><a href="#hardoncollider.polygonpolygon:triangulate">polygon:triangulate()</a></dt><dd>Triangulate polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:splitConvex">polygon:splitConvex()</a></dt><dd>Decompose polygon in convex polygons.</dd><dt><a href="#hardoncollider.polygonpolygon:mergedWith">polygon:mergedWith()</a></dt><dd>Merge with other polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:contains">polygon:contains()</a></dt><dd>Test if polygon contains a point.</dd><dt><a href="#hardoncollider.polygonpolygon:intersectsRay">polygon:intersectsRay()</a></dt><dd>Test if polygon intersects a ray.</dd></dl></div><div class="ref-block" id="hardoncollider.polygonPolygon"><h4>class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p><strong>Syntax depends on used class system. Shown syntax works for bundled
+</div><div class="overview"><h4>Module overview</h4><dl><dt><a href="#hardoncollider.polygonPolygon">Polygon</a></dt><dd>x1,y1, ..., xn,yn</dd><dt><a href="#hardoncollider.polygonpolygon:unpack">polygon:unpack()</a></dt><dd>Get coordinates.</dd><dt><a href="#hardoncollider.polygonpolygon:clone">polygon:clone()</a></dt><dd>Copy polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:bbox">polygon:bbox()</a></dt><dd>Get axis aligned bounding box.</dd><dt><a href="#hardoncollider.polygonpolygon:isConvex">polygon:isConvex()</a></dt><dd>Test if polygon is convex.</dd><dt><a href="#hardoncollider.polygonpolygon:move">polygon:move()</a></dt><dd>Move polygon by some amount.</dd><dt><a href="#hardoncollider.polygonpolygon:rotate">polygon:rotate()</a></dt><dd>Rotate polygon by some amount.</dd><dt><a href="#hardoncollider.polygonpolygon:triangulate">polygon:triangulate()</a></dt><dd>Triangulate polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:splitConvex">polygon:splitConvex()</a></dt><dd>Decompose polygon in convex polygons.</dd><dt><a href="#hardoncollider.polygonpolygon:mergedWith">polygon:mergedWith()</a></dt><dd>Merge with other polygon.</dd><dt><a href="#hardoncollider.polygonpolygon:contains">polygon:contains()</a></dt><dd>Test if polygon contains a point.</dd><dt><a href="#hardoncollider.polygonpolygon:intersectsRay">polygon:intersectsRay()</a></dt><dd>Test if polygon intersects a ray.</dd></dl></div><div class="ref-block" id="hardoncollider.polygonPolygon"><h4>class <span class="name">Polygon</span><span class="arglist">(x1,y1, ..., xn,yn)</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p><strong>Syntax depends on used class system. Shown syntax works for bundled
 <a href="http://vrld.github.com/hump/#hump.class">hump.class</a> and
 <a href="https://bitbucket.org/bartbes/slither">slither</a>.</strong></p>
 
@@ -594,12 +594,12 @@ p3:rotate(-math.pi) -- only p3 will be rotated
 </div><div class="example">Example:<pre><code class="lua">copy = poly:clone()
 copy:move(10,20)
 </code></pre>
-</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:getBBox"><h4>function <span class="name">polygon:getBBox</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Get axis aligned bounding box.</p>
+</div></div><div class="ref-block" id="hardoncollider.polygonpolygon:bbox"><h4>function <span class="name">polygon:bbox</span><span class="arglist">()</span><a class="top" href="#hardoncollider.polygon">^top</a></h4><p>Get axis aligned bounding box.</p>
 <div class="arguments">Parameters:<dl><dt>None</dt></dl></div><div class="returns">Returns:<dl>
 <dt>numbers x1, y1</dt>
 <dd>Upper left corner of the bounding box.</dd><dt>numbers x2, y2</dt>
 <dd>Lower right corner of the bounding box.</dd></dl>
-</div><div class="example">Example:<pre><code class="lua">x1,y1,x2,y2 = poly:getBBox()
+</div><div class="example">Example:<pre><code class="lua">x1,y1,x2,y2 = poly:bbox()
 -- draw bounding box
 love.graphics.rectangle('line', x1,y2, x2-x1, y2-y1)
 </code></pre>

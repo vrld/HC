@@ -158,8 +158,8 @@ discarded. This means you cannot construct polygon shapes out of lines.
 Add a rectangle shape to the collision detection system.
 
 **Note:** Shape transformations, e.g.
-[`shape:moveTo()`](#hardoncollider.shapesmoveTo) and
-[`shape:rotate()`](#hardoncollider.shapesrotate), will be with respect to the
+[`shape:moveTo()`](#hardoncollider.shapesshape:moveTo) and
+[`shape:rotate()`](#hardoncollider.shapesshape:rotate), will be with respect to the
 rectangle center, *not* to the upper left corner.
 
 #### Parameters:
@@ -240,7 +240,7 @@ and
 	end
 
 The shape will be augmented with the function
-[`shape:neighbors()`](#hardoncollider.shapesneighbors).
+[`shape:neighbors()`](#hardoncollider.shapesshape:neighbors).
 
 #### Parameters:
 
@@ -335,7 +335,7 @@ themselves, e.g. the level geometry.
 
 #### Example:
 
-	hardoncollider.setPassive(ground, bridge, spikes)
+	HC:setPassive(ground, bridge, spikes)
 
 ### function HC:setActive(shape, ...) [Flag shapes as active.]
 
@@ -350,7 +350,7 @@ Flags a shape active.
 
 #### Example:
 
-	hardoncollider.setActive(collapsing_bridge)
+	HC:setActive(collapsing_bridge)
 
 ### function HC:activeShapes() [Iterator over all active shapes.]
 
@@ -455,7 +455,7 @@ Useful for RTS-style unit selection to select shapes to draw (see example).
 Shape classes with collision detection methods.
 
 This module defines methods to move, rotate and draw shapes created with
-`hardoncollider.add*`.
+`HC:add*`.
 
 As each shape is at it's core a Lua table, you can attach values and add
 functions to it. Be careful though not to use keys that name a function or
@@ -475,7 +475,7 @@ The corresponding classes are available as `shapes.ConvexPolygonShape` and
 `shapes.ConcavePolygonShape`.
 
 You can either specify the coordinates as with
-[`hardoncollider.addPolygon()`](#hardoncollideraddPolygon) or use an instance
+[`HC:addPolygon()`](#hardoncolliderHC:addPolygon) or use an instance
 of the Polygon class.
 
 #### Parameters:
@@ -790,7 +790,7 @@ Test if two shapes collide.
 ### function shape:neighbors() [Iterator over neighboring shapes.]
 
 **Only available in shapes created with main module (i.e.
-[`HC:addRectangle()`](#hardoncollideraddRectangle), ...).**
+[`HC:addRectangle()`](#hardoncolliderHC:addRectangle), ...).**
 
 Iterator over neighboring shapes.
 
@@ -881,7 +881,7 @@ this code:
 	copy = poly:clone()
 	copy:move(10,20)
 
-### function polygon:getBBox() [Get axis aligned bounding box.]
+### function polygon:bbox() [Get axis aligned bounding box.]
 
 Get axis aligned bounding box.
 
@@ -894,7 +894,7 @@ Get axis aligned bounding box.
 
 #### Example:
 
-	x1,y1,x2,y2 = poly:getBBox()
+	x1,y1,x2,y2 = poly:bbox()
 	-- draw bounding box
 	love.graphics.rectangle('line', x1,y2, x2-x1, y2-y1)
 
