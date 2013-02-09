@@ -184,7 +184,7 @@ function Polygon:clone()
 end
 
 -- get bounding box
-function Polygon:getBBox()
+function Polygon:bbox()
 	local ulx,uly = self.vertices[1].x, self.vertices[1].y
 	local lrx,lry = ulx,uly
 	for i=2,#self.vertices do

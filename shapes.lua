@@ -281,11 +281,11 @@ function PointShape:outcircle()
 end
 
 function ConvexPolygonShape:bbox()
-	return self._polygon:getBBox()
+	return self._polygon:bbox()
 end
 
 function ConcavePolygonShape:bbox()
-	return self._polygon:getBBox()
+	return self._polygon:bbox()
 end
 
 function CircleShape:bbox()
