@@ -141,9 +141,8 @@ function Spatialhash:draw(how, show_empty, print_key)
 	if show_empty == nil then show_empty = true end
 	for k1,v in pairs(self.cells) do
 		for k2,cell in pairs(v) do
-			local empty = true
-			(function() for _ in pairs(cell) do empty = false; return end end)()
-			if show_empty or not empty then
+			local is_empty = (next(cell) == nil)
+			if show_empty or not is_empty then
 				local x = k1 * self.cell_size
 				local y = k2 * self.cell_size
 				love.graphics.rectangle(how or 'line', x,y, self.cell_size, self.cell_size)
