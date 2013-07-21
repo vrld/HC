@@ -26,14 +26,19 @@ THE SOFTWARE.
 
 local math_min, math_sqrt, math_huge = math.min, math.sqrt, math.huge
 
-local _PACKAGE = (...):match("^(.+)%.[^%.]+")
-if not (common and common.class and common.instance) then
-	class_commons = true
+local _PACKAGE, common_local = (...):match("^(.+)%.[^%.]+"), common
+if not (type(common) == 'table' and common.class and common.instance) then
+	assert(common_class ~= false, 'No class commons specification available.')
 	require(_PACKAGE .. '.class')
 end
 local vector  = require(_PACKAGE .. '.vector-light')
 local Polygon = require(_PACKAGE .. '.polygon')
 local GJK     = require(_PACKAGE .. '.gjk') -- actual collision detection
+
+-- reset global table `common' (required by class commons)
+if common_local ~= common then
+	common_local, common = common, common_local
+end
 
 --
 -- base class
@@ -77,7 +82,7 @@ function ConcavePolygonShape:init(poly)
 	self._polygon = poly
 	self._shapes = poly:splitConvex()
 	for i,s in ipairs(self._shapes) do
-		self._shapes[i] = common.instance(ConvexPolygonShape, s)
+		self._shapes[i] = common_local.instance(ConvexPolygonShape, s)
 	end
 end
 
@@ -402,33 +407,33 @@ function PointShape:draw()
 end
 
 
-Shape = common.class('Shape', Shape)
-ConvexPolygonShape  = common.class('ConvexPolygonShape',  ConvexPolygonShape,  Shape)
-ConcavePolygonShape = common.class('ConcavePolygonShape', ConcavePolygonShape, Shape)
-CircleShape         = common.class('CircleShape',         CircleShape,         Shape)
-PointShape          = common.class('PointShape',          PointShape,          Shape)
+Shape = common_local.class('Shape', Shape)
+ConvexPolygonShape  = common_local.class('ConvexPolygonShape',  ConvexPolygonShape,  Shape)
+ConcavePolygonShape = common_local.class('ConcavePolygonShape', ConcavePolygonShape, Shape)
+CircleShape         = common_local.class('CircleShape',         CircleShape,         Shape)
+PointShape          = common_local.class('PointShape',          PointShape,          Shape)
 
 local function newPolygonShape(polygon, ...)
 	-- create from coordinates if needed
 	if type(polygon) == "number" then
-		polygon = common.instance(Polygon, polygon, ...)
+		polygon = common_local.instance(Polygon, polygon, ...)
 	else
 		polygon = polygon:clone()
 	end
 
 	if polygon:isConvex() then
-		return common.instance(ConvexPolygonShape, polygon)
+		return common_local.instance(ConvexPolygonShape, polygon)
 	end
 
-	return common.instance(ConcavePolygonShape, polygon)
+	return common_local.instance(ConcavePolygonShape, polygon)
 end
 
 local function newCircleShape(...)
-	return common.instance(CircleShape, ...)
+	return common_local.instance(CircleShape, ...)
 end
 
 local function newPointShape(...)
-	return common.instance(PointShape, ...)
+	return common_local.instance(PointShape, ...)
 end
 
 return {

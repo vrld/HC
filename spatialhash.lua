@@ -27,10 +27,11 @@ THE SOFTWARE.
 local floor = math.floor
 local min, max = math.min, math.max
 
-local _PACKAGE = (...):match("^(.+)%.[^%.]+")
-if not (common and common.class and common.instance) then
-	class_commons = true
+local _PACKAGE, common_local = (...):match("^(.+)%.[^%.]+"), common
+if not (type(common) == 'table' and common.class and common.instance) then
+	assert(common_class ~= false, 'No class commons specification available.')
 	require(_PACKAGE .. '.class')
+	common_local, common = common, common_local
 end
 
 local Spatialhash = {}
@@ -155,4 +156,4 @@ function Spatialhash:draw(how, show_empty, print_key)
 	end
 end
 
-return common.class('Spatialhash', Spatialhash)
+return common_local.class('Spatialhash', Spatialhash)

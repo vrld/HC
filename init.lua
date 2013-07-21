@@ -24,13 +24,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _NAME = (...)
-if not (common and common.class and common.instance) then
-	class_commons = true
+local _NAME, common_local = ..., common
+if not (type(common) == 'table' and common.class and common.instance) then
+	assert(common_class ~= false, 'No class commons specification available.')
 	require(_NAME .. '.class')
 end
 local Shapes      = require(_NAME .. '.shapes')
 local Spatialhash = require(_NAME .. '.spatialhash')
+
+-- reset global table `common' (required by class commons)
+if common_local ~= common then
+	common_local, common = common, common_local
+end
 
 local newPolygonShape = Shapes.newPolygonShape
 local newCircleShape  = Shapes.newCircleShape
@@ -48,7 +53,7 @@ function HC:init(cell_size, callback_collide, callback_stop)
 
 	self.on_collide = callback_collide or __NULL__
 	self.on_stop    = callback_stop    or __NULL__
-	self._hash      = common.instance(Spatialhash, cell_size)
+	self._hash      = common_local.instance(Spatialhash, cell_size)
 end
 
 function HC:clear()
@@ -57,7 +62,7 @@ function HC:clear()
 	self._ghost_shapes   = {}
 	self.groups          = {}
 	self._colliding_only_last_frame = {}
-	self._hash           = common.instance(Spatialhash, self._hash.cell_size)
+	self._hash           = common_local.instance(Spatialhash, self._hash.cell_size)
 	return self
 end
 
@@ -296,9 +301,9 @@ function HC:setSolid(shape, ...)
 end
 
 -- the module
-HC = common.class("HardonCollider", HC)
+HC = common_local.class("HardonCollider", HC)
 local function new(...)
-	return common.instance(HC, ...)
+	return common_local.instance(HC, ...)
 end
 
 return setmetatable({HardonCollider = HC, new = new},

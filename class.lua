@@ -83,7 +83,7 @@ local function new(args)
 end
 
 -- interface for cross class-system compatibility (see https://github.com/bartbes/Class-Commons).
-if class_commons ~= false and not common then
+if common_class ~= false and not common then
 	common = {}
 	function common.class(name, prototype, parent)
 		local init = prototype.init or (parent or {}).init
@@ -93,7 +93,6 @@ if class_commons ~= false and not common then
 		return class(...)
 	end
 end
-
 
 -- the module
 return setmetatable({new = new, inherit = inherit},

@@ -24,10 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _PACKAGE = (...):match("^(.+)%.[^%.]+")
-if not (common and common.class and common.instance) then
-	class_commons = true
+local _PACKAGE, common_local = (...):match("^(.+)%.[^%.]+"), common
+if not (type(common) == 'table' and common.class and common.instance) then
+	assert(common_class ~= false, 'No class commons specification available.')
 	require(_PACKAGE .. '.class')
+	common_local, common = common, common_local
 end
 local vector = require(_PACKAGE .. '.vector-light')
 
@@ -454,6 +455,6 @@ function Polygon:intersectsRay(x,y, dx,dy)
 	return tmin ~= math.huge, tmin
 end
 
-Polygon = common.class('Polygon', Polygon)
-newPolygon = function(...) return common.instance(Polygon, ...) end
+Polygon = common_local.class('Polygon', Polygon)
+newPolygon = function(...) return common_local.instance(Polygon, ...) end
 return Polygon
