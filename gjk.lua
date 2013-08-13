@@ -136,9 +136,21 @@ local function do_triangle(simplex)
 	return simplex
 end
 
-
 local function GJK(shape_a, shape_b)
 	local ax,ay = support(shape_a, shape_b, 1,0)
+	if ax == 0 and ay == 0 then
+		-- only true if shape_a and shape_b are touching in a vertex, e.g.
+		--  .---                .---.
+		--  | A |           .-. | B |   support(A, 1,0)  = x
+		--  '---x---.  or  : A :x---'   support(B, -1,0) = x
+		--      | B |       `-'         => support(A,B,1,0) = x - x = 0
+		--      '---'
+		-- Since CircleShape:support(dx,dy) normalizes dx,dy we have to opt
+		-- out or the algorithm blows up. In accordance to the cases below
+		-- choose to judge this situation as not colliding.
+		return false
+	end
+
 	local simplex = {ax,ay}
 	local n = 2
 	local dx,dy = -ax,-ay
