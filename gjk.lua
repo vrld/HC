@@ -65,14 +65,17 @@ local function EPA(shape_a, shape_b, simplex)
 	end
 
 	-- the expanding polytype algorithm
+	local last_diff_dist = math.huge
 	while true do
 		local e = closest_edge(simplex)
 		local px,py = support(shape_a, shape_b, e.nx, e.ny)
 		local d = vector.dot(px,py, e.nx, e.ny)
 
-		if d - e.dist < 1e-6 then
+		local diff_dist = d - e.dist 
+		if diff_dist < 1e-6 or last_diff_dist - diff_dist < 1e-10 then
 			return -d*e.nx, -d*e.ny
 		end
+		last_diff_dist = diff_dist
 
 		-- simplex = {..., simplex[e.i-1], px, py, simplex[e.i]
 		table.insert(simplex, e.i, py)
