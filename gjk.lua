@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 local _PACKAGE = (...):match("^(.+)%.[^%.]+")
 local vector  = require(_PACKAGE .. '.vector-light')
+local huge, abs = math.huge, math.abs
 
 local function support(shape_a, shape_b, dx, dy)
 	local x,y = shape_a:support(dx,dy)
@@ -34,7 +35,7 @@ end
 
 -- returns closest edge to the origin
 local function closest_edge(simplex)
-	local e = {dist = math.huge}
+	local e = {dist = huge}
 
 	local i = #simplex-1
 	for k = 1,#simplex-1,2 do
@@ -65,14 +66,14 @@ local function EPA(shape_a, shape_b, simplex)
 	end
 
 	-- the expanding polytype algorithm
-	local last_diff_dist = math.huge
+	local last_diff_dist = huge
 	while true do
 		local e = closest_edge(simplex)
 		local px,py = support(shape_a, shape_b, e.nx, e.ny)
 		local d = vector.dot(px,py, e.nx, e.ny)
 
-		local diff_dist = d - e.dist 
-		if diff_dist < 1e-6 or last_diff_dist - diff_dist < 1e-10 then
+		local diff_dist = d - e.dist
+		if diff_dist < 1e-6 or abs(last_diff_dist - diff_dist) < 1e-10 then
 			return -d*e.nx, -d*e.ny
 		end
 		last_diff_dist = diff_dist
@@ -88,9 +89,11 @@ end
 --   :      :     in direction of the origin.
 local function do_line(simplex)
 	local bx,by, ax,ay = unpack(simplex)
+
 	local abx,aby = bx-ax, by-ay
 
 	local dx,dy = vector.perpendicular(abx,aby)
+
 	if vector.dot(dx,dy, -ax,-ay) < 0 then
 		dx,dy = -dx,-dy
 	end
@@ -163,6 +166,7 @@ local function GJK(shape_a, shape_b)
 	if vector.dot(ax,ay, dx,dy) <= 0 then
 		return false
 	end
+
 	simplex[n+1], simplex[n+2] = ax,ay
 	simplex, dx, dy = do_line(simplex, dx, dy)
 	n = 4
