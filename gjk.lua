@@ -66,6 +66,7 @@ local function EPA(shape_a, shape_b, simplex)
 	end
 
 	-- the expanding polytype algorithm
+	local is_either_circle = shape_a._center or shape_b._center
 	local last_diff_dist = huge
 	while true do
 		local e = closest_edge(simplex)
@@ -73,7 +74,7 @@ local function EPA(shape_a, shape_b, simplex)
 		local d = vector.dot(px,py, e.nx, e.ny)
 
 		local diff_dist = d - e.dist
-		if diff_dist < 1e-6 or abs(last_diff_dist - diff_dist) < 1e-10 then
+		if diff_dist < 1e-6 or (is_either_circle and abs(last_diff_dist - diff_dist) < 1e-10) then
 			return -d*e.nx, -d*e.ny
 		end
 		last_diff_dist = diff_dist
