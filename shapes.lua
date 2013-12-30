@@ -383,7 +383,7 @@ end
 
 
 function ConvexPolygonShape:draw(mode)
-	local mode = mode or 'line'
+	mode = mode or 'line'
 	love.graphics.polygon(mode, self._polygon:unpack())
 end
 
