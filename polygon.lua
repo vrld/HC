@@ -88,6 +88,10 @@ local function pointInTriangle(p, a,b,c)
 	return onSameSide(p,a, b,c) and onSameSide(p,b, a,c) and onSameSide(p,c, a,b)
 end
 
+local function segments_intersect(a,b, p,q)
+	return not (onSameSide(a,b, p,q) or onSameSide(p,q, a,b))
+end
+
 -- returns starting/ending indices of shared edge, i.e. if p and q share the
 -- edge with indices p1,p2 of p and q1,q2 of q, the return value is p1,q2
 local function getSharedEdge(p,q)
@@ -134,6 +138,19 @@ function Polygon:init(...)
 		end
 		vertices = tmp
 	end
+
+	-- assert polygon is not self-intersecting
+	-- outer: only need to check segments #vert;1, 1;2, ..., #vert-3;#vert-2
+	-- inner: only need to check unconnected segments
+	local q,p = vertices[#vertices]
+	for i = 1,#vertices-2 do
+		p, q = q, vertices[i]
+		for k = i+1,#vertices-1 do
+			local a,b = vertices[k], vertices[k+1]
+			assert(not segments_intersect(p,q, a,b), 'Polygon may not intersect itself')
+		end
+	end
+
 	self.vertices = vertices
 	-- make vertices immutable
 	setmetatable(self.vertices, {__newindex = function() error("Thou shall not change a polygon's vertices!") end})
