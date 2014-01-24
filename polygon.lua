@@ -88,7 +88,24 @@ local function pointInTriangle(p, a,b,c)
 	return onSameSide(p,a, b,c) and onSameSide(p,b, a,c) and onSameSide(p,c, a,b)
 end
 
-local function segments_intersect(a,b, p,q)
+-- test whether any point in vertices (but pqr) lies in the triangle pqr
+-- note: vertices is *set*, not a list!
+local function anyPointInTriangle(vertices, p,q,r)
+	for v in pairs(vertices) do
+		if v ~= p and v ~= q and v ~= r and pointInTriangle(v, p,q,r) then
+			return true
+		end
+	end
+	return false
+end
+
+-- test is the triangle pqr is an "ear" of the polygon
+-- note: vertices is *set*, not a list!
+local function isEar(p,q,r, vertices)
+	return ccw(p,q,r) and not anyPointInTriangle(vertices, p,q,r)
+end
+
+local function segmentsInterset(a,b, p,q)
 	return not (onSameSide(a,b, p,q) or onSameSide(p,q, a,b))
 end
 
@@ -147,7 +164,7 @@ function Polygon:init(...)
 		p, q = q, vertices[i]
 		for k = i+1,#vertices-1 do
 			local a,b = vertices[k], vertices[k+1]
-			assert(not segments_intersect(p,q, a,b), 'Polygon may not intersect itself')
+			assert(not segmentsInterset(p,q, a,b), 'Polygon may not intersect itself')
 		end
 	end
 
@@ -280,7 +297,44 @@ end
 
 -- triangulation by the method of kong
 function Polygon:triangulate()
-	return love.math.triangulate(self.vertices)
+	if #self.vertices == 3 then return {self:clone()} end
+
+	local vertices = self.vertices
+
+	local next_idx, prev_idx = {}, {}
+	for i = 1,#vertices do
+		next_idx[i], prev_idx[i] = i+1,i-1
+	end
+	next_idx[#next_idx], prev_idx[1] = 1, #prev_idx
+
+	local concave = {}
+	for i, v in ipairs(vertices) do
+		if not ccw(vertices[prev_idx[i]], v, vertices[next_idx[i]]) then
+			concave[v] = true
+		end
+	end
+
+	local triangles = {}
+	local n_vert, current, skipped, next, prev = #vertices, 1, 0
+	while n_vert > 3 do
+		next, prev = next_idx[current], prev_idx[current]
+		local p,q,r = vertices[prev], vertices[current], vertices[next]
+		if isEar(p,q,r, concave) then
+			triangles[#triangles+1] = newPolygon(p.x,p.y, q.x,q.y, r.x,r.y)
+			next_idx[prev], prev_idx[next] = next, prev
+			concave[q] = nil
+			n_vert, skipped = n_vert - 1, 0
+		else
+			skipped = skipped + 1
+			assert(skipped <= n_vert, "Cannot triangulate polygon")
+		end
+		current = next
+	end
+
+	next, prev = next_idx[current], prev_idx[current]
+	local p,q,r = vertices[prev], vertices[current], vertices[next]
+	triangles[#triangles+1] = newPolygon(p.x,p.y, q.x,q.y, r.x,r.y)
+	return triangles
 end
 
 -- return merged polygon if possible or nil otherwise
