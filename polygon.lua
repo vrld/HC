@@ -419,56 +419,11 @@ function Polygon:contains(x,y)
 	return in_polygon
 end
 
-function Polygon:intersectsRay(x,y, dx,dy)
-	--local p = vector(x,y)
-	--local v = vector(dx,dy)
+function Polygon:intersectionsWithRay(x,y, dx,dy)
 	local nx,ny = vector.perpendicular(dx,dy)
 	local wx,xy,det
 
-	local tmin = math.huge
-	local q1,q2 = nil, self.vertices[#self.vertices]
-	for i = 1, #self.vertices do
-		q1,q2 = q2,self.vertices[i]
-		wx,wy = q2.x - q1.x, q2.y - q1.y
-		det = vector.det(dx,dy, wx,wy)
-
-		if det ~= 0 then
-			-- there is an intersection point. check if it lies on both
-			-- the ray and the segment.
-			local rx,ry = q2.x - x, q2.y - y
-			local l = vector.det(rx,ry, wx,wy) / det
-			local m = vector.det(dx,dy, rx,ry) / det
-			if l >= 0 and m >= 0 and m <= 1 then
-				-- we cannot jump out early here (i.e. when l > tmin) because
-				-- the polygon might be concave
-				tmin = math.min(tmin, l)
-			end
-		else
-			-- lines parralel or incident. get distance of line to
-			-- anchor point. if they are incident, check if an endpoint
-			-- lies on the ray
-			local dist = vector.dot(q1.x-x,q1.y-y, nx,ny)
-			if dist == 0 then
-				local l = vector.dot(dx,dy, q1.x-x,q1.y-y)
-				local m = vector.dot(dx,dy, q2.x-x,q2.y-y)
-				if l >= 0 and l >= m then
-					tmin = math.min(tmin, l)
-				elseif m >= 0 then
-					tmin = math.min(tmin, m)
-				end
-			end
-		end
-	end
-	return tmin ~= math.huge, tmin
-end
-
-function Polygon:intersectionsRay(x,y, dx,dy)
-	--local p = vector(x,y)
-	--local v = vector(dx,dy)
-	local nx,ny = vector.perpendicular(dx,dy)
-	local wx,xy,det
-
-	local ts = {}
+	local ts = {} -- ray parameters of each intersection
 	local q1,q2 = nil, self.vertices[#self.vertices]
 	for i = 1, #self.vertices do
 		q1,q2 = q2,self.vertices[i]
@@ -484,7 +439,7 @@ function Polygon:intersectionsRay(x,y, dx,dy)
 			if m >= 0 and m <= 1 then
 				-- we cannot jump out early here (i.e. when l > tmin) because
 				-- the polygon might be concave
-				table.insert(ts, l)
+				ts[#ts+1] = l
 			end
 		else
 			-- lines parralel or incident. get distance of line to
@@ -495,15 +450,23 @@ function Polygon:intersectionsRay(x,y, dx,dy)
 				local l = vector.dot(dx,dy, q1.x-x,q1.y-y)
 				local m = vector.dot(dx,dy, q2.x-x,q2.y-y)
 				if l >= m then
-					table.insert(ts, l)
+					ts[#ts+1] = l
 				else
-					table.insert(ts, m)
+					ts[#ts+1] = m
 				end
 			end
 		end
 	end
 
 	return ts
+end
+
+function Polygon:intersectsRay(x,y, dx,dy)
+	local tmin = math.huge
+	for _, t in ipairs(self:intersectionsWithRay(x,y,dx,dy)) do
+		tmin = math.min(tmin, t)
+	end
+	return tmin ~= math.huge, tmin
 end
 
 Polygon = common_local.class('Polygon', Polygon)

@@ -213,12 +213,12 @@ function ConvexPolygonShape:intersectsRay(x,y, dx,dy)
 	return self._polygon:intersectsRay(x,y, dx,dy)
 end
 
-function ConcavePolygonShape:intersectionsRay(x,y, dx,dy)
-	return self._polygon:intersectionsRay(x,y, dx,dy)
+function ConcavePolygonShape:intersectionsWithRay(x,y, dx,dy)
+	return self._polygon:intersectionsWithRay(x,y, dx,dy)
 end
 
-function ConvexPolygonShape:intersectionsRay(x,y, dx,dy)
-	return self._polygon:intersectionsRay(x,y, dx,dy)
+function ConvexPolygonShape:intersectionsWithRay(x,y, dx,dy)
+	return self._polygon:intersectionsWithRay(x,y, dx,dy)
 end
 
 -- circle intersection if distance of ray/center is smaller
@@ -228,27 +228,7 @@ end
 -- solving [with c = (cx,cy)]:
 --
 --     d*d s^2 + 2 d*(p-c) s + (p-c)*(p-c)-r^2 = 0
-function CircleShape:intersectsRay(x,y, dx,dy)
-	local pcx,pcy = x-self._center.x, y-self._center.y
-
-	local a = vector.len2(dx,dy)
-	local b = 2 * vector.dot(dx,dy, pcx,pcy)
-	local c = vector.len2(pcx,pcy) - self._radius * self._radius
-	local discr = b*b - 4*a*c
-	if discr < 0 then return false end
-
-	discr = math_sqrt(discr)
-	local s1,s2 = discr-b, -discr-b
-	if s1 < 0 then -- first solution is off the ray
-		return s2 >= 0, s2/(2*a)
-	elseif s2 < 0 then -- second solution is off the ray
-		return s1 >= 0, s1/(2*a)
-	end
-	-- both solutions on the ray
-	return true, math_min(s1,s2)/(2*a)
-end
-
-function CircleShape:intersectionsRay(x,y, dx,dy)
+function CircleShape:intersectionsWithRay(x,y, dx,dy)
 	local pcx,pcy = x-self._center.x, y-self._center.y
 
 	local a = vector.len2(dx,dy)
@@ -259,9 +239,18 @@ function CircleShape:intersectionsRay(x,y, dx,dy)
 	if discr < 0 then return {} end
 
 	discr = math_sqrt(discr)
-	local s1, s2 = (discr-b)/(2*a), (-discr-b)/(2*a)
+	local ts, t1, t2 = {}, discr-b, -discr-b
+	if t1 >= 0 then ts[#ts+1] = t1/(2*a) end
+	if t2 >= 0 then ts[#ts+1] = t2/(2*a) end
+	return ts
+end
 
-	return {math.min(s1, s2), math.max(s1, s2)}
+function CircleShape:intersectsRay(x,y, dx,dy)
+	local tmin = math_huge
+	for _, t in ipaits(self:intersectionsWithRay(x,y,dx,dy)) do
+		tmin = math_min(t, tmin)
+	end
+	return tmin ~= math_huge, tmin
 end
 
 -- point shape intersects ray if it lies on the ray
@@ -271,10 +260,9 @@ function PointShape:intersectsRay(x,y, dx,dy)
 	return t >= 0, t
 end
 
-function PointShape:intersectionsRay(x,y, dx,dy)
-	local px,py = self._pos.x-x, self._pos.y-y
-	local t = vector.dot(px,py, dx,dy) / vector.len2(dx,dy)
-	return {t}
+function PointShape:intersectionsWithRay(x,y, dx,dy)
+	local intersects, t = self:intersectsRay(x,y, dx,dy)
+	return intersects and {t} or {}
 end
 
 --
