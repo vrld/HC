@@ -213,6 +213,14 @@ function ConvexPolygonShape:intersectsRay(x,y, dx,dy)
 	return self._polygon:intersectsRay(x,y, dx,dy)
 end
 
+function ConcavePolygonShape:intersectionsRay(x,y, dx,dy)
+	return self._polygon:intersectionsRay(x,y, dx,dy)
+end
+
+function ConvexPolygonShape:intersectionsRay(x,y, dx,dy)
+	return self._polygon:intersectionsRay(x,y, dx,dy)
+end
+
 -- circle intersection if distance of ray/center is smaller
 -- than radius.
 -- with r(s) = p + d*s = (x,y) + (dx,dy) * s defining the ray and
@@ -240,11 +248,33 @@ function CircleShape:intersectsRay(x,y, dx,dy)
 	return true, math_min(s1,s2)/(2*a)
 end
 
+function CircleShape:intersectionsRay(x,y, dx,dy)
+	local pcx,pcy = x-self._center.x, y-self._center.y
+
+	local a = vector.len2(dx,dy)
+	local b = 2 * vector.dot(dx,dy, pcx,pcy)
+	local c = vector.len2(pcx,pcy) - self._radius * self._radius
+	local discr = b*b - 4*a*c
+
+	if discr < 0 then return {} end
+
+	discr = math_sqrt(discr)
+	local s1, s2 = (discr-b)/(2*a), (-discr-b)/(2*a)
+
+	return {math.min(s1, s2), math.max(s1, s2)}
+end
+
 -- point shape intersects ray if it lies on the ray
-function PointShape:intersectsRay(x,y,dx,dy)
+function PointShape:intersectsRay(x,y, dx,dy)
 	local px,py = self._pos.x-x, self._pos.y-y
 	local t = vector.dot(px,py, dx,dy) / vector.len2(dx,dy)
 	return t >= 0, t
+end
+
+function PointShape:intersectionsRay(x,y, dx,dy)
+	local px,py = self._pos.x-x, self._pos.y-y
+	local t = vector.dot(px,py, dx,dy) / vector.len2(dx,dy)
+	return {t}
 end
 
 --
