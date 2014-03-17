@@ -247,7 +247,7 @@ end
 
 function CircleShape:intersectsRay(x,y, dx,dy)
 	local tmin = math_huge
-	for _, t in ipaits(self:intersectionsWithRay(x,y,dx,dy)) do
+	for _, t in ipairs(self:intersectionsWithRay(x,y,dx,dy)) do
 		tmin = math_min(t, tmin)
 	end
 	return tmin ~= math_huge, tmin
