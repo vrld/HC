@@ -107,14 +107,15 @@ function HC:addShape(shape)
 		end
 	end
 
+	function shape:_removeFromHash()
+		shape.move, shape.rotate, shape.scale = move, rotate, scale
+		return hash:remove(shape, self:bbox())
+	end
+
 	function shape:neighbors()
 		local neighbors = hash:inRange(self:bbox())
 		rawset(neighbors, self, nil)
 		return neighbors
-	end
-
-	function shape:_removeFromHash()
-		return hash:remove(shape, self:bbox())
 	end
 
 	function shape:inGroup(group)
