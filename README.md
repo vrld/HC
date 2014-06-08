@@ -9,14 +9,14 @@ and after about a week of tinkering, I got something working.
 
 #Example
 
-the following lua file demonstrates what the linecast does. 
-it just calls the function "shapesOnLine" I created.
+The following lua file demonstrates what the linecast I added. 
+It just calls the function "shapesOnLine" I created.
 
-run it with love using my fork of Hardon and it should work.
+Run it with love using my fork of Hardon to see it in action.
 
-the changes I made to the library are probably bad, but it works at least. 
+the changes I made to the library are probably bad, but I'm happy I got it working. 
 
-````
+````lua
 HC = require 'hardoncollider'
 
 function love.load()
