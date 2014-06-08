@@ -16,7 +16,7 @@ run it with love using my fork of Hardon and it should work.
 
 the changes I made to the library are probably bad, but it works at least. 
 
-''''
+````
 HC = require 'hardoncollider'
 
 function love.load()
@@ -79,4 +79,4 @@ function love.draw()
   love.graphics.line(originX,originY,endX,endY)
   love.graphics.setColor(255,255,255,255)
 end
-''''
+````
