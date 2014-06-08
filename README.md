@@ -9,14 +9,25 @@ and after about a week of tinkering, I got something working.
 
 #Example
 
-The following lua file demonstrates what the linecast I added. 
-It just calls the function "shapesOnLine" I created.
+The following Lua file demonstrates the "shapesOnLine" function.
+
+shapesOnLine takes four arguments,
+ 
+x1, y2, x2,and y2, 
+ 
+which are the coordinates of the two endpoints of the line.
+
+Using the DDA algorithm, the function looks at each cell the line passes through and calls intersectRay on each object in each cell. only the cells the line passes through are checked.
+
+The return value of the function is a table containing all the shapes the line passed through. They are not in any guaranteed order, and currently it may be possible to have duplicates in the table.
 
 Run it with love using my fork of Hardon to see it in action.
 
-the changes I made to the library are probably bad, but I'm happy I got it working. 
+the changes I made to the library are probably bad, but I'm happy I got it working.
+My current goal for this project is to tidy up what's there by moving the DDA algorithm into the spatialHash class. 
 
 ````lua
+--main.lua
 HC = require 'hardoncollider'
 
 function love.load()
@@ -41,7 +52,7 @@ end
 function love.update(dt)
   Collider:update(dt)
   
-  --posotion the endpoints os the line based on mouse position
+  --position the endpoints of the line based on mouse position
   if love.mouse.isDown("r") then
     endX = love.mouse.getX()
     endY = love.mouse.getY()
