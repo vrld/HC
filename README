@@ -2,7 +2,3 @@ General Purpose 2D Collision Detection System
 
 Documentation and examples here:
 http://vrld.github.com/HardonCollider
-
-I was using Hardon in some small personal projects, 
-and I wanted a global raycast (instead of only being able to check if a given shape intersects a ray)
-so I though I would try to implement it.
