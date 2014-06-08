@@ -71,7 +71,7 @@ function love.draw()
   end
   
   --get table of all shapes under the line
-  hits = Collider:shapesOnLine(originX,originY,endX,endY,true)
+  hits = Collider:shapesOnLine(originX,originY,endX,endY)
   
   --fill in all the shapes under the line
   for k,v in pairs(hits) do
