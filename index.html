@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>HardonCollider - A collision detection library</title>
+<title>HC - A collision detection library</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 <link rel="stylesheet" type="text/css" href="highlight.css" />
 <script type="text/javascript" src="highlight.pack.js"></script>
@@ -31,11 +31,11 @@
 	<h2>Home</h2>
 </div>
 
-<a name="hardoncollider"></a>
-<div id="hardoncollider" class="outer-block">
-	<h3>HardonCollider<a class="top" href="#top">^ top</a></h3>
+<a name="HC"></a>
+<div id="GC" class="outer-block">
+	<h3>HC<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
-		<p>HardonCollider is a Lua module to simplify one important aspect in
+		<p>HC is a Lua module to simplify one important aspect in
 		computer games: Collision detection.</p>
 		<p>It can detect collisions between arbitrary positioned and rotated shapes.
 		Those shapes can either be circles or polygons. Any non-intersecting polygons
@@ -44,22 +44,22 @@
 			<ul>
 				<li>Define collision callbacks,</li>
 				<li>Add shapes to the scene and</li>
-				<li>Update HardonCollider every frame.</li>
+				<li>Update HC every frame.</li>
 			</ul>
 		</p>
 	</div>
 
 	<div class="text-block">
 		<h4>Download</h4>
-		<p>You can download the latest packaged version as <a href="http://github.com/vrld/HardonCollider/zipball/master">zip</a>-
-		or <a href="http://github.com/vrld/HardonCollider/tarball/master">tar</a>-archive directly from
+		<p>You can download the latest packaged version as <a href="http://github.com/vrld/HC/zipball/master">zip</a>-
+		or <a href="http://github.com/vrld/HC/tarball/master">tar</a>-archive directly from
 		<a href="http://github.com/">github</a>. In that archive there will be a directory called
-		<code>vrld-HardonCollider-&lt;numbers&gt;</code> - you probably want to rename that to something
-		shorter (<code>hardoncollider</code> comes to mind).</p>
-		<p>You can also have a look at the sourcecode online <a href="http://github.com/vrld/HardonCollider">here</a>.</p>
+		<code>vrld-HC-&lt;numbers&gt;</code> - you probably want to rename that to something
+		shorter (<code>HC</code> comes to mind).</p>
+		<p>You can also have a look at the sourcecode online <a href="http://github.com/vrld/HC">here</a>.</p>
 		<p>If you use the <a href="http://git-scm.com">Git</a> command line client, you can clone
 		the repository by running:</p>
-		<pre>git clone git://github.com/vrld/HardonCollider.git</pre>
+		<pre>git clone git://github.com/vrld/HC.git</pre>
 		<p>Once done, you can check for updates by running:</p>
 		<pre>git pull</pre>
 		<p>from inside the directory.</p>
@@ -67,9 +67,9 @@
 
 	<div class="text-block">
 		<h4>First steps</h4>
-		<p>This is an example on how to use HardonCollider.
+		<p>This is an example on how to use HC.
 		One shape will stick to the mouse position, while the other will stay in the same place:</p>
-		<pre><code class="lua">HC = require 'hardoncollider'
+		<pre><code class="lua">HC = require 'HC'
 
 -- array to hold collision messages
 local text = {}
