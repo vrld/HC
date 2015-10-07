@@ -191,7 +191,7 @@ function actions.postprocess(out)
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>HardonCollider - A collision detection library</title>
+<title>HC - A collision detection library</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 <link rel="stylesheet" type="text/css" href="highlight.css" />
 <script type="text/javascript" src="highlight.pack.js"></script>
@@ -209,7 +209,7 @@ window.onload = function() {
 <body><a name="top"></a>
 
 <div id="header">
-	<h1>Hardon Collider <span class="small">Collision detectionction for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
+	<h1>HC <span class="small">Collision detectionction for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
 	<ul id="main-nav">
 		<li><a href="index.html">Home</a></li>
 		<li><a href="tutorial.html">Tutorial</a></li>
@@ -219,12 +219,12 @@ window.onload = function() {
 </div>
 <div id="nav">
 	<ul>
-		<li><a href="#hardoncollider">Main Module</a></li>
-		<li><a href="#hardoncollider.shapes">Shapes</a></li>
-		<li><a href="#hardoncollider.polygon">Polygon</a></li>
-		<li><a href="#hardoncollider.spatialhash">Spatial Hash</a></li>
-		<li><a href="#hardoncollider.vector-light">Vector</a></li>
-		<li><a href="#hardoncollider.class">Class</a></li>
+		<li><a href="#HC">Main Module</a></li>
+		<li><a href="#HC.shapes">Shapes</a></li>
+		<li><a href="#HC.polygon">Polygon</a></li>
+		<li><a href="#HC.spatialhash">Spatial Hash</a></li>
+		<li><a href="#HC.vector-light">Vector</a></li>
+		<li><a href="#HC.class">Class</a></li>
 	</ul>
 </div>
 	]],

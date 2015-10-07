@@ -1,19 +1,19 @@
-# HardonCollider
+# HC
 
-## Module hardoncollider [The main module.]
+## Module HC [The main module.]
 
-	Collider = require "hardoncollider"
+	Collider = require "HC"
 
 The main module.
 
-HardonCollider will automatically detect - but not resolve - collisions. It
+HC will automatically detect - but not resolve - collisions. It
 uses an efficient search data structure (a [spatial
-hash](#hardoncollider.spatialhash)) to quickly find colliding shapes.
+hash](#HC.spatialhash)) to quickly find colliding shapes.
 
 A spatial hash is basically a grid that is laid over the whole scene in which a
 shape can occupy several cells. To find shapes that may be colliding, you
 simply need to look which shapes occupy the same cell. You can specify the cell
-size in the [`new()`](#hardoncollidernew) function.
+size in the [`new()`](#HC) function.
 
 To get a less boring explanation on how to use this, see the
 [tutorial](tutorial.html).
@@ -40,7 +40,7 @@ small and too big depends on the size of the shapes in the collision detection.
 
 #### Example:
 
-	Collider = require 'hardoncollider'
+	Collider = require 'HC'
 	function love.load()
 		HC = Collider.new(150)
 		-- or: HC = Collider(150)
@@ -81,7 +81,7 @@ a point shape, the translation vector will be invalid.
 
 #### Example:
 
-	Collider = require 'hardoncollider'
+	Collider = require 'HC'
 	
 	function collide(dt, shape_one, shape_two, dx, dy)
 		print('colliding:', shape_one, shape_two)
@@ -158,8 +158,8 @@ discarded. This means you cannot construct polygon shapes out of lines.
 Add a rectangle shape to the collision detection system.
 
 **Note:** Shape transformations, e.g.
-[`shape:moveTo()`](#hardoncollider.shapesshape:moveTo) and
-[`shape:rotate()`](#hardoncollider.shapesshape:rotate), will be with respect to the
+[`shape:moveTo()`](#HC.shapesshape:moveTo) and
+[`shape:rotate()`](#HC.shapesshape:rotate), will be with respect to the
 rectangle center, *not* to the upper left corner.
 
 #### Parameters:
@@ -240,7 +240,7 @@ and
 	end
 
 The shape will be augmented with the function
-[`shape:neighbors()`](#hardoncollider.shapesshape:neighbors).
+[`shape:neighbors()`](#HC.shapesshape:neighbors).
 
 #### Parameters:
 
@@ -448,9 +448,9 @@ Useful for RTS-style unit selection to select shapes to draw (see example).
 		shape.object:draw()
 	end
 
-## Module hardoncollider.shapes [Shape classes.]
+## Module HC.shapes [Shape classes.]
 
-	shapes = require "hardoncollider.shapes"
+	shapes = require "HC.shapes"
 
 Shape classes with collision detection methods.
 
@@ -475,7 +475,7 @@ The corresponding classes are available as `shapes.ConvexPolygonShape` and
 `shapes.ConcavePolygonShape`.
 
 You can either specify the coordinates as with
-[`HC:addPolygon()`](#hardoncolliderHC:addPolygon) or use an instance
+[`HC:addPolygon()`](#HC:addPolygon) or use an instance
 of the Polygon class.
 
 #### Parameters:
@@ -790,7 +790,7 @@ Test if two shapes collide.
 ### function shape:neighbors() [Iterator over neighboring shapes.]
 
 **Only available in shapes created with main module (i.e.
-[`HC:addRectangle()`](#hardoncolliderHC:addRectangle), ...).**
+[`HC:addRectangle()`](#HC:addRectangle), ...).**
 
 Iterator over neighboring shapes.
 
@@ -808,14 +808,14 @@ Iterator over neighboring shapes.
 		end
 	end
 
-## Module hardoncollider.polygon [Polygon class.]
+## Module HC.polygon [Polygon class.]
 
-	polygon = require "hardoncollider.polygon"
+	polygon = require "HC.polygon"
 
 Definition of a Polygon class and implementation of some handy algorithms.
 
 On it's own, this class does not offer any collision detection. If you want
-that, use a [`PolygonShape`](#hardoncollider.shapesnewPolygonShape) instead.
+that, use a [`PolygonShape`](#HC.shapesnewPolygonShape) instead.
 
 ### class Polygon(x1,y1, ..., xn,yn) [The polygon class]
 
@@ -841,7 +841,7 @@ points will be removed so that the overall shape of the polygon is not changed.
 
 #### Example:
 
-	Polygon = require 'hardoncollider.polygon'
+	Polygon = require 'HC.polygon'
 	poly = Polygon(10,10, 40,50, 70,10, 40,30)
 
 ### function polygon:unpack() [Get coordinates.]
@@ -1048,9 +1048,9 @@ Test if the polygon intersects a ray.
 		love.graphics.setLine(2) -- highlight polygon
 	end
 
-## Module hardoncollider.spatialhash [Spatial hash.]
+## Module HC.spatialhash [Spatial hash.]
 
-	spatialhash = require "hardoncollider.spatialhash"
+	spatialhash = require "HC.spatialhash"
 
 A spatial hash implementation that supports scenes of arbitrary size. The hash
 is sparse, which means that cells will only be created when needed.
@@ -1080,7 +1080,7 @@ so that the average object will occupy only one cell.
 
 #### Example:
 
-	Spatialhash = require 'hardoncollider.spatialhash'
+	Spatialhash = require 'HC.spatialhash'
 	hash = Spatialhash(150)
 
 ### function hash:cellCoords(x,y) [Get cell coordinates of a point.]
@@ -1283,18 +1283,18 @@ Draw hash cells on the screen, mostly for debug purposes
 	hash:draw('line', true, true)
 	hash:draw('fill', false)
 
-## hardoncollider.vector-light [Lightweight vector operations.]
+## HC.vector-light [Lightweight vector operations.]
 
-	require "hardoncollider.vector-light"
+	require "HC.vector-light"
 
 See [hump.vector-light](http://vrld.github.com/hump/#hump.vector-light).
 
-## hardoncollider.class [Simple class implementation]
+## HC.class [Simple class implementation]
 
-	require "hardoncollider.class"
+	require "HC.class"
 
 See [hump.class](http://vrld.github.com/hump/#hump.class).
 
-**Note:** HardonCollider uses [class
+**Note:** HC uses [class
 commons](https://github.com/bartbes/Class-Commons) to be even more awesome.
 This module will only be used if you don't supply another CC implementation.

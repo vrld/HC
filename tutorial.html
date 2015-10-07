@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>HardonCollider - A collision detection library</title>
+<title>HC - A collision detection library</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 <link rel="stylesheet" type="text/css" href="highlight.css" />
 <script type="text/javascript" src="highlight.pack.js"></script>
@@ -37,7 +37,7 @@
 	<div class="preamble">
 		<p>I suck at writing Introductions, so let&#39;s dive right in:</p>
 
-		<p>This tutorial will teach you how to use <em>HardonCollider</em>. It is divided into three parts:
+		<p>This tutorial will teach you how to use <em>HC</em>. It is divided into three parts:
 		<ul>
 			<li><a href="#hello-pong">Part One</a> covers the basic concepts of the library.</li>
 			<li><a href="#fly-me-to-the-moon">Part Two</a> introduces more shapes and more concepts.</li>
@@ -62,15 +62,15 @@
 <div id="hello-pong" class="outer-block">
 	<h3>Part 1: Hello, PONG!<a class="top" href="#top">^ top</a></h3>
 	<div class="preamble">
-		<p>In our first steps with HardonCollider we will write (yet another) clone of Pong.
+		<p>In our first steps with HC we will write (yet another) clone of Pong.
 		Using a collision detection library for this task is probably a little over the top,
 		but Pong serves well to introduce some of the libraries core concepts. Let's begin:</p>
 		<p>Create a new folder called <code>hardonpong</code>. Download
-		<a href="http://github.com/vrld/HardonCollider/zipball/master">the latest version</a>
-		of HardonCollider and put it into that directory. Create an empty file named
+		<a href="http://github.com/vrld/HC/zipball/master">the latest version</a>
+		of HC and put it into that directory. Create an empty file named
 		<code>main.lua</code>. The directory content should look like this before we go on:
 		<pre>hardonpong
-|-- hardoncollider
+|-- HC
 |   |-- class.lua
 |   |-- init.lua
 |   |-- polygon.lua
@@ -82,7 +82,7 @@
 	<div class="tut-block">
 		<h4>Holy Trinity and a Half</h4>
 		<p>Fill your main.lua with the following:</p>
-		<pre><code class="lua">HC = require 'hardoncollider'
+		<pre><code class="lua">HC = require 'HC'
 
 function on_collide(dt, shape_a, shape_b)
 end
@@ -97,18 +97,18 @@ end
 
 function love.draw()
 end</code></pre>
-		<p>This is the basic code skeleton for using HardonCollider.</p>
-		<p><code class="lua">HC = require 'hardoncollider'</code> loads the module and puts it into the variable
+		<p>This is the basic code skeleton for using HC.</p>
+		<p><code class="lua">HC = require 'HC'</code> loads the module and puts it into the variable
 		<code class="lua">HC</code>.
 		<p>The next lines defines an empty function called <code class="lua">on_collide</code>
 		in which we will handle what should happen when two shapes collide. We will cover
 		the different parameters later.</p>
-		<p><a href="reference.html#hardoncollider-init"><code class="lua">Collider = HC(100, on_collide)</code></a>
+		<p><a href="reference.html#HC-init"><code class="lua">Collider = HC(100, on_collide)</code></a>
 		creates a new collision detection instance, setting <code class="lua">on_collide</code>
-		as <a href="reference.html#hardoncollider-setCallbacks">callback function</a>.
+		as <a href="reference.html#HC-setCallbacks">callback function</a>.
 		The first argument defines a cell size which is used internally to speed things
 		up. You don't have to worry about that at the moment.</p>
-		<p>Finally, <a href="reference.html#hardoncollider-update"><code class="lua">Collider:update(dt)</code></a>
+		<p>Finally, <a href="reference.html#HC-update"><code class="lua">Collider:update(dt)</code></a>
 		will check for collisions and run the callback functions if needed.</p>
 	</div>
 
@@ -271,8 +271,8 @@ end</code></pre>
 
 	<div class="tut-block">
 		<h4>The Whole Picture</h4>
-        <p>And there you have it: Your very first and very feature lacking Pong-clone using HardonCollider:</p>
-        <pre><code class="lua">HC = require 'hardoncollider'
+        <p>And there you have it: Your very first and very feature lacking Pong-clone using HC:</p>
+        <pre><code class="lua">HC = require 'HC'
 
 function on_collide(dt, shape_a, shape_b)
     -- determine which shape is the ball and which is not
@@ -355,7 +355,7 @@ end</code></pre>
 	<div class="tut-block">
 		<h4>Room for Improvements</h4>
 		<p>There is a lot of things you can do to not only make this game more fun
-		but also practice using HardonCollider:
+		but also practice using HC:
 		<ul>
 			<li>Keep player scores by incrementing a goal-counter every time the
 			ball hits a goal.</li>
