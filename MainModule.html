@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Main Module &mdash; HC 0.1-1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="HC 0.1-1 documentation" href="index.html"/>
+        <link rel="up" title="Reference" href="reference.html"/>
+        <link rel="next" title="HC.shapes" href="Shapes.html"/>
+        <link rel="prev" title="Reference" href="reference.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HC
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">HC</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bookkeeping">Bookkeeping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collision-detection">Collision Detection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Shapes.html">HC.shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Polygon.html">HC.polygon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="SpatialHash.html">HC.spatialhash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Vector.html">HC.vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Class.html">HC.class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HC</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="reference.html">Reference</a> &raquo;</li>
+      
+    <li>Main Module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/MainModule.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="main-module">
+<h1>Main Module<a class="headerlink" href="#main-module" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">HC</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">HC&#39;</span>
+</pre></div>
+</div>
+<p>The purpose of the main modules is to connect shapes with the spatial hash &#8211; a
+data structure to quickly look up neighboring shapes &#8211; and to provide
+utilities to tell which shapes intersect (collide) with each other.</p>
+<p>Most of the time, HC will be run as a singleton; you can, however, also create
+several instances, that each hold their own little worlds.</p>
+<div class="section" id="initialization">
+<h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="HC.new">
+<code class="descclassname">HC.</code><code class="descname">new</code><span class="sig-paren">(</span><span class="optional">[</span><em>cell_size = 100</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#HC.new" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>cell_size</strong> (<em>number</em>) &#8211; Resolution of the internal search structure (optional).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Collider instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Creates a new collider instance that holds a separate spatial hash.
+Collider instances carry the same methods as the main module.
+The only difference is that function calls must use the colon-syntax (see
+below).</p>
+<p>Useful if you want to maintain several collision layers or several separate
+game worlds.</p>
+<p>The <code class="docutils literal"><span class="pre">cell_size</span></code> somewhat governs the performance of <a class="reference internal" href="#HC.neighbors" title="HC.neighbors"><code class="xref js js-func docutils literal"><span class="pre">HC.neighbors()</span></code></a> and
+<a class="reference internal" href="#HC.collisions" title="HC.collisions"><code class="xref js js-func docutils literal"><span class="pre">HC.collisions()</span></code></a>. How this parameter affects the performance depends on
+how many shapes there are, how big these shapes are and (somewhat) how the
+shapes are distributed.
+A rule of thumb would be to set <code class="docutils literal"><span class="pre">cell_size</span></code> to be about four times the size
+of the average object.
+Or just leave it as is and worry about it only if you run into performance
+problems that can be traced back to the spatial hash.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">collider</span> <span class="o">=</span> <span class="n">HC</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span> <span class="c1">-- create separate world</span>
+
+<span class="c1">-- method calls with colon syntax</span>
+<span class="n">ball</span> <span class="o">=</span> <span class="n">collider</span><span class="p">:</span><span class="n">circle</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">rect</span> <span class="o">=</span> <span class="n">collider</span><span class="p">:</span><span class="n">rectangle</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">shape</span><span class="p">,</span> <span class="n">delta</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">collider</span><span class="p">:</span><span class="n">collisions</span><span class="p">(</span><span class="n">ball</span><span class="p">))</span> <span class="k">do</span>
+    <span class="n">shape</span><span class="p">:</span><span class="n">move</span><span class="p">(</span><span class="n">delta</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">delta</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="HC.resetHash">
+<code class="descclassname">HC.</code><code class="descname">resetHash</code><span class="sig-paren">(</span><span class="optional">[</span><em>cell_size = 100</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#HC.resetHash" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cell_size</strong> (<em>number</em>) &#8211; Resolution of the internal search structure (optional).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Reset the internal search structure, the spatial hash.
+This clears <em>all</em> shapes that were registered beforehand, meaning that HC will
+not be able to find any collisions with those shapes anymore.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="k">function</span> <span class="nf">new_stage</span><span class="p">()</span>
+    <span class="n">actors</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1">-- clear the stage on our side</span>
+    <span class="n">HC</span><span class="p">.</span><span class="n">resetHash</span><span class="p">()</span> <span class="c1">-- as well as on HC&#39;s side</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bookkeeping">
+<h2>Bookkeeping<a class="headerlink" href="#bookkeeping" title="Permalink to this headline">¶</a></h2>
+<p>See also the <a class="reference internal" href="Shapes.html"><em>HC.shapes</em></a> sub-module.</p>
+<dl class="function">
+<dt id="HC.rectangle">
+<code class="descclassname">HC.</code><code class="descname">rectangle</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>w</em>, <em>h</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>x,y</strong> (<em>numbers</em>) &#8211; Upper left corner of the rectangle.</li>
+<li><strong>w,h</strong> (<em>numbers</em>) &#8211; Width and height of the rectangle.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The rectangle <a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> added to the scene.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Add a rectangle shape to the scene.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> transformations, e.g. <code class="xref js js-func docutils literal"><span class="pre">Shape.moveTo()</span></code> and
+<code class="xref js js-func docutils literal"><span class="pre">Shape.rotate()</span></code> will be with respect to the <em>center, not</em> the upper left
+corner of the rectangle!</p>
+</div>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">rect</span> <span class="o">=</span> <span class="n">HC</span><span class="p">.</span><span class="n">rectangle</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">rect</span><span class="p">:</span><span class="n">rotate</span><span class="p">(</span><span class="mi">23</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="HC.polygon">
+<code class="descclassname">HC.</code><code class="descname">polygon</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>...</em>, <em>xn</em>, <em>yn</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.polygon" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>x1,y1,...,xn,yn</strong> (<em>numbers</em>) &#8211; The corners of the polygon. At least three
+corners that do not lie on a straight line
+are required.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The polygon <a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> added to the scene.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Add a polygon to the scene. Any non-self-intersection polygon will work.
+The polygon will be closed; the first and the last point do not need to be the
+same.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If three consecutive points lie on a line, the middle point will be discarded.
+This means you cannot construct polygon shapes that are lines.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> transformations, e.g. <code class="xref js js-func docutils literal"><span class="pre">Shape.moveTo()</span></code> and
+<code class="xref js js-func docutils literal"><span class="pre">Shape.rotate()</span></code> will be with respect to the center of the polygon.</p>
+</div>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">shape</span> <span class="o">=</span> <span class="n">HC</span><span class="p">.</span><span class="n">polygon</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">shape</span><span class="p">:</span><span class="n">move</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="HC.circle">
+<code class="descclassname">HC.</code><code class="descname">circle</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>radius</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.circle" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>cx,cy</strong> (<em>numbers</em>) &#8211; Center of the circle.</li>
+<li><strong>radius</strong> (<em>number</em>) &#8211; Radius of the circle.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The circle <a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> added to the scene.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Add a circle shape to the scene.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">circle</span> <span class="o">=</span> <span class="n">HC</span><span class="p">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="HC.point">
+<code class="descclassname">HC.</code><code class="descname">point</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.point" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>x, y</strong> (<em>numbers</em>) &#8211; Position of the point.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The point <a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> added to the scene.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Add a point shape to the scene.</p>
+<p>Point shapes are most useful for bullets and such, because detecting collisions
+between a point and any other shape is a little faster than detecting collision
+between two non-point shapes. In case of a collision, the separating vector
+will not be valid.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">bullets</span><span class="p">[</span><span class="o">#</span><span class="n">bulltes</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">HC</span><span class="p">.</span><span class="n">point</span><span class="p">(</span><span class="n">player</span><span class="p">.</span><span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">player</span><span class="p">.</span><span class="n">pos</span><span class="p">.</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="HC.register">
+<code class="descclassname">HC.</code><code class="descname">register</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.register" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>shape</strong> (<a class="reference internal" href="Shapes.html#Shape" title="Shape"><em>Shape</em></a>) &#8211; The <a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> to add to the spatial hash.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Add a shape to the bookkeeping system.
+<a class="reference internal" href="#HC.neighbors" title="HC.neighbors"><code class="xref js js-func docutils literal"><span class="pre">HC.neighbors()</span></code></a> and <code class="xref js js-func docutils literal"><span class="pre">Hc.collisions()</span></code> works only with registered
+shapes.
+You don&#8217;t need to (and should not) register any shapes created with the above
+functions.</p>
+<p>Overwrites <code class="xref js js-func docutils literal"><span class="pre">Shape.move()</span></code>, <code class="xref js js-func docutils literal"><span class="pre">Shape.rotate()</span></code>, and <code class="xref js js-func docutils literal"><span class="pre">Shape.scale()</span></code>
+with versions that update the <a class="reference internal" href="SpatialHash.html"><em>HC.spatialhash</em></a>.</p>
+<p>This function is mostly only useful if you provide a custom shape.
+See <a class="reference internal" href="Shapes.html#custom-shapes"><span>Custom Shapes</span></a>.</p>
+<dl class="function">
+<dt id="HC.remove">
+<code class="descclassname">HC.</code><code class="descname">remove</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.remove" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>shape</strong> (<a class="reference internal" href="Shapes.html#Shape" title="Shape"><em>Shape</em></a>) &#8211; The <a class="reference internal" href="Shapes.html#Shape" title="Shape"><code class="xref js js-class docutils literal"><span class="pre">Shape()</span></code></a> to remove from the spatial hash.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Remove a shape to the bookkeeping system.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This will also invalidate the functions <code class="xref js js-func docutils literal"><span class="pre">Shape.move()</span></code>,
+<code class="xref js js-func docutils literal"><span class="pre">Shape.rotate()</span></code>, and <code class="xref js js-func docutils literal"><span class="pre">Shape.scale()</span></code>.
+Make sure you delete the shape from your own actor list(s).</p>
+</div>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="o">#</span><span class="n">bullets</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="n">bullets</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">collidesWith</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+        <span class="n">player</span><span class="p">:</span><span class="n">takeDamage</span><span class="p">()</span>
+
+        <span class="n">HC</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">bullets</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="c1">-- remove bullet from HC</span>
+        <span class="nb">table.remove</span><span class="p">(</span><span class="n">bullets</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="c1">-- remove bullet from own actor list</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="collision-detection">
+<h2>Collision Detection<a class="headerlink" href="#collision-detection" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="HC.collisions">
+<code class="descclassname">HC.</code><code class="descname">collisions</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.collisions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>shape</strong> (<a class="reference internal" href="Shapes.html#Shape" title="Shape"><em>Shape</em></a>) &#8211; Query shape.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Table of colliding shapes and separating vectors.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Get shapes that are colliding with <code class="docutils literal"><span class="pre">shape</span></code> and the vector to separate the shapes.
+The separating vector points away from <code class="docutils literal"><span class="pre">shape</span></code>.</p>
+<p>The table is a <em>set</em>, meaning that the shapes are stored in <em>keys</em> of the table.
+The <em>values</em> are the separating vector.
+You can iterate over the shapes using <code class="docutils literal"><span class="pre">pairs</span></code> (see example).</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">collisions</span> <span class="o">=</span> <span class="n">HC</span><span class="p">.</span><span class="n">collisions</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">other</span><span class="p">,</span> <span class="n">separating_vector</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">collisions</span><span class="p">)</span>
+    <span class="n">shape</span><span class="p">:</span><span class="n">move</span><span class="p">(</span><span class="o">-</span><span class="n">separating_vector</span><span class="p">.</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">separating_vector</span><span class="p">.</span><span class="n">y</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">other</span><span class="p">:</span><span class="n">move</span><span class="p">(</span> <span class="n">separating_vector</span><span class="p">.</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>  <span class="n">separating_vector</span><span class="p">.</span><span class="n">y</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="HC.neighbors">
+<code class="descclassname">HC.</code><code class="descname">neighbors</code><span class="sig-paren">(</span><em>shape</em><span class="sig-paren">)</span><a class="headerlink" href="#HC.neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>shape</strong> (<a class="reference internal" href="Shapes.html#Shape" title="Shape"><em>Shape</em></a>) &#8211; Query shape.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Table of neighboring shapes, where the keys of the table are the shape.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Get other shapes in that are close to <code class="docutils literal"><span class="pre">shape</span></code>.
+The table is a <em>set</em>, meaning that the shapes are stored in <em>keys</em> of the table.
+You can iterate over the shapes using <code class="docutils literal"><span class="pre">pairs</span></code> (see example).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The result depends on the size and position of <code class="docutils literal"><span class="pre">shape</span></code> as well as the
+grid size of the spatial hash: <a class="reference internal" href="#HC.neighbors" title="HC.neighbors"><code class="xref js js-func docutils literal"><span class="pre">HC.neighbors()</span></code></a> returns the shapes that
+are in the same cell(s) as <code class="docutils literal"><span class="pre">shape</span></code>.</p>
+</div>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">candidates</span> <span class="o">=</span> <span class="n">HC</span><span class="p">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">other</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">collides</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">shape</span><span class="p">:</span><span class="n">collidesWith</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">collides</span> <span class="k">then</span>
+        <span class="n">other</span><span class="p">:</span><span class="n">move</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="HC.hash">
+<code class="descclassname">HC.</code><code class="descname">hash</code><a class="headerlink" href="#HC.hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Reference to the <code class="xref js js-class docutils literal"><span class="pre">SpatialHash()</span></code> instance.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Shapes.html" class="btn btn-neutral float-right" title="HC.shapes" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="reference.html" class="btn btn-neutral" title="Reference" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Matthias Richter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1-1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

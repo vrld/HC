@@ -1,395 +1,206 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>HC - A collision detection library</title>
-<link rel="stylesheet" type="text/css" href="style.css" />
-<link rel="stylesheet" type="text/css" href="highlight.css" />
-<script type="text/javascript" src="highlight.pack.js"></script>
-<script type="text/javascript">
-	window.onload = function() {
-		var examples = document.getElementsByTagName("code");
-		for (i = 0; i < examples.length; ++i) {
-			if (examples[i].className == "lua")
-				hljs.highlightBlock(examples[i], "    ");
-		}
-	};
-</script>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tutorial &mdash; HC 0.1-1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="HC 0.1-1 documentation" href="index.html"/>
+        <link rel="next" title="License" href="license.html"/>
+        <link rel="prev" title="HC.class" href="Class.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
 </head>
 
-<body><a name="top"></a>
+<body class="wy-body-for-nav" role="document">
 
-<div id="header">
-	<h1>Hardon Collider <span class="small">Collision detection for <a href="http://www.love2d.org/">L&Ouml;VE</a></span></h1>
-	<ul id="main-nav">
-		<li><a href="index.html">Home</a></li>
-		<li><a href="tutorial.html">Tutorial</a></li>
-		<li><a href="reference.html">Reference</a></li>
-	</ul>
-	<h2>Tutorial</h2>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HC
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
 
-<a name="common-ground"></a>
-<div id="common-ground" class="outer-block">
-	<h3>Part 0: Common Ground<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		<p>I suck at writing Introductions, so let&#39;s dive right in:</p>
+          
+        </div>
 
-		<p>This tutorial will teach you how to use <em>HC</em>. It is divided into three parts:
-		<ul>
-			<li><a href="#hello-pong">Part One</a> covers the basic concepts of the library.</li>
-			<li><a href="#fly-me-to-the-moon">Part Two</a> introduces more shapes and more concepts.</li>
-			<li><a href="#holygrail">Part Three</a> offers a complex collision detection task and
-			shows some coding tricks that make your life easier.</li>
-		</p>
-	</div>
-	<div class="tut-block">
-		<h4>Prerequisites</h4>
-		
-		<p>You should already know how to program games with Lua and L&Ouml;VE. If not, <a href="http://love2d.org/wiki/Getting_Started">this</a>,
-		<a href="http://love2d.org/wiki/Tutorial:Hamster_Ball">this</a>, <a href="http://love2d.org/wiki/Tutorial:Callback_Functions">this</a> and
-		also <a href="http://www.headchant.com/2010/11/26/love2d-tutorial-part-0-hello-world/">this</a>,
-		<a href="http://www.headchant.com/2010/11/27/love2d-tutorial-part-1-invaders-must-die/">this</a> and
-		<a href="http://www.headchant.com/2010/12/31/love2d-%e2%80%93-tutorial-part-2-pew-pew/">this</a> and finally
-		<a href="http://www.indiedb.com/engines/love/tutorials/simple-game-making-1-how-computers-run-your-games">this</a>
-		will get you started.</p>
-	</div>
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HC</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/tutorial.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>To be rewritten.</p>
 </div>
 
-<a name="hello-pong"></a>
-<div id="hello-pong" class="outer-block">
-	<h3>Part 1: Hello, PONG!<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		<p>In our first steps with HC we will write (yet another) clone of Pong.
-		Using a collision detection library for this task is probably a little over the top,
-		but Pong serves well to introduce some of the libraries core concepts. Let's begin:</p>
-		<p>Create a new folder called <code>hardonpong</code>. Download
-		<a href="http://github.com/vrld/HC/zipball/master">the latest version</a>
-		of HC and put it into that directory. Create an empty file named
-		<code>main.lua</code>. The directory content should look like this before we go on:
-		<pre>hardonpong
-|-- HC
-|   |-- class.lua
-|   |-- init.lua
-|   |-- polygon.lua
-|   |-- shapes.lua
-|   |-- spatialhash.lua
-|   `-- vector-light.lua
-`-- main.lua</pre></p>
-	</div>
-	<div class="tut-block">
-		<h4>Holy Trinity and a Half</h4>
-		<p>Fill your main.lua with the following:</p>
-		<pre><code class="lua">HC = require 'HC'
 
-function on_collide(dt, shape_a, shape_b)
-end
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Class.html" class="btn btn-neutral" title="HC.class" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
-function love.load()
-    Collider = HC(100, on_collide)
-end
+  <hr/>
 
-function love.update(dt)
-    Collider:update(dt)
-end
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Matthias Richter.
 
-function love.draw()
-end</code></pre>
-		<p>This is the basic code skeleton for using HC.</p>
-		<p><code class="lua">HC = require 'HC'</code> loads the module and puts it into the variable
-		<code class="lua">HC</code>.
-		<p>The next lines defines an empty function called <code class="lua">on_collide</code>
-		in which we will handle what should happen when two shapes collide. We will cover
-		the different parameters later.</p>
-		<p><a href="reference.html#HC-init"><code class="lua">Collider = HC(100, on_collide)</code></a>
-		creates a new collision detection instance, setting <code class="lua">on_collide</code>
-		as <a href="reference.html#HC-setCallbacks">callback function</a>.
-		The first argument defines a cell size which is used internally to speed things
-		up. You don't have to worry about that at the moment.</p>
-		<p>Finally, <a href="reference.html#HC-update"><code class="lua">Collider:update(dt)</code></a>
-		will check for collisions and run the callback functions if needed.</p>
-	</div>
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-	<div class="tut-block">
-		<h4>Filling the Void</h4>
-		<p>Pong wouldn't be Pong without two paddles and a ball. In fact, it wouldn't be anything.
-		So let's add them by creating two rectangles and a circle shape:</p>
-		<pre><code class="lua">function love.load()
-    Collider = HC(100, on_collide)
+</footer>
 
-    ball        = Collider:addCircle(400,300, 10)
-    paddleLeft  = Collider:addRectangle(10,250, 20,100)
-    paddleRight = Collider:addRectangle(770,250, 20,100)
+        </div>
+      </div>
 
-    ball.velocity = {x = -100, y = 0}
-end</code></pre>
-		<p>We now have defined three shapes that are subject to collision detection. Because
-		shapes are just Lua tables with <a href="reference.html#shapes">some functions</a>
-		and properties in them, we can add anythin we like to them. We exploit this by adding
-		a table named <code class="lua">velocity</code> to the ball, which will be used to move the it.</p>
-		<p>To see what we've created, we need to draw the shapes. Mostly for debugging
-		purposes, shapes have functions for drawing themselves. We, however, will not use
-		these functions for debugging, but as our only means to show what's going on:</p>
-		<pre><code class="lua">function love.draw()
-    -- we can also use 'line' instead of 'fill'
-    ball:draw('fill', 16)    -- approximated circle with 16 edges
-    paddleLeft:draw('fill')
-    paddleRight:draw('fill')
-end</code></pre>
-		<p>To put things in motion (haha, get it?), we change the position of the ball
-		according to it's velocity:</p>
-		<pre><code class="lua">function love.update(dt)
-    ball:move(ball.velocity.x * dt, ball.velocity.y * dt)
+    </section>
 
-    -- check for collisions
-    Collider:update(dt)
-end</code></pre>
-	</div>
+  </div>
+  
 
-	<div class="tut-block">
-		<h4>Rebound</h4>
-		<p>If you run what we have done so far, you will see the ball moving very, very slowly from the screen
-		center to the left paddle. And then passing it. That's not Pong! The ball needs to
-		bounce off the paddle. This is where <code class="lua">on_collide(dt, shape_a, shape_b)</code>
-		comes in handy.</p>
-		<p><code class="lua">on_collide()</code> will be called whenever two shapes collide (actually only
-		when they first collide, more about that in Part 3). It's first argument <code class="lua">dt</code>
-		is the same as to <code class="lua">love.update()</code>: the time passed since
-		the last call of <code class="lua">love.update()</code>. The other two parameters
-		are the shapes that are involved in the collision.</p>
-		<p>If the ball collides with a paddle, it should bounce off depending where on the paddle
-		it hit it. We can get the current (center-)position of a shape by using
-		<a href="reference.html#shapes-shape:center">shape:center()</a>. Thus, by getting the difference
-		between the ball's and the paddle's center's y-component, we can determine in what direction the
-		ball should bounce off:</p>
-		<pre><code class="lua">function on_collide(dt, shape_a, shape_b)
-    -- determine which shape is the ball and which the paddle
-    local paddle
-    if shape_a == ball then
-        paddle = shape_b
-    else
-        paddle = shape_a
-    end
 
-    -- reflect the ball on the paddle
-    local px,py = paddle:center()
-    local bx,by = ball:center()
-    ball.velocity.x = -ball.velocity.x
-    ball.velocity.y = by - py
+  
 
-    -- keep the ball at the same speed as before
-    local len = math.sqrt(ball.velocity.x^2 + ball.velocity.y^2)
-    ball.velocity.x = ball.velocity.x / len * 100
-    ball.velocity.y = ball.velocity.y / len * 100
-end</code></pre>
-		<p>Although being a hypnotic, this has little to no entertainment value: We
-		cannot move the paddles. Let's fix that:
-		<pre><code class="lua">function love.update(dt)
-    ball:move(ball.velocity.x * dt, ball.velocity.y * dt)
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1-1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-    -- left player movement
-    if love.keyboard.isDown('w') then
-        paddleLeft:move(0, -100 * dt)
-    elseif love.keyboard.isDown('s') then
-        paddleLeft:move(0,  100 * dt)
-    end
+  
 
-    -- right player movement
-    if love.keyboard.isDown('up') then
-        paddleRight:move(0, -100 * dt)
-    elseif love.keyboard.isDown('down') then
-        paddleRight:move(0,  100 * dt)
-    end
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
-    -- check for collisions
-    Collider:update(dt)
-end</code></pre>
-	</div>
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
-	<div class="tut-block">
-		<h4>Re-Rebound</h4>
-		<p>Hooray, we've done it! Or have we? As it turns out, we have missed two very important
-		parts: The ball won't bounce off the upper and lower screen border and it's not reset
-		to the screen center once a player scores a goal. We can do both by introducing more
-		shapes defining special zones. These shapes won't be drawn - they are off screen anyway.</p>
-		<pre><code class="lua">function love.load()
-    -- ... as before ...
-
-    borderTop    = Collider:addRectangle(0,-100, 800,100)
-    borderBottom = Collider:addRectangle(0,600, 800,100)
-    goalLeft     = Collider:addRectangle(-100,0, 100,600)
-    goalRight    = Collider:addRectangle(800,0, 100,600)
-end</code></pre>
-        <p>We also need to define what happens when the ball touches a border or a goal.
-        Because there are now more things that can collide, the collision callback
-        has to change:</p>
-        <pre><code class="lua">function on_collide(dt, shape_a, shape_b)
-    -- determine which shape is the ball and which is not
-    local other
-    if shape_a == ball then
-        other = shape_b
-    elseif shape_b == ball then
-        other = shape_a
-    else -- neither shape is the ball. exit
-        return
-    end
-
-    -- reset on goal
-    if other == goalLeft then
-        ball.velocity = {x = 100, y = 0}
-        ball:moveTo(400,300)
-    elseif other == goalRight then
-        ball.velocity = {x = -100, y = 0}
-        ball:moveTo(400,300)
-    elseif other == borderTop or other == borderBottom then
-    -- bounce off top and bottom
-        ball.velocity.y = -ball.velocity.y
-    else
-    -- bounce of paddle
-        local px,py = other:center()
-        local bx,by = ball:center()
-        local dy = by - py
-        ball.velocity.x = -ball.velocity.x
-        ball.velocity.y = dy
-
-        -- keep the ball at the same speed
-        local len = math.sqrt(ball.velocity.x^2 + ball.velocity.y^2)
-        ball.velocity.x = ball.velocity.x / len * 100
-        ball.velocity.y = ball.velocity.y / len * 100
-    end
-end</code></pre>
-		<p>Because we want to react on collision only when the ball is involved, we
-		return early if neither one of the shapes is the ball - can you tell what these shapes are in this case?
-		<a href="#42" title="one of the paddles colliding with the top or bottom screen edge">(answer)</a>.
-		The rest is relatively straightforward: If the ball hits a goal, it is reset to
-		the screen center and will move to the scoring player's paddle. If the ball hit's
-		either the top or bottom screen edge, it's y-direction is inverted. If it hit's
-		one of the paddles, it is bounced off as before.</p>
-	</div>
-
-	<div class="tut-block">
-		<h4>The Whole Picture</h4>
-        <p>And there you have it: Your very first and very feature lacking Pong-clone using HC:</p>
-        <pre><code class="lua">HC = require 'HC'
-
-function on_collide(dt, shape_a, shape_b)
-    -- determine which shape is the ball and which is not
-    local other
-    if shape_a == ball then
-        other = shape_b
-    elseif shape_b == ball then
-        other = shape_a
-    else -- no shape is the ball. exit
-        return
-    end
-
-    -- reset on goal
-    if other == goalLeft then
-        ball.velocity = {x = 100, y = 0}
-        ball:moveTo(400,300)
-    elseif other == goalRight then
-        ball.velocity = {x = -100, y = 0}
-        ball:moveTo(400,300)
-    elseif other == borderTop or other == borderBottom then
-    -- bounce off top and bottom
-        ball.velocity.y = -ball.velocity.y
-    else
-    -- bounce of paddle
-        local px,py = other:center()
-        local bx,by = ball:center()
-        local dy = by - py
-        ball.velocity.x = -ball.velocity.x
-        ball.velocity.y = dy
-
-        -- keep the ball at the same speed
-        local len = math.sqrt(ball.velocity.x^2 + ball.velocity.y^2)
-        ball.velocity.x = ball.velocity.x / len * 100
-        ball.velocity.y = ball.velocity.y / len * 100
-    end
-end
-
-function love.load()
-    Collider = HC(100, on_collide)
-
-    ball        = Collider:addCircle(400,300, 10)
-    leftPaddle  = Collider:addRectangle(10,250, 20,100)
-    rightPaddle = Collider:addRectangle(770,250, 20,100)
-
-    ball.velocity = {x = -100, y = 0}
-
-    borderTop    = Collider:addRectangle(0,-100, 800,100)
-    borderBottom = Collider:addRectangle(0,600, 800,100)
-    goalLeft     = Collider:addRectangle(-100,0, 100,600)
-    goalRight    = Collider:addRectangle(800,0, 100,600)
-end
-
-function love.update(dt)
-    ball:move(ball.velocity.x * dt, ball.velocity.y * dt)
-
-    -- left player movement
-    if love.keyboard.isDown('w') then
-        leftPaddle:move(0, -100 * dt)
-    elseif love.keyboard.isDown('s') then
-        leftPaddle:move(0,  100 * dt)
-    end
-
-    -- right player movement
-    if love.keyboard.isDown('up') then
-        rightPaddle:move(0, -100 * dt)
-    elseif love.keyboard.isDown('down') then
-        rightPaddle:move(0,  100 * dt)
-    end
-
-    Collider:update(dt)
-end
-
-function love.draw()
-    ball:draw('fill', 16)
-    leftPaddle:draw('fill')
-    rightPaddle:draw('fill')
-end</code></pre>
-	</div>
-
-	<div class="tut-block">
-		<h4>Room for Improvements</h4>
-		<p>There is a lot of things you can do to not only make this game more fun
-		but also practice using HC:
-		<ul>
-			<li>Keep player scores by incrementing a goal-counter every time the
-			ball hits a goal.</li>
-			<li>Limit the paddle's movement so that they cannot leave the screen
-			(Hint: Use <code class="lua">paddleLeft:center()</code> and
-			<code class="lua">paddleRight:center()</code>).</li>
-			<li>Add fancy graphics instead of using the shapes' draw functions.</li>
-			<li>Add power-ups and traps that get randomly spawned between the paddles
-			and are activated once the ball collides with them.</li>
-			<li>Increase the speed of the ball every time it hit's a paddle.</li>
-			<li>Add paddles to the top and bottom and make a four player game out
-			of hardonpong.</li>
-			<li>Add multiple balls depending on how often the ball hit the paddles.</li>
-			<li>Randomly spawn obstacles that deflect the ball but get destroyed
-			once the ball hit them.</li>
-		</ul>
-		</p>
-	</div>
-</div>
-
-<a name="fly-me-to-the-moon"></a>
-<div id="fly-me-to-the-moon" class="outer-block">
-	<h3>Part 2: Fly Me To The Moon<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		This space intentionally left blank.
-	</div>
-</div>
-
-<a name="holygrail"></a>
-<div id="holygrail" class="outer-block">
-	<h3>Part 3: Down To Earth<a class="top" href="#top">^ top</a></h3>
-	<div class="preamble">
-		This space intentionally left blank.
-	</div>
-</div>
-
+</body>
 </html>

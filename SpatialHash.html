@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>HC.spatialhash &mdash; HC 0.1-1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="HC 0.1-1 documentation" href="index.html"/>
+        <link rel="up" title="Reference" href="reference.html"/>
+        <link rel="next" title="HC.vector" href="Vector.html"/>
+        <link rel="prev" title="HC.polygon" href="Polygon.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HC
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="MainModule.html">HC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Shapes.html">HC.shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Polygon.html">HC.polygon</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">HC.spatialhash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Vector.html">HC.vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Class.html">HC.class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">HC</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="reference.html">Reference</a> &raquo;</li>
+      
+    <li>HC.spatialhash</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/SpatialHash.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hc-spatialhash">
+<h1>HC.spatialhash<a class="headerlink" href="#hc-spatialhash" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">spatialhash</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">HC.spatialhash&#39;</span>
+</pre></div>
+</div>
+<p>A spatial hash implementation that supports scenes of arbitrary size. The hash
+is sparse, which means that cells will only be created when needed.</p>
+<dl class="class">
+<dt id="Spatialhash">
+<em class="property">class </em><code class="descname">Spatialhash</code><span class="sig-paren">(</span><span class="optional">[</span><em>cellsize = 100</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cellsize</strong> (<em>number</em>) &#8211; Width and height of a cell (optional).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Create a new spatial hash with a given cell size.</p>
+<p>Choosing a good cell size depends on your application. To get a decent speedup,
+the average cell should not contain too many objects, nor should a single
+object occupy too many cells. A good rule of thumb is to choose the cell size
+so that the average object will occupy only one cell.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The syntax depends on used class system. The shown syntax works when using
+the bundled <a class="reference external" href="http://vrld.github.com/hump/#hump.class">hump.class</a> or
+<a class="reference external" href="https://bitbucket.org/bartbes/slither">slither</a>.</p>
+</div>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">Spatialhash</span> <span class="o">=</span> <span class="nb">require</span> <span class="s1">&#39;</span><span class="s">hardoncollider.spatialhash&#39;</span>
+<span class="n">hash</span> <span class="o">=</span> <span class="n">Spatialhash</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Spatialhash:cellCoords">
+<code class="descname">Spatialhash:cellCoords</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:cellCoords" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>x, y</strong> (<em>numbers</em>) &#8211; The position to query.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Coordinates of the cell which would contain <code class="docutils literal"><span class="pre">x,y</span></code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Get coordinates of a given value, i.e. the cell index in which a given point
+would be placed.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">mx</span><span class="p">,</span><span class="n">my</span> <span class="o">=</span> <span class="n">love</span><span class="p">.</span><span class="n">mouse</span><span class="p">.</span><span class="n">getPosition</span><span class="p">()</span>
+<span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">=</span> <span class="n">hash</span><span class="p">:</span><span class="n">cellCoords</span><span class="p">(</span><span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Spatialhash:cell">
+<code class="descname">Spatialhash:cell</code><span class="sig-paren">(</span><em>i</em>, <em>k</em><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:cell" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>i, k</strong> (<em>numbers</em>) &#8211; The cell index.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Set of objects contained in the cell.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Get the cell with given coordinates.</p>
+<p>A cell is a table which&#8217;s keys and value are the objects stored in the cell,
+i.e.:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">cell</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">[</span><span class="n">obj1</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj1</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">obj2</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj2</span><span class="p">,</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can iterate over the objects in a cell using <code class="docutils literal"><span class="pre">pairs()</span></code>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="k">for</span> <span class="n">object</span> <span class="k">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">do</span> <span class="n">stuff</span><span class="p">(</span><span class="n">object</span><span class="p">)</span> <span class="k">end</span>
+</pre></div>
+</div>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">mx</span><span class="p">,</span><span class="n">my</span> <span class="o">=</span> <span class="n">love</span><span class="p">.</span><span class="n">mouse</span><span class="p">.</span><span class="n">getPosition</span><span class="p">()</span>
+<span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">=</span> <span class="n">hash</span><span class="p">:</span><span class="n">cellCoords</span><span class="p">(</span><span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
+<span class="n">cell</span> <span class="o">=</span> <span class="n">hash</span><span class="p">:</span><span class="n">cell</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Spatialhash:cellAt">
+<code class="descname">Spatialhash:cellAt</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:cellAt" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>x, y</strong> (<em>numbers</em>) &#8211; The position to query.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Set of objects contained in the cell.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Get the cell that contains point x,y.</p>
+<p>Same as <code class="docutils literal"><span class="pre">hash:cell(hash:cellCoords(x,y))</span></code></p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">mx</span><span class="p">,</span><span class="n">my</span> <span class="o">=</span> <span class="n">love</span><span class="p">.</span><span class="n">mouse</span><span class="p">.</span><span class="n">getPosition</span><span class="p">()</span>
+<span class="n">cell</span> <span class="o">=</span> <span class="n">hash</span><span class="p">:</span><span class="n">cellAt</span><span class="p">(</span><span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Spatialhash:shapes">
+<code class="descname">Spatialhash:shapes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:shapes" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Set of all shapes in the hash.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Get <em>all</em> shapes that are recorded in the hash.</p>
+<dl class="function">
+<dt id="Spatialhash:inSameCells">
+<code class="descname">Spatialhash:inSameCells</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:inSameCells" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>x1,y1</strong> (<em>numbers</em>) &#8211; Upper left corner of the query bounding box.</li>
+<li><strong>x2,y2</strong> (<em>numbers</em>) &#8211; Lower right corner of the query bounding box.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Set of all shapes in the same cell as the bbox.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Get the shapes that are in the same cell as the defined bounding box.</p>
+<dl class="function">
+<dt id="Spatialhash:register">
+<code class="descname">Spatialhash:register</code><span class="sig-paren">(</span><em>obj</em>, <em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:register" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<em>mixed</em>) &#8211; Object to place in the hash. It can be of any type except <cite>nil</cite>.</li>
+<li><strong>x1,y1</strong> (<em>numbers</em>) &#8211; Upper left corner of the bounding box.</li>
+<li><strong>x2,y2</strong> (<em>numbers</em>) &#8211; Lower right corner of the bounding box.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Insert an object into the hash using a given bounding box.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">hash</span><span class="p">:</span><span class="n">register</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span><span class="n">bbox</span><span class="p">())</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Spatialhash:remove">
+<code class="descname">Spatialhash:remove</code><span class="sig-paren">(</span><em>obj</em><span class="optional">[</span>, <em>x1</em>, <em>y1</em><span class="optional">[</span>, <em>x2</em>, <em>y2</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:remove" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<em>mixed</em>) &#8211; The object to delete</li>
+<li><strong>x1,y1</strong> (<em>numbers</em>) &#8211; Upper left corner of the bounding box (optional).</li>
+<li><strong>x2,y2</strong> (<em>numbers</em>) &#8211; Lower right corner of the bounding box (optional).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Remove an object from the hash using a bounding box.</p>
+<p>If no bounding box is given, search the whole hash to delete the object.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">hash</span><span class="p">:</span><span class="n">remove</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span><span class="n">bbox</span><span class="p">())</span>
+<span class="n">hash</span><span class="p">:</span><span class="n">remove</span><span class="p">(</span><span class="n">object_with_unknown_position</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Spatialhash:update">
+<code class="descname">Spatialhash:update</code><span class="sig-paren">(</span><em>obj</em>, <em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em>, <em>x3</em>, <em>y3</em>, <em>x4</em>, <em>y4</em><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:update" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<em>mixed</em>) &#8211; The object to be updated.</li>
+<li><strong>x1,y1</strong> (<em>numbers</em>) &#8211; Upper left corner of the bounding box before the object was moved.</li>
+<li><strong>x2,y2</strong> (<em>numbers</em>) &#8211; Lower right corner of the bounding box before the object was moved.</li>
+<li><strong>x3,y3</strong> (<em>numbers</em>) &#8211; Upper left corner of the bounding box after the object was moved.</li>
+<li><strong>x4,y4</strong> (<em>numbers</em>) &#8211; Lower right corner of the bounding box after the object was moved.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Update an objects position given the old bounding box and the new bounding box.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">hash</span><span class="p">:</span><span class="n">update</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span><span class="o">-</span><span class="mi">70</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Spatialhash:draw">
+<code class="descname">Spatialhash:draw</code><span class="sig-paren">(</span><em>draw_mode</em><span class="optional">[</span>, <em>show_empty = true</em><span class="optional">[</span>, <em>print_key = false</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#Spatialhash:draw" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>draw_mode</strong> (<em>string</em>) &#8211; Either &#8216;fill&#8217; or &#8216;line&#8217;. See the LÖVE wiki.</li>
+<li><strong>show_empty</strong> (<em>boolean</em>) &#8211; Wether to draw empty cells (optional).</li>
+<li><strong>print_key</strong> (<em>boolean</em>) &#8211; Wether to print cell coordinates (optional).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Draw hash cells on the screen, mostly for debug purposes</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">love</span><span class="p">.</span><span class="n">graphics</span><span class="p">.</span><span class="n">setColor</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span><span class="mi">140</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">hash</span><span class="p">:</span><span class="n">draw</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">line&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">hash</span><span class="p">:</span><span class="n">draw</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">fill&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Vector.html" class="btn btn-neutral float-right" title="HC.vector" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Polygon.html" class="btn btn-neutral" title="HC.polygon" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Matthias Richter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1-1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
