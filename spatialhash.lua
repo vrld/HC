@@ -64,7 +64,21 @@ function Spatialhash:cellAt(x,y)
 	return self:cell(self:cellCoords(x,y))
 end
 
-function Spatialhash:inRange(x1,y1, x2,y2)
+ -- get all shapes
+function Spatialhash:shapes()
+	local set = {}
+	for i,row in pairs(self.cells) do
+		for k,cell in pairs(row) do
+			for obj in pairs(cell) do
+				rawset(set, obj, obj)
+			end
+		end
+	end
+	return set
+end
+
+-- get all shapes that are in the same cells as the bbox x1,y1 '--. x2,y2
+function Spatialhash:inSameCells(x1,y1, x2,y2)
 	local set = {}
 	x1, y1 = self:cellCoords(x1, y1)
 	x2, y2 = self:cellCoords(x2, y2)
@@ -78,11 +92,7 @@ function Spatialhash:inRange(x1,y1, x2,y2)
 	return set
 end
 
-function Spatialhash:rangeIter(...)
-	return pairs(self:inRange(...))
-end
-
-function Spatialhash:insert(obj, x1, y1, x2, y2)
+function Spatialhash:register(obj, x1, y1, x2, y2)
 	x1, y1 = self:cellCoords(x1, y1)
 	x2, y2 = self:cellCoords(x2, y2)
 	for i = x1,x2 do
