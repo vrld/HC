@@ -1,9 +1,9 @@
-package = "HardonCollider"
-version = "1.0-1"
+package = "HC"
+version = "0.1-1"
 source = {
-  url = "git://github.com/vrld/HardonCollider.git"
+  url = "git://github.com/vrld/HC.git"
 }
-description = {}
+description = {"General purpose 2D collision detection in pure Lua"}
 dependencies = {
   "lua = 5.1"
 }
