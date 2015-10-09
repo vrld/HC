@@ -16,9 +16,9 @@ You can add other types of shapes if you need them.
 
 The main interface is simple:
 
-- Define collision callbacks,
-- Add shapes to the scene and
-- Update HC every frame.
+1. Set up your scene,
+2. Check for collisions,
+3. React to collisions.
 
 First steps
 -----------
