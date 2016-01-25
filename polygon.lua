@@ -421,7 +421,7 @@ end
 
 function Polygon:intersectionsWithRay(x,y, dx,dy)
 	local nx,ny = vector.perpendicular(dx,dy)
-	local wx,xy,det
+	local wx,wy,det
 
 	local ts = {} -- ray parameters of each intersection
 	local q1,q2 = nil, self.vertices[#self.vertices]
