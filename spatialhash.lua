@@ -1,20 +1,16 @@
 --[[
 Copyright (c) 2011 Matthias Richter
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 Except as contained in this notice, the name(s) of the above copyright holders
 shall not be used in advertising or otherwise to promote the sale, use or
 other dealings in this Software without prior written authorization.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -146,6 +142,43 @@ function Spatialhash:update(obj, old_x1,old_y1, old_x2,old_y2, new_x1,new_y1, ne
 			rawset(self:cell(i,k), obj, obj)
 		end
 	end
+end
+
+function Spatialhash:intersectionsWithSegment(x1, y1, x2, y2)
+	local odx, ody = x2 - x1, y2 - y1
+	local len, cur = vector.len(odx, ody), 0
+	local dx, dy = vector.normalize(odx, ody)
+	local step = self.cell_size / 2
+	local visited = {}
+	local points = {}
+	local mt = math.huge
+
+	while (cur + step < len) do
+		local cx, cy = x1 + dx * cur,  y1 + dy * cur
+		local shapes = self:cellAt(cx, cy)
+		cur = cur + step
+
+		for _, shape in pairs(shapes) do
+			if (not visited[shape]) then
+				local ints = shape:intersectionsWithRay(x1, y1, dx, dy)
+
+				for _, t in ipairs(ints) do
+					if (t >= 0 and t <= len) then
+						local px, py = vector.add(x1, y1, vector.mul(t, dx, dy))
+						table.insert(points, {shape, t, px, py})
+					end
+				end
+
+				visited[shape] = true
+			end
+		end
+	end
+
+	table.sort(points, function(a, b)
+		return a[2] < b[2]
+	end)
+
+	return points
 end
 
 function Spatialhash:draw(how, show_empty, print_key)
