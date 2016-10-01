@@ -97,7 +97,7 @@ is given, rotate around the center of the shape.
 .. note::
     Equivalent to::
 
-        shape:rotate(angle - shape.rotation(), cx,cy)
+        shape:rotate(angle - shape:rotation(), cx,cy)
 
 **Example**::
 
