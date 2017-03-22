@@ -24,6 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
+require("HardonCollider/DDA")
+
 local _NAME, common_local = ..., common
 if not (type(common) == 'table' and common.class and common.instance) then
 	assert(common_class ~= false, 'No class commons specification available.')
@@ -123,6 +125,28 @@ end
 -- the class and the instance
 HC = common_local.class('HardonCollider', HC)
 local instance = common_local.instance(HC)
+
+function HC:shapesOnLine(x1,y1,x2,y2)
+  local collisions = {}
+  
+  for _,shape in pairs(self:shapesAt(x1,y1)) do
+    collisions[#collisions+1] = shape
+  end
+  
+  
+  function onTraverse(gridXPos,gridYPos)
+    for object in pairs(self._hash:cell(gridXPos,gridYPos)) do
+      local hit, distance = object:intersectsRay(x1,y1,x2-x1,y2-y1)
+      if hit == true and distance > 0 and distance <= 1 then
+        collisions[#collisions+1] = object
+      end
+    end
+  end
+  
+  traverse(self._hash.cell_size,self._hash.cell_size,x1,y1,x2,y2,onTraverse)
+  
+  return collisions
+end
 
 -- the module
 return setmetatable({
