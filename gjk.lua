@@ -36,8 +36,9 @@ local function support(shape_a, shape_b, dx, dy)
 end
 
 -- returns closest edge to the origin
+local edge = {}
 local function closest_edge(n)
-	local e = {dist = huge}
+	edge.dist = huge
 
 	local i = n-1
 	for k = 1,n-1,2 do
@@ -49,14 +50,14 @@ local function closest_edge(n)
 		local nx,ny = vector.normalize(ex,ey)
 		local d = vector.dot(ax,ay, nx,ny)
 
-		if d < e.dist then
-			e.dist = d
-			e.nx, e.ny = nx, ny
-			e.i = k
+		if d < edge.dist then
+			edge.dist = d
+			edge.nx, edge.ny = nx, ny
+			edge.i = k
 		end
 	end
 
-	return e
+	return edge
 end
 
 local function EPA(shape_a, shape_b)
