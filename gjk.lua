@@ -62,7 +62,7 @@ end
 
 local function EPA(shape_a, shape_b)
 	-- make sure simplex is oriented counter clockwise
-	local cx,cy, bx,by, ax,ay = unpack(simplex)
+	local cx,cy, bx,by, ax,ay = unpack(simplex, 1, 6)
 	if vector.dot(ax-bx,ay-by, cx-bx,cy-by) < 0 then
 		simplex[1],simplex[2] = ax,ay
 		simplex[5],simplex[6] = cx,cy
@@ -96,7 +96,7 @@ end
 -- B o------o A   since A is the furthest point on the MD
 --   :      :     in direction of the origin.
 local function do_line()
-	local bx,by, ax,ay = unpack(simplex)
+	local bx,by, ax,ay = unpack(simplex, 1, 4)
 
 	local abx,aby = bx-ax, by-ay
 
@@ -105,7 +105,7 @@ local function do_line()
 	if vector.dot(dx,dy, -ax,-ay) < 0 then
 		dx,dy = -dx,-dy
 	end
-	return 4, dx,dy
+	return dx,dy
 end
 
 -- B .'
@@ -116,7 +116,7 @@ end
 --  o-'  3
 -- C '.
 local function do_triangle()
-	local cx,cy, bx,by, ax,ay = unpack(simplex)
+	local cx,cy, bx,by, ax,ay = unpack(simplex, 1, 6)
 	local aox,aoy = -ax,-ay
 	local abx,aby = bx-ax, by-ay
 	local acx,acy = cx-ax, cy-ay
