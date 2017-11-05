@@ -28,7 +28,7 @@ local _PACKAGE = (...):match("^(.+)%.[^%.]+")
 local vector  = require(_PACKAGE .. '.vector-light')
 local huge, abs = math.huge, math.abs
 
-local simplex = {}
+local simplex, edge = {}, {}
 
 local function support(shape_a, shape_b, dx, dy)
 	local x,y = shape_a:support(dx,dy)
@@ -36,7 +36,6 @@ local function support(shape_a, shape_b, dx, dy)
 end
 
 -- returns closest edge to the origin
-local edge = {}
 local function closest_edge(n)
 	edge.dist = huge
 
@@ -56,8 +55,6 @@ local function closest_edge(n)
 			edge.i = k
 		end
 	end
-
-	return edge
 end
 
 local function EPA(shape_a, shape_b)
@@ -72,22 +69,22 @@ local function EPA(shape_a, shape_b)
 	local is_either_circle = shape_a._center or shape_b._center
 	local last_diff_dist, n = huge, 6
 	while true do
-		local e = closest_edge(n)
-		local px,py = support(shape_a, shape_b, e.nx, e.ny)
-		local d = vector.dot(px,py, e.nx, e.ny)
+		closest_edge(n)
+		local px,py = support(shape_a, shape_b, edge.nx, edge.ny)
+		local d = vector.dot(px,py, edge.nx, edge.ny)
 
-		local diff_dist = d - e.dist
+		local diff_dist = d - edge.dist
 		if diff_dist < 1e-6 or (is_either_circle and abs(last_diff_dist - diff_dist) < 1e-10) then
-			return -d*e.nx, -d*e.ny
+			return -d*edge.nx, -d*edge.ny
 		end
 		last_diff_dist = diff_dist
 
-		-- simplex = {..., simplex[e.i-1], px, py, simplex[e.i]
-		for i = n, e.i, -1 do
+		-- simplex = {..., simplex[edge.i-1], px, py, simplex[edge.i]
+		for i = n, edge.i, -1 do
 			simplex[i+2] = simplex[i]
 		end
-		simplex[e.i+0] = px
-		simplex[e.i+1] = py
+		simplex[edge.i+0] = px
+		simplex[edge.i+1] = py
 		n = n + 2
 	end
 end
@@ -130,7 +127,6 @@ local function do_triangle()
 		-- simplex = {bx,by, ax,ay}
 		simplex[1], simplex[2] = bx,by
 		simplex[3], simplex[4] = ax,ay
-		simplex[5], simplex[6] = nil, nil
 		return 4, dx,dy
 	end
 
@@ -142,7 +138,6 @@ local function do_triangle()
 	if vector.dot(dx,dy, aox, aoy) > 0 then
 		-- simplex = {cx,cy, ax,ay}
 		simplex[3], simplex[4] = ax,ay
-		simplex[5], simplex[6] = nil, nil
 		return 4, dx,dy
 	end
 
