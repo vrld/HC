@@ -28,17 +28,19 @@ local _PACKAGE = (...):match("^(.+)%.[^%.]+")
 local vector  = require(_PACKAGE .. '.vector-light')
 local huge, abs = math.huge, math.abs
 
+local simplex = {}
+
 local function support(shape_a, shape_b, dx, dy)
 	local x,y = shape_a:support(dx,dy)
 	return vector.sub(x,y, shape_b:support(-dx, -dy))
 end
 
 -- returns closest edge to the origin
-local function closest_edge(simplex)
+local function closest_edge(n)
 	local e = {dist = huge}
 
-	local i = #simplex-1
-	for k = 1,#simplex-1,2 do
+	local i = n-1
+	for k = 1,n-1,2 do
 		local ax,ay = simplex[i], simplex[i+1]
 		local bx,by = simplex[k], simplex[k+1]
 		i = k
@@ -57,7 +59,7 @@ local function closest_edge(simplex)
 	return e
 end
 
-local function EPA(shape_a, shape_b, simplex)
+local function EPA(shape_a, shape_b)
 	-- make sure simplex is oriented counter clockwise
 	local cx,cy, bx,by, ax,ay = unpack(simplex)
 	if vector.dot(ax-bx,ay-by, cx-bx,cy-by) < 0 then
@@ -67,9 +69,9 @@ local function EPA(shape_a, shape_b, simplex)
 
 	-- the expanding polytype algorithm
 	local is_either_circle = shape_a._center or shape_b._center
-	local last_diff_dist = huge
+	local last_diff_dist, n = huge, 6
 	while true do
-		local e = closest_edge(simplex)
+		local e = closest_edge(n)
 		local px,py = support(shape_a, shape_b, e.nx, e.ny)
 		local d = vector.dot(px,py, e.nx, e.ny)
 
@@ -82,13 +84,15 @@ local function EPA(shape_a, shape_b, simplex)
 		-- simplex = {..., simplex[e.i-1], px, py, simplex[e.i]
 		table.insert(simplex, e.i, py)
 		table.insert(simplex, e.i, px)
+
+		n = n + 2
 	end
 end
 
 --   :      :     origin must be in plane between A and B
 -- B o------o A   since A is the furthest point on the MD
 --   :      :     in direction of the origin.
-local function do_line(simplex)
+local function do_line()
 	local bx,by, ax,ay = unpack(simplex)
 
 	local abx,aby = bx-ax, by-ay
@@ -98,7 +102,7 @@ local function do_line(simplex)
 	if vector.dot(dx,dy, -ax,-ay) < 0 then
 		dx,dy = -dx,-dy
 	end
-	return simplex, dx,dy
+	return 4, dx,dy
 end
 
 -- B .'
@@ -108,7 +112,7 @@ end
 --  |  _.-' '.     from left of BC.
 --  o-'  3
 -- C '.
-local function do_triangle(simplex)
+local function do_triangle()
 	local cx,cy, bx,by, ax,ay = unpack(simplex)
 	local aox,aoy = -ax,-ay
 	local abx,aby = bx-ax, by-ay
@@ -124,7 +128,7 @@ local function do_triangle(simplex)
 		simplex[1], simplex[2] = bx,by
 		simplex[3], simplex[4] = ax,ay
 		simplex[5], simplex[6] = nil, nil
-		return simplex, dx,dy
+		return 4, dx,dy
 	end
 
 	-- test region 3
@@ -136,11 +140,11 @@ local function do_triangle(simplex)
 		-- simplex = {cx,cy, ax,ay}
 		simplex[3], simplex[4] = ax,ay
 		simplex[5], simplex[6] = nil, nil
-		return simplex, dx,dy
+		return 4, dx,dy
 	end
 
 	-- must be in region 4
-	return simplex
+	return 6
 end
 
 local function GJK(shape_a, shape_b)
@@ -158,8 +162,7 @@ local function GJK(shape_a, shape_b)
 		return false
 	end
 
-	local simplex = {ax,ay}
-	local n = 2
+	simplex[1], simplex[2] = ax, ay
 	local dx,dy = -ax,-ay
 
 	-- first iteration: line case
@@ -168,9 +171,10 @@ local function GJK(shape_a, shape_b)
 		return false
 	end
 
-	simplex[n+1], simplex[n+2] = ax,ay
-	simplex, dx, dy = do_line(simplex, dx, dy)
-	n = 4
+	simplex[3], simplex[4] = ax,ay
+	dx, dy = do_line()
+
+	local n
 
 	-- all other iterations must be the triangle case
 	while true do
@@ -180,12 +184,11 @@ local function GJK(shape_a, shape_b)
 			return false
 		end
 
-		simplex[n+1], simplex[n+2] = ax,ay
-		simplex, dx, dy = do_triangle(simplex, dx,dy)
-		n = #simplex
+		simplex[5], simplex[6] = ax,ay
+		n, dx, dy = do_triangle()
 
 		if n == 6 then
-			return true, EPA(shape_a, shape_b, simplex)
+			return true, EPA(shape_a, shape_b)
 		end
 	end
 end
