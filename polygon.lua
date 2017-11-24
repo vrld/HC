@@ -319,7 +319,7 @@ function Polygon:triangulate()
 	while n_vert > 3 do
 		next, prev = next_idx[current], prev_idx[current]
 		local p,q,r = vertices[prev], vertices[current], vertices[next]
-		if isEar(p,q,r, concave) then
+		if isEar(p,q,r, concave) and not areCollinear(p, q, r)  then
 			triangles[#triangles+1] = newPolygon(p.x,p.y, q.x,q.y, r.x,r.y)
 			next_idx[prev], prev_idx[next] = next, prev
 			concave[q] = nil
