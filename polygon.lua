@@ -320,10 +320,12 @@ function Polygon:triangulate()
 		next, prev = next_idx[current], prev_idx[current]
 		local p,q,r = vertices[prev], vertices[current], vertices[next]
 		if isEar(p,q,r, concave) then
-			triangles[#triangles+1] = newPolygon(p.x,p.y, q.x,q.y, r.x,r.y)
-			next_idx[prev], prev_idx[next] = next, prev
-			concave[q] = nil
-			n_vert, skipped = n_vert - 1, 0
+			if not areCollinear(p, q, r) then
+				triangles[#triangles+1] = newPolygon(p.x,p.y, q.x,q.y, r.x,r.y)
+				next_idx[prev], prev_idx[next] = next, prev
+				concave[q] = nil
+				n_vert, skipped = n_vert - 1, 0
+			end
 		else
 			skipped = skipped + 1
 			assert(skipped <= n_vert, "Cannot triangulate polygon")
