@@ -205,7 +205,10 @@ Collision Detection
 
 
 Get shapes that are colliding with ``shape`` and the vector to separate the shapes.
-The separating vector points away from ``shape``.
+The separating vector points in the direction that ``shape`` has to move to clear
+the collission.
+The length of the vector is the minimal amount that either shape has to move to
+clear the collission.
 
 The table is a *set*, meaning that the shapes are stored in *keys* of the table.
 The *values* are the separating vector.
@@ -215,8 +218,8 @@ You can iterate over the shapes using ``pairs`` (see example).
 
     local collisions = HC.collisions(shape)
     for other, separating_vector in pairs(collisions) do
-        shape:move(-separating_vector.x/2, -separating_vector.y/2)
-        other:move( separating_vector.x/2,  separating_vector.y/2)
+        shape:move( separating_vector.x/2,  separating_vector.y/2)
+        other:move(-separating_vector.x/2, -separating_vector.y/2)
     end
 
 
