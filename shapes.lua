@@ -256,8 +256,9 @@ end
 -- point shape intersects ray if it lies on the ray
 function PointShape:intersectsRay(x,y, dx,dy)
 	local px,py = self._pos.x-x, self._pos.y-y
-	local t = vector.dot(px,py, dx,dy) / vector.len2(dx,dy)
-	return t >= 0, t
+	local t = px/dx
+	-- see (px,py) and (dx,dy) point in same direction
+	return (t == py/dy), t
 end
 
 function PointShape:intersectionsWithRay(x,y, dx,dy)
