@@ -214,7 +214,7 @@ You can iterate over the shapes using ``pairs`` (see example).
 **Example**::
 
     local collisions = HC.collisions(shape)
-    for other, separating_vector in pairs(collisions)
+    for other, separating_vector in pairs(collisions) do
         shape:move(-separating_vector.x/2, -separating_vector.y/2)
         other:move( separating_vector.x/2,  separating_vector.y/2)
     end
@@ -237,7 +237,7 @@ You can iterate over the shapes using ``pairs`` (see example).
 **Example**::
 
     local candidates = HC.neighbors(shape)
-    for other in pairs(candidates)
+    for other in pairs(candidates) do
         local collides, dx, dy = shape:collidesWith(other)
         if collides then
             other:move(dx, dy)
