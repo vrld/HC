@@ -152,7 +152,7 @@ will not be valid.
 
 **Example**::
 
-    bullets[#bulltes+1] = HC.point(player.pos.x, player.pos.y)
+    bullets[#bullets+1] = HC.point(player.pos.x, player.pos.y)
 
 
 .. function:: HC.register(shape)
