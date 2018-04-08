@@ -50,7 +50,7 @@ function Spatialhash:cell(i,k)
 
 	local cell = rawget(row, k)
 	if not cell then
-		cell = setmetatable({}, {__mode = "kv"})
+		cell = {}
 		rawset(row, k, cell)
 	end
 
