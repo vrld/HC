@@ -248,6 +248,8 @@ You can iterate over the shapes using ``pairs`` (see example).
     end
 
 
-.. attribute:: HC.hash
+.. function:: HC.hash()
 
-Reference to the :class:`SpatialHash` instance.
+   :returns: :class:`SpatialHash`.
+
+Get a reference to the :class:`SpatialHash` instance.

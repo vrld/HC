@@ -43,21 +43,19 @@ local newPointShape   = Shapes.newPointShape
 
 local HC = {}
 function HC:init(cell_size)
-	self.hash = common_local.instance(Spatialhash, cell_size or 100)
+  self:resetHash(cell_size)
 end
+
+function HC:hash() return self._hash end -- consistent interface with global HC instance
 
 -- spatial hash management
 function HC:resetHash(cell_size)
-	local hash = self.hash
-	self.hash = common_local.instance(Spatialhash, cell_size or 100)
-	for shape in pairs(hash:shapes()) do
-		self.hash:register(shape, shape:bbox())
-	end
+	self._hash = common_local.instance(Spatialhash, cell_size or 100)
 	return self
 end
 
 function HC:register(shape)
-	self.hash:register(shape, shape:bbox())
+	self._hash:register(shape, shape:bbox())
 
 	-- keep track of where/how big the shape is
 	for _, f in ipairs({'move', 'rotate', 'scale'}) do
@@ -65,7 +63,7 @@ function HC:register(shape)
 		shape[f] = function(this, ...)
 			local x1,y1,x2,y2 = this:bbox()
 			old_function(this, ...)
-			self.hash:update(this, x1,y1,x2,y2, this:bbox())
+			self._hash:update(this, x1,y1,x2,y2, this:bbox())
 			return this
 		end
 	end
@@ -74,7 +72,7 @@ function HC:register(shape)
 end
 
 function HC:remove(shape)
-	self.hash:remove(shape, shape:bbox())
+	self._hash:remove(shape, shape:bbox())
 	for _, f in ipairs({'move', 'rotate', 'scale'}) do
 		shape[f] = function()
 			error(f.."() called on a removed shape")
@@ -102,7 +100,7 @@ end
 
 -- collision detection
 function HC:neighbors(shape)
-	local neighbors = self.hash:inSameCells(shape:bbox())
+	local neighbors = self._hash:inSameCells(shape:bbox())
 	rawset(neighbors, shape, nil)
 	return neighbors
 end
@@ -138,5 +136,5 @@ return setmetatable({
 
 	neighbors  = function(...) return instance:neighbors(...) end,
 	collisions = function(...) return instance:collisions(...) end,
-	hash       = function() return instance.hash end,
+	hash       = function() return instance.hash() end,
 }, {__call = function(_, ...) return common_local.instance(HC, ...) end})
