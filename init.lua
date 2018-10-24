@@ -118,6 +118,16 @@ function HC:collisions(shape)
 	return candidates
 end
 
+function HC:shapesAt(x, y)
+	local candidates = {}
+	for c in pairs(self._hash:cellAt(x, y)) do
+		if c:contains(x, y) then
+			rawset(candidates, c, c)
+		end
+	end
+	return candidates
+end
+
 -- the class and the instance
 HC = common_local.class('HardonCollider', HC)
 local instance = common_local.instance(HC)
@@ -136,5 +146,6 @@ return setmetatable({
 
 	neighbors  = function(...) return instance:neighbors(...) end,
 	collisions = function(...) return instance:collisions(...) end,
+	shapesAt   = function(...) return instance:shapesAt(...) end,
 	hash       = function() return instance.hash() end,
 }, {__call = function(_, ...) return common_local.instance(HC, ...) end})

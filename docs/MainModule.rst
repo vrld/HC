@@ -217,7 +217,7 @@ You can iterate over the shapes using ``pairs`` (see example).
 .. function:: HC.neighbors(shape)
 
    :param Shape shape: Query shape.
-   :returns: Table of neighboring shapes, where the keys of the table are the shape.
+   :returns: Table of neighboring shapes, where the keys of the table are the shapes.
 
 Get other shapes in that are close to ``shape``.
 The table is a *set*, meaning that the shapes are stored in *keys* of the table.
@@ -236,6 +236,22 @@ You can iterate over the shapes using ``pairs`` (see example).
         if collides then
             other:move(dx, dy)
         end
+    end
+
+.. function:: HC.shapesAt(x, y)
+
+   :param numbers x,y: Point to query.
+   :returns: Table of shapes at the point, where the keys of the table are the shapes.
+
+Get shapes that contain the point (x,y).
+The table is a *set*, meaning that the shapes are stored in *keys* of the table.
+You can iterate over the shapes using ``pairs`` (see example).
+
+**Example**::
+
+    local shapes = HC.shapesAt(love.mouse.getPosition)
+    for s in pairs(shapes) do
+        game.selectUnit(s)
     end
 
 
