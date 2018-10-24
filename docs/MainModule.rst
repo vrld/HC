@@ -72,15 +72,6 @@ Shapes
 
 See also the :doc:`Shapes` sub-module.
 
-.. note::
-
-  HC will only keep `weak references
-  <https://www.lua.org/manual/5.1/manual.html#2.10.2>`_ to the shapes you add
-  to the world. This means that if you don't store the shapes elsewhere, the
-  garbage collector will eventually come around and remove these shapes.See
-  also `this issue <https://github.com/vrld/HC/issues/44>`_ on github.
-
-
 .. function:: HC.rectangle(x, y, w, h)
 
    :param numbers x,y: Upper left corner of the rectangle.
