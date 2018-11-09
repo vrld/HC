@@ -285,19 +285,19 @@ function PointShape:center()
 	return self._pos.x, self._pos.y
 end
 
-function ConvexPolygonShape:outcircle()
+function ConvexPolygonShape:outcircle(segments)
 	local cx,cy = self:center()
-	return cx,cy, self._polygon._radius
+	return cx,cy, self._polygon._radius, segments
 end
 
-function ConcavePolygonShape:outcircle()
+function ConcavePolygonShape:outcircle(segments)
 	local cx,cy = self:center()
-	return cx,cy, self._polygon._radius
+	return cx,cy, self._polygon._radius, segments
 end
 
-function CircleShape:outcircle()
+function CircleShape:outcircle(segments)
 	local cx,cy = self:center()
-	return cx,cy, self._radius
+	return cx,cy, self._radius, segments
 end
 
 function PointShape:outcircle()
@@ -418,7 +418,7 @@ function ConcavePolygonShape:draw(mode, wireframe)
 end
 
 function CircleShape:draw(mode, segments)
-	love.graphics.circle(mode or 'line', self:outcircle())
+	love.graphics.circle(mode or 'line', self:outcircle(segments))
 end
 
 function PointShape:draw()
