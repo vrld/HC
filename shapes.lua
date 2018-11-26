@@ -418,7 +418,8 @@ function ConcavePolygonShape:draw(mode, wireframe)
 end
 
 function CircleShape:draw(mode, segments)
-	love.graphics.circle(mode or 'line', self:outcircle())
+	local x, y, r = self:outcircle()
+	love.graphics.circle(mode or 'line', x, y, r, segments)
 end
 
 function PointShape:draw()
