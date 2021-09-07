@@ -284,6 +284,13 @@ Built-in Shapes
 
 .. class:: CircleShape
 
+.. function:: CircleShape:draw(mode, segments)
+
+    :param DrawMode mode: How to draw the shape. Either 'line' or 'fill'.
+    :param number segments: The number of segments to draw the circle with.
+
+Draw the circle shape either filled or as an outline and with the specified number of segments.
+
 .. class:: PointShape
 
 .. function:: newPolygonShape(...)
