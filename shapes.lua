@@ -423,7 +423,7 @@ function CircleShape:draw(mode, segments)
 end
 
 function PointShape:draw()
-	love.graphics.point(self:center())
+	(love.graphics.points or love.graphics.point)(self:center())
 end
 
 
