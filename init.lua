@@ -124,14 +124,17 @@ function HC:raycast(x, y, dx, dy, range)
 	local candidates = self._hash:inSameCells(unpack(bbox))
 
 	for col in pairs(candidates) do
-		local intersections = col:intersectionsWithRay(x, y, dx, dy)
-		if #intersections > 0 then
-			for i, intersection in pairs(intersections) do
-				if intersection < 0 or intersection > range then
-					rawset(intersections, i, nil)
+		local rparams = col:intersectionsWithRay(x, y, dx, dy)
+		if #rparams > 0 then
+			for i, rparam in pairs(rparams) do
+				if rparam < 0 or rparam > range then
+					rawset(rparams, i, nil)
+				else
+          local hitx, hity = x + (rparam * dx), y + (rparam * dy)
+					rawset(rparams, i, { x = hitx, y = hity })
 				end
 			end
-			rawset(candidates, col, intersections)
+			rawset(candidates, col, rparams)
 		else
 			rawset(candidates, col, nil)
 		end
