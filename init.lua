@@ -130,7 +130,7 @@ function HC:raycast(x, y, dx, dy, range)
 				if rparam < 0 or rparam > range then
 					rawset(rparams, i, nil)
 				else
-          local hitx, hity = x + (rparam * dx), y + (rparam * dy)
+					local hitx, hity = x + (rparam * dx), y + (rparam * dy)
 					rawset(rparams, i, { x = hitx, y = hity })
 				end
 			end
