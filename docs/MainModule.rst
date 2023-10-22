@@ -254,6 +254,25 @@ You can iterate over the shapes using ``pairs`` (see example).
         game.selectUnit(s)
     end
 
+.. function:: HC.raycast(x, y, dx, dy, range)
+
+   :param numbers x,y: Origin point of ray
+   :param numbers dx,dy: Direction vector of ray(normal vector)
+   :param number range: Range of raycast
+   :returns: Table of shapes that got hit and its hit points.
+
+Gets shapes that got hit by a given ray and the points which that shape intersects with the ray.
+The table is a *set*, meaning that the shapes are stored in *keys* of the table. The values are the points of intersection. You can iterate over the shapes using ``pairs`` (see example).
+
+**Example**::
+
+    local hits = HC.raycast(originx, originy, directionx, directiony, range)
+    for shape, points in pairs(hits) do
+      for _, point in ipairs(points) do
+        love.graphics.points(point.x, point.y)
+      end
+    end
+
 
 .. function:: HC.hash()
 

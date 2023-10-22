@@ -118,6 +118,30 @@ function HC:collisions(shape)
 	return candidates
 end
 
+function HC:raycast(x, y, dx, dy, range)
+	local dxr, dyr = dx * range, dy * range
+	local bbox = { x + dxr , y + dyr, x, y }
+	local candidates = self._hash:inSameCells(unpack(bbox))
+
+	for col in pairs(candidates) do
+		local rparams = col:intersectionsWithRay(x, y, dx, dy)
+		if #rparams > 0 then
+			for i, rparam in pairs(rparams) do
+				if rparam < 0 or rparam > range then
+					rawset(rparams, i, nil)
+				else
+					local hitx, hity = x + (rparam * dx), y + (rparam * dy)
+					rawset(rparams, i, { x = hitx, y = hity })
+				end
+			end
+			rawset(candidates, col, rparams)
+		else
+			rawset(candidates, col, nil)
+		end
+	end
+	return candidates
+end
+
 function HC:shapesAt(x, y)
 	local candidates = {}
 	for c in pairs(self._hash:cellAt(x, y)) do
