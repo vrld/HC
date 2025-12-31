@@ -171,5 +171,5 @@ return setmetatable({
 	neighbors  = function(...) return instance:neighbors(...) end,
 	collisions = function(...) return instance:collisions(...) end,
 	shapesAt   = function(...) return instance:shapesAt(...) end,
-	hash       = function() return instance.hash() end,
+	hash       = function() return instance:hash() end,
 }, {__call = function(_, ...) return common_local.instance(HC, ...) end})
